@@ -51,9 +51,9 @@ body {
 
 .trio {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-    max-width: 1080px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 26px;
+    max-width: 1200px;
     margin: 52px auto 0;
     align-items: center;
 }
@@ -63,16 +63,17 @@ body {
     text-decoration: none;
     color: #fff;
     border-radius: 18px;
-    padding: 42px 28px;
+    padding: 42px 26px;
     transform: skewY(-4deg);
     transition: transform .4s cubic-bezier(.22,.9,.35,1.15), box-shadow .4s ease;
     box-shadow: 0 10px 26px rgba(80,90,200,.22);
     will-change: transform;
 }
-.slant-card:nth-child(2) { transform: skewY(4deg); }
+.slant-card:nth-child(even) { transform: skewY(4deg); }
 .sc1 { background: linear-gradient(135deg, #667eea, #764ba2); }
 .sc2 { background: linear-gradient(135deg, #36d1dc, #5b86e5); box-shadow: 0 10px 26px rgba(54,150,220,.25); }
 .sc3 { background: linear-gradient(135deg, #f953c6, #b91d73); box-shadow: 0 10px 26px rgba(220,80,150,.25); }
+.sc4 { background: linear-gradient(135deg, #11998e, #38ef7d); box-shadow: 0 10px 26px rgba(30,160,140,.25); }
 
 .slant-card:hover {
     transform: skewY(-4deg) scale(1.07);
@@ -80,10 +81,10 @@ body {
     z-index: 2;
     position: relative;
 }
-.slant-card:nth-child(2):hover { transform: skewY(4deg) scale(1.07); }
+.slant-card:nth-child(even):hover { transform: skewY(4deg) scale(1.07); }
 
 .slant-inner { transform: skewY(4deg); }
-.slant-card:nth-child(2) .slant-inner { transform: skewY(-4deg); }
+.slant-card:nth-child(even) .slant-inner { transform: skewY(-4deg); }
 
 .slant-card h3 { font-size: 1.35rem; margin: 16px 0 8px; }
 .slant-card h3 small {
@@ -112,9 +113,103 @@ body {
 }
 .slant-card:hover .icon { transform: scale(1.12) rotate(-4deg); }
 
-@media (max-width: 860px) {
+@media (max-width: 1100px) {
+    .trio { grid-template-columns: repeat(2, 1fr); max-width: 640px; }
+}
+@media (max-width: 700px) {
     .trio { grid-template-columns: 1fr; max-width: 420px; gap: 34px; }
     .slant-card p { min-height: 0; }
+    .nav { flex-direction: column; gap: 8px; }
+    .links a { margin: 0 8px; }
+}
+
+/* ---- calendar ---- */
+.cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.cal-head h2 { color: #4a4a8a; }
+.cal-head-right { display: flex; gap: 8px; }
+.cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+    text-align: center;
+    font-weight: bold;
+    color: #667eea;
+    font-size: .9rem;
+}
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+.cal-cell {
+    background: #fff;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    min-height: 88px;
+    padding: 8px;
+    cursor: pointer;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.cal-cell:hover { border-color: #c3c9f5; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102,126,234,.15); }
+.cal-cell.today { border-color: #667eea; background: #eef0ff; }
+.cal-cell.sel { border-color: #764ba2; box-shadow: 0 4px 14px rgba(118,75,162,.25); }
+.cal-cell.out { visibility: hidden; }
+.cal-num { font-weight: bold; margin-bottom: 6px; }
+.cal-badge {
+    display: inline-block;
+    font-size: .68rem;
+    border-radius: 8px;
+    padding: 1px 7px;
+    margin-right: 4px;
+    margin-top: 2px;
+}
+.cal-badge.course { background: #e6f7f9; color: #1d8ea8; }
+.cal-badge.memo { background: #fff3d6; color: #b8860b; }
+.cal-badge.memo.alldone { background: #e6f9ec; color: #2e9e5b; }
+
+.panel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 22px;
+}
+.panel-list { list-style: none; min-height: 60px; }
+.panel-list li { padding: 8px 4px; border-bottom: 1px dashed #eee; font-size: .95rem; }
+.panel-list li.empty { color: #bbb; }
+.panel-list .p-tag {
+    display: inline-block;
+    background: #e6f7f9;
+    color: #1d8ea8;
+    font-size: .75rem;
+    border-radius: 8px;
+    padding: 1px 8px;
+    margin-right: 8px;
+}
+.panel-grid .memo-form { margin-top: 12px; }
+
+.date-badge {
+    font-size: .72rem;
+    background: #fff3d6;
+    color: #b8860b;
+    border-radius: 8px;
+    padding: 1px 8px;
+    white-space: nowrap;
+}
+.date-badge.overdue { background: #fdecec; color: #c0392b; }
+
+@media (max-width: 760px) {
+    .panel-grid { grid-template-columns: 1fr; }
+    .cal-cell { min-height: 64px; padding: 5px; }
+    .cal-num { font-size: .8rem; }
+    .cal-badge { font-size: .6rem; padding: 0 5px; }
 }
 
 .section { max-width: 900px; margin: 0 auto; padding: 56px 20px; }

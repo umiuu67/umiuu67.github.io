@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日历 · Umiuu 的小站</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="nav">
+        <a class="brand" href="index.html">
+            <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#667eea"/><text x="32" y="44" font-family="Arial" font-size="34" font-weight="bold" fill="#fff" text-anchor="middle">U</text></svg>
+            Umiuu 的小站
+        </a>
+        <div class="links">
+            <a href="index.html">首页</a>
+            <a href="memo.html">备忘录</a>
+            <a href="schedule.html">课表</a>
+            <a href="calendar.html" class="active">日历</a>
+            <a href="https://www.ilovepdf.com/zh-cn" target="_blank" rel="noopener">工具箱 ↗</a>
+        </div>
+    </nav>
+
+    <main class="page wide">
+        <div class="cal-head">
+            <button id="calPrev" class="chip">‹ 上月</button>
+            <h2 id="calTitle">2026年8月</h2>
+            <div class="cal-head-right">
+                <button id="calToday" class="chip">今天</button>
+                <button id="calNext" class="chip">下月 ›</button>
+            </div>
+        </div>
+
+        <div class="cal-weekdays">
+            <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+        </div>
+        <div id="calGrid" class="cal-grid"></div>
+
+        <div class="panel-grid">
+            <section class="tool-card">
+                <h3 id="panelCourseTitle">📚 当天课程</h3>
+                <ul id="panelCourses" class="panel-list"></ul>
+            </section>
+            <section class="tool-card">
+                <h3 id="panelMemoTitle">📝 当天备忘</h3>
+                <ul id="panelMemos" class="panel-list"></ul>
+                <form id="panelAddForm" class="memo-form">
+                    <input id="panelAddInput" type="text" placeholder="给这天加一条备忘..." autocomplete="off" required>
+                    <button type="submit" class="btn primary">添加</button>
+                </form>
+            </section>
+        </div>
+        <p class="tip" style="text-align:center">点击任意日期查看当天课程与备忘 · 数据与备忘录、课表实时互通</p>
+    </main>
+
+    <footer><p>© 2026 Umiuu · Powered by GitHub Pages</p></footer>
+    <script src="js/calendar.js"></script>
+</body>
+</html>

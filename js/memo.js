@@ -33,6 +33,14 @@ function render() {
         const span = document.createElement('span');
         span.className = 'text';
         span.textContent = it.text;
+
+        let dBadge = null;
+        if (it.date) {
+            dBadge = document.createElement('span');
+            const todayStr = new Date().toLocaleDateString('sv-SE');
+            dBadge.className = 'date-badge' + (!it.done && it.date < todayStr ? ' overdue' : '');
+            dBadge.textContent = it.date.slice(5);
+        }
         span.addEventListener('dblclick', () => {
             const t = prompt('修改内容：', it.text);
             if (t !== null && t.trim()) {
@@ -51,7 +59,9 @@ function render() {
             render();
         });
 
-        li.append(cb, span, del);
+        li.append(cb, span);
+        if (dBadge) li.appendChild(dBadge);
+        li.appendChild(del);
         list.appendChild(li);
     }
     const doneN = items.filter(i => i.done).length;
@@ -62,8 +72,10 @@ form.addEventListener('submit', e => {
     e.preventDefault();
     const text = input.value.trim();
     if (!text) return;
-    items.unshift({ id: Date.now(), text, done: false });
+    const dateVal = document.getElementById('memoDate').value || '';
+    items.unshift({ id: Date.now(), text, done: false, date: dateVal });
     input.value = '';
+    document.getElementById('memoDate').value = '';
     save();
     render();
 });
