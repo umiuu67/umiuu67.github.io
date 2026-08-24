@@ -276,10 +276,12 @@ body {
 .table-wrap { overflow-x: auto; border-radius: 10px; box-shadow: 0 4px 18px rgba(0,0,0,.4); }
 #scheduleTable {
     border-collapse: collapse;
+    table-layout: fixed;
     width: 100%;
-    min-width: 640px;
+    min-width: 960px;
     background: var(--surface);
 }
+#scheduleTable th:first-child, #scheduleTable td:first-child { width: 112px; }
 #scheduleTable th, #scheduleTable td {
     border: 1px solid #282a30;
     text-align: center;
