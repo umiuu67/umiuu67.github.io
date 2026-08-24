@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>备忘录 · 我的个人站</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="nav">
+        <a class="brand" href="index.html">我的个人站</a>
+        <div class="links">
+            <a href="index.html">首页</a>
+            <a href="memo.html" class="active">备忘录</a>
+            <a href="schedule.html">课表</a>
+            <a href="tools.html">工具箱</a>
+        </div>
+    </nav>
+
+    <main class="page">
+        <h2>📝 备忘录</h2>
+        <p class="tip">数据保存在当前浏览器中，换设备或清缓存后不会同步。</p>
+        <form id="memoForm" class="memo-form">
+            <input id="memoInput" type="text" placeholder="输入待办事项，回车添加..." autocomplete="off" required>
+            <button type="submit" class="btn primary">添加</button>
+        </form>
+        <div class="filters">
+            <button class="chip active" data-f="all">全部</button>
+            <button class="chip" data-f="active">未完成</button>
+            <button class="chip" data-f="done">已完成</button>
+            <span id="memoCount" class="count"></span>
+        </div>
+        <ul id="memoList" class="memo-list"></ul>
+        <div class="toolbar">
+            <button id="clearDone" class="chip danger">清除已完成</button>
+        </div>
+    </main>
+
+    <footer><p>© 2026 我的个人站</p></footer>
+    <script src="js/memo.js"></script>
+</body>
+</html>
