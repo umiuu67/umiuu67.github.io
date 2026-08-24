@@ -305,6 +305,25 @@ body {
     color: var(--text);
 }
 #scheduleTable td input:focus { background: #272931; }
+#scheduleTable td.hascls { background: rgba(255,255,255,.045); }
+#scheduleTable td .cls {
+    font-size: .78rem;
+    line-height: 1.35;
+    padding: 5px 4px;
+    word-break: break-all;
+}
+#scheduleTable td .cls .rm {
+    display: block;
+    font-size: .66rem;
+    color: var(--faint);
+    margin-top: 2px;
+}
+.rm-tag {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: .72rem;
+    color: var(--faint);
+}
 
 /* ---- tools ---- */
 .tool-grid {

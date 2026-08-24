@@ -1,5 +1,4 @@
 ﻿const MEMO_KEY = 'my_memo_items';
-const SCHED_KEY = 'my_schedule_cells';
 
 function loadMemos() {
     try { return JSON.parse(localStorage.getItem(MEMO_KEY) || '[]') || []; } catch (e) { return []; }
@@ -7,20 +6,34 @@ function loadMemos() {
 function saveMemos(list) {
     localStorage.setItem(MEMO_KEY, JSON.stringify(list));
 }
-function loadLocalSchedule() {
-    try { return JSON.parse(localStorage.getItem(SCHED_KEY) || '{}') || {}; } catch (e) { return {}; }
-}
 
-let cloudSchedule = null;
+let termData = null;
 fetch('schedule.json?t=' + Date.now())
-    .then(r => (r.ok ? r.json() : {}))
-    .then(d => { if (d && typeof d === 'object' && !Array.isArray(d)) { cloudSchedule = d; render(); renderPanel(); } })
+    .then(r => r.json())
+    .then(d => { if (d && d.terms) { termData = d; render(); renderPanel(); } })
     .catch(() => {});
 
-function scheduleCells() {
-    const local = loadLocalSchedule();
-    if (Object.keys(local).length > 0) return local;
-    return cloudSchedule || {};
+function coursesOfDay(dateStr) {
+    if (!termData || !termData.terms) return [];
+    const parts = dateStr.split('-').map(Number);
+    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+    const wd = (date.getDay() + 6) % 7 + 1;
+    for (const term of termData.terms) {
+        const sp = term.start.split('-').map(Number);
+        const start = new Date(sp[0], sp[1] - 1, sp[2]);
+        const diff = Math.floor((date - start) / 86400000);
+        if (diff < 0 || diff >= term.weeks * 7) continue;
+        const week = Math.floor(diff / 7) + 1;
+        const out = [];
+        for (const c of term.courses || []) {
+            if (c.day !== wd) continue;
+            const active = (c.weeks || []).some(r => week >= r[0] && week <= r[1]);
+            if (active) out.push({ name: c.name, room: c.room || '', start: c.start, end: c.end });
+        }
+        out.sort((a, b) => a.start - b.start);
+        return out;
+    }
+    return [];
 }
 
 function fmtDate(y, m, d) {
@@ -50,18 +63,6 @@ function weekdayOfDateStr(s) {
     return (new Date(y, m - 1, d).getDay() + 6) % 7;
 }
 
-function coursesOfDay(dateStr) {
-    const wd = weekdayOfDateStr(dateStr);
-    if (wd > 4) return [];
-    const cells = scheduleCells();
-    const out = [];
-    for (let p = 0; p < 8; p++) {
-        const v = cells[`${p}-${wd}`];
-        if (v) v.split('\n').forEach(name => out.push({ period: p + 1, name }));
-    }
-    return out;
-}
-
 function render() {
     titleEl.textContent = `${viewY}年${viewM + 1}月`;
     grid.innerHTML = '';
@@ -80,7 +81,6 @@ function render() {
         const ds = fmtDate(viewY, viewM, d);
         const cell = document.createElement('div');
         cell.className = 'cal-cell' + (ds === todayStr ? ' today' : '') + (ds === selected ? ' sel' : '');
-        if (ds === selected) cell.classList.add('sel');
 
         const num = document.createElement('div');
         num.className = 'cal-num';
@@ -119,13 +119,14 @@ function renderPanel() {
 
     const cList = document.getElementById('panelCourses');
     cList.innerHTML = '';
-    const courses = coursesOfDay(selected).sort((a, b) => a.period - b.period);
+    const courses = coursesOfDay(selected);
     if (!courses.length) {
         cList.innerHTML = '<li class="empty">这天没有课 🎉</li>';
     } else {
         courses.forEach(c => {
             const li = document.createElement('li');
-            li.innerHTML = `<span class="p-tag">第${c.period}节</span>${c.name}`;
+            const span = c.start === c.end ? `第${c.start}节` : `第${c.start}-${c.end}节`;
+            li.innerHTML = `<span class="p-tag">${span}</span>${c.name}<span class="rm-tag">${c.room}</span>`;
             cList.appendChild(li);
         });
     }
