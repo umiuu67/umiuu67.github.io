@@ -249,7 +249,7 @@ body {
     cursor: pointer;
 }
 .memo-item .del:hover { color: #ff7b7b; }
-.toolbar { text-align: right; display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.toolbar { text-align: right; display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-bottom: 14px; }
 .toolbar .chip.danger { background: #3a2030; color: #ff9b9b; }
 
 .import-panel {
