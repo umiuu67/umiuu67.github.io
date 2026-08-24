@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
+    <div id="box"></div>
     <nav class="nav">
         <a class="brand" href="index.html">
             <svg class="brand-logo" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#667eea"/><text x="32" y="44" font-family="Arial" font-size="34" font-weight="bold" fill="#fff" text-anchor="middle">U</text></svg>
@@ -57,5 +58,14 @@
 
     <footer><p>© 2026 Umiuu · Powered by GitHub Pages</p></footer>
     <script src="js/calendar.js?v=6"></script>
-</body>
+<script src="assets/ChaosWavesBg.min.js?v=6"></script>
+<script>
+if (!window.matchMedia || !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    new Color4Bg.ChaosWavesBg({
+        dom: "box",
+        colors: ["#858585", "#DDDDDD", "#BBBBBB", "#555555", "#343434", "#010101"],
+        loop: true
+    });
+}
+</script></body>
 </html>

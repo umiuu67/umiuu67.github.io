@@ -13,15 +13,16 @@
     --accent-deep: #667eea;
 }
 
-html { color-scheme: dark; }
+html { color-scheme: dark; background: #0c0f20; }
+
+#box { position: fixed; inset: 0; z-index: -1; }
+#box canvas { width: 100% !important; height: 100% !important; display: block; }
 
 body {
     font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
     color: var(--text);
     line-height: 1.7;
-    background:
-        linear-gradient(180deg, rgba(12,15,32,.84) 0%, rgba(10,12,26,.9) 100%),
-        url('../assets/bg.jpg') center / cover no-repeat fixed;
+    background: transparent;
 }
 
 .nav {
