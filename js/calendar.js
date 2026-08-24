@@ -13,8 +13,32 @@ fetch('schedule.json?t=' + Date.now())
     .then(d => { if (d && d.terms) { termData = d; render(); renderPanel(); } })
     .catch(() => {});
 
+function firstMonday(y, m, minDay) {
+    const d = new Date(y, m - 1, minDay);
+    while (d.getDay() !== 1) d.setDate(d.getDate() + 1);
+    return d.toLocaleDateString('sv-SE');
+}
+
+function ensureTerms() {
+    const today = new Date().toLocaleDateString('sv-SE');
+    let guard = 0;
+    while (guard++ < 10) {
+        const t = termData.terms[termData.terms.length - 1];
+        const e = new Date(t.start); e.setDate(e.getDate() + t.weeks * 7 - 1);
+        if (e.toLocaleDateString('sv-SE') >= today) break;
+        const m = t.name.match(/(\d{4})年(秋|春)季/);
+        if (!m) break;
+        const y = +m[1];
+        let name, start;
+        if (m[2] === '秋') { start = firstMonday(y + 1, 3, 1); name = (y + 1) + '年春季学期'; }
+        else { start = firstMonday(y, 9, 7); name = y + '年秋季学期'; }
+        termData.terms.push({ name, start, weeks: 16, courses: [], auto: true });
+    }
+}
+
 function coursesOfDay(dateStr) {
     if (!termData || !termData.terms) return [];
+    ensureTerms();
     const parts = dateStr.split('-').map(Number);
     const date = new Date(parts[0], parts[1] - 1, parts[2]);
     const wd = (date.getDay() + 6) % 7 + 1;

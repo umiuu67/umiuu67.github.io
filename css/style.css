@@ -197,7 +197,7 @@ body {
 .btn:hover { transform: scale(1.05); }
 
 .page { max-width: 760px; margin: 0 auto; padding: 40px 20px 60px; animation: rise .55s cubic-bezier(.2,.7,.3,1) both; }
-.page.wide { max-width: 1380px; }
+.page.wide { max-width: 1380px; padding: 20px 20px 40px; }
 .page h2 { color: #e8ecff; margin-bottom: 8px; }
 .tip { color: var(--faint); font-size: .88rem; margin-bottom: 20px; }
 
@@ -287,7 +287,7 @@ body {
 #scheduleTable th, #scheduleTable td {
     border: 1px solid #282a30;
     text-align: center;
-    height: 52px;
+    height: 46px;
 }
 #scheduleTable th { background: rgba(255,255,255,.07); color: #f0f3ff; padding: 8px; }
 #scheduleTable td.time {

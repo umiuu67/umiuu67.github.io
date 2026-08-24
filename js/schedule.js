@@ -62,8 +62,12 @@ function build() {
 }
 
 function fillSelectors(keepTerm, keepWeek) {
+    ensureTerms();
     termSel.innerHTML = '';
-    data.terms.forEach((t, i) => termSel.add(new Option(t.name, i)));
+    data.terms.forEach((t, i) => {
+        const label = t.courses.length ? t.name : t.name + '（暂无课表）';
+        termSel.add(new Option(label, i));
+    });
     termIdx = keepTerm !== undefined ? keepTerm : defaultTerm();
     termSel.value = termIdx;
     fillWeeks(keepWeek);
@@ -79,8 +83,11 @@ function fillWeeks(keep) {
 
 function defaultTerm() {
     const today = new Date().toLocaleDateString('sv-SE');
-    const idx = data.terms.findIndex(t => today >= t.start && today <= addDays(t.start, t.weeks * 7 - 1));
-    return idx >= 0 ? idx : data.terms.length - 1;
+    const cur = data.terms.findIndex(t => today >= t.start && today <= addDays(t.start, t.weeks * 7 - 1));
+    if (cur >= 0) return cur;
+    const next = data.terms.findIndex(t => addDays(t.start, t.weeks * 7 - 1) >= today);
+    if (next >= 0) return next;
+    return data.terms.length - 1;
 }
 
 function defaultWeek() {
@@ -97,6 +104,33 @@ function addDays(dateStr, n) {
     const d = new Date(dateStr);
     d.setDate(d.getDate() + n);
     return d.toLocaleDateString('sv-SE');
+}
+
+function firstMonday(y, m, minDay) {
+    const d = new Date(y, m - 1, minDay);
+    while (d.getDay() !== 1) d.setDate(d.getDate() + 1);
+    return d.toLocaleDateString('sv-SE');
+}
+
+function ensureTerms() {
+    const today = new Date().toLocaleDateString('sv-SE');
+    let guard = 0;
+    while (guard++ < 10) {
+        const t = data.terms[data.terms.length - 1];
+        if (addDays(t.start, t.weeks * 7 - 1) >= today) break;
+        const m = t.name.match(/(\d{4})年(秋|春)季/);
+        if (!m) break;
+        const y = +m[1];
+        let name, start;
+        if (m[2] === '秋') {
+            start = firstMonday(y + 1, 3, 1);
+            name = (y + 1) + '年春季学期';
+        } else {
+            start = firstMonday(y, 9, 7);
+            name = y + '年秋季学期';
+        }
+        data.terms.push({ name, start, weeks: 16, courses: [], auto: true });
+    }
 }
 
 termSel.addEventListener('change', () => {
