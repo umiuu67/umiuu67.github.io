@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Umiuu 的作品集：散落各处的网页实验。">
+    <title>垃圾桶 · Umiuu</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32b.png?v=15">
+    <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48b.png">
+    <link rel="icon" type="image/png" sizes="180x180" href="assets/favicon-180b.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180b.png">
+    <link rel="stylesheet" href="css/style.css?v=15">
+</head>
+<body>
+    <div id="box"></div>
+    <nav class="nav">
+        <a class="brand" href="index.html">
+            <img class="brand-logo" src="assets/favicon-48b.png" alt="67">
+            Umiuu
+        </a>
+        <div class="links">
+            <a href="index.html">首页</a>
+            <a href="memo.html">备忘录</a>
+            <a href="schedule.html">课表</a>
+            <a href="calendar.html">日历</a>
+            <a href="https://www.ilovepdf.com/zh-cn" target="_blank" rel="noopener">工具箱 ↗</a>
+            <a href="trash.html" class="active">垃圾桶</a>
+        </div>
+    </nav>
+
+    <main class="page wide">
+        <h2>垃圾桶</h2>
+        <p class="tip">作品集 — 陈列那些散落在网络角落里的网页实验。</p>
+        <div class="works-grid">
+
+            <a class="work-card" href="https://umiuu67.github.io/aeon/" target="_blank" rel="noopener">
+                <div class="work-tag">NO.01 · 实时演算</div>
+                <h3>ÆON · 奇点 SINGULARITY</h3>
+                <p>一颗在浏览器里实时演算的黑洞：引力透镜、吸积盘、时空涟漪。</p>
+                <span class="go">前往观察 ↗</span>
+            </a>
+
+        </div>
+        <p class="tip" style="text-align:center; margin-top:30px">更多作品在垃圾桶里发酵中…</p>
+    </main>
+
+    <footer><p>© 2026 Umiuu · Powered by GitHub Pages</p></footer>
+    <script src="assets/ChaosWavesBg.min.js?v=15"></script>
+    <script>
+        new Color4Bg.ChaosWavesBg({
+            dom: "box",
+            colors: ["#6d6d6d", "#9b9b9b", "#838383", "#494949", "#1b1b1b", "#010101"],
+            seed: 20030506,
+            loop: true
+        });
+    </script>
+    <script src="js/enhance.js?v=15"></script>
+</body>
+</html>
