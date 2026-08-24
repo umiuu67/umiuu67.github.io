@@ -17,6 +17,13 @@ html { color-scheme: dark; background: #0c0f20; }
 
 #box { position: fixed; inset: 0; z-index: -1; }
 #box canvas { width: 100% !important; height: 100% !important; display: block; }
+#box::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(6,7,14,.5);
+    pointer-events: none;
+}
 
 body {
     font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
@@ -30,9 +37,11 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 12px 5vw;
-    background: rgba(13,16,32,.82);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 1px 0 var(--border);
+    background: rgba(8,9,14,.42);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border-bottom: 1px solid rgba(255,255,255,.09);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 4px 24px rgba(0,0,0,.35);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -82,19 +91,24 @@ body {
     border-radius: 18px;
     padding: 42px 26px;
     transform: skewY(-4deg);
-    transition: transform .4s cubic-bezier(.22,.9,.35,1.15), box-shadow .4s ease;
-    box-shadow: 0 12px 30px rgba(0,0,0,.45);
+    transition: transform .4s cubic-bezier(.22,.9,.35,1.15), box-shadow .4s ease, border-color .4s ease;
+    background: linear-gradient(165deg, rgba(52,56,70,.66), rgba(14,16,26,.86));
+    border: 1px solid rgba(255,255,255,.13);
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    box-shadow: 0 14px 36px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
     will-change: transform;
 }
 .slant-card:nth-child(even) { transform: skewY(4deg); }
-.sc1 { background: linear-gradient(135deg, #5a6fd8, #6a4394); }
-.sc2 { background: linear-gradient(135deg, #2aa7b8, #4a6fc8); box-shadow: 0 12px 30px rgba(20,80,140,.4); }
-.sc3 { background: linear-gradient(135deg, #d84a9f, #8f1f56); box-shadow: 0 12px 30px rgba(140,30,90,.4); }
-.sc4 { background: linear-gradient(135deg, #0f8a7d, #23a05a); box-shadow: 0 12px 30px rgba(20,110,90,.4); }
+.sc1 { background: linear-gradient(165deg, rgba(64,68,84,.68), rgba(16,18,28,.88)); }
+.sc2 { background: linear-gradient(165deg, rgba(46,54,68,.68), rgba(14,17,26,.88)); }
+.sc3 { background: linear-gradient(165deg, rgba(40,43,52,.68), rgba(12,13,20,.88)); }
+.sc4 { background: linear-gradient(165deg, rgba(58,58,66,.68), rgba(18,18,26,.88)); }
 
 .slant-card:hover {
     transform: skewY(-4deg) scale(1.07);
-    box-shadow: 0 24px 52px rgba(0,0,0,.6);
+    border-color: rgba(255,255,255,.38);
+    box-shadow: 0 26px 60px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.12);
     z-index: 2;
     position: relative;
 }
