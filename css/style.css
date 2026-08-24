@@ -282,6 +282,8 @@ body {
     background: var(--surface);
 }
 #scheduleTable th:first-child, #scheduleTable td:first-child { width: 112px; }
+#scheduleTable th:nth-child(7), #scheduleTable td:nth-child(7),
+#scheduleTable th:nth-child(8), #scheduleTable td:nth-child(8) { width: 58px; }
 #scheduleTable th, #scheduleTable td {
     border: 1px solid #282a30;
     text-align: center;
