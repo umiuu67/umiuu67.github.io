@@ -1,4 +1,4 @@
-const MEMO_KEY = 'my_memo_items';
+﻿const MEMO_KEY = 'my_memo_items';
 const SCHED_KEY = 'my_schedule_cells';
 
 function loadMemos() {
@@ -114,8 +114,8 @@ function render() {
 }
 
 function renderPanel() {
-    document.getElementById('panelCourseTitle').textContent = `📚 ${selected.slice(5)} 课程`;
-    document.getElementById('panelMemoTitle').textContent = `📝 ${selected.slice(5)} 备忘`;
+    document.getElementById('panelCourseTitle').textContent = `${selected.slice(5)} 课程`;
+    document.getElementById('panelMemoTitle').textContent = `${selected.slice(5)} 备忘`;
 
     const cList = document.getElementById('panelCourses');
     cList.innerHTML = '';

@@ -1,19 +1,19 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
+﻿* { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-    --bg1: #11152b;
-    --bg2: #0c0f20;
-    --surface: #181d33;
-    --surface2: #1e2440;
-    --border: #2a3050;
+    --bg1: #121318;
+    --bg2: #0c0d11;
+    --surface: #1a1b20;
+    --surface2: #202128;
+    --border: #2b2d33;
     --text: #e3e7f5;
     --muted: #9aa3c7;
     --faint: #6b7399;
-    --accent: #7c8cff;
-    --accent-deep: #667eea;
+    --accent: #eef1ff;
+    --accent-deep: #b9bdd0;
 }
 
-html { color-scheme: dark; background: #0c0f20; }
+html { color-scheme: dark; background: #0d0e12; }
 
 #box { position: fixed; inset: 0; z-index: -1; }
 #box canvas { width: 100% !important; height: 100% !important; display: block; }
@@ -21,7 +21,7 @@ html { color-scheme: dark; background: #0c0f20; }
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(6,7,14,.5);
+    background: rgba(6,7,14,.32);
     pointer-events: none;
 }
 
@@ -52,7 +52,7 @@ body {
     gap: 9px;
     font-weight: bold;
     font-size: 1.1rem;
-    color: #dfe4ff;
+    color: #ffffff;
     text-decoration: none;
 }
 .brand-logo { width: 26px; height: 26px; border-radius: 6px; }
@@ -62,7 +62,7 @@ body {
     color: var(--muted);
     padding-bottom: 3px;
 }
-.links a.active, .links a:hover { color: var(--accent); border-bottom: 2px solid var(--accent); }
+.links a.active, .links a:hover { color: #fff; border-bottom: 2px solid rgba(255,255,255,.85); }
 
 /* ---- home slanted trio ---- */
 .apps-band {
@@ -167,8 +167,8 @@ body {
     border: none;
     font-size: .95rem;
 }
-.btn.primary { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
-.btn.ghost { background: #262c4a; color: #c0c7ea; }
+.btn.primary { background: #eef1ff; color: #16171d; }
+.btn.ghost { background: #282a30; color: #c0c7ea; }
 .btn:hover { transform: scale(1.05); }
 
 .page { max-width: 760px; margin: 0 auto; padding: 40px 20px 60px; }
@@ -194,15 +194,15 @@ body {
 .filters { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .chip {
     border: none;
-    background: #232948;
+    background: #24262c;
     color: #aab2d8;
     border-radius: 16px;
     padding: 6px 14px;
     cursor: pointer;
     font-size: .85rem;
 }
-.chip:hover { background: #2c335c; }
-.chip.active { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; }
+.chip:hover { background: #2e3038; }
+.chip.active { background: #eef1ff; color: #16171d; }
 .count { margin-left: auto; color: var(--faint); font-size: .85rem; }
 
 .memo-list { list-style: none; }
@@ -211,9 +211,9 @@ body {
     align-items: center;
     gap: 12px;
     padding: 12px 14px;
-    border-bottom: 1px solid #232948;
+    border-bottom: 1px solid #24262c;
 }
-.memo-item input[type=checkbox] { width: 18px; height: 18px; accent-color: #7c8cff; }
+.memo-item input[type=checkbox] { width: 18px; height: 18px; accent-color: #eef1ff; }
 .memo-item .text { flex: 1; word-break: break-all; cursor: pointer; white-space: pre-wrap; }
 .memo-item.done .text { text-decoration: line-through; color: var(--faint); }
 .memo-item .del {
@@ -231,7 +231,7 @@ body {
     display: none;
     margin-bottom: 18px;
     padding: 16px;
-    background: #141930;
+    background: #15161b;
     border: 1px solid var(--border);
     border-radius: 10px;
 }
@@ -240,7 +240,7 @@ body {
 .date-badge {
     font-size: .72rem;
     background: rgba(255,209,102,.13);
-    color: #ffd166;
+    color: #eef1ff;
     border-radius: 8px;
     padding: 1px 8px;
     white-space: nowrap;
@@ -256,13 +256,13 @@ body {
     background: var(--surface);
 }
 #scheduleTable th, #scheduleTable td {
-    border: 1px solid #262c4a;
+    border: 1px solid #282a30;
     text-align: center;
     height: 52px;
 }
-#scheduleTable th { background: linear-gradient(135deg, #5a6fd8, #6a4394); color: #fff; padding: 8px; }
+#scheduleTable th { background: rgba(255,255,255,.07); color: #f0f3ff; padding: 8px; }
 #scheduleTable td.time {
-    background: #131830;
+    background: #141519;
     font-size: .75rem;
     color: var(--faint);
     white-space: nowrap;
@@ -279,7 +279,7 @@ body {
     min-width: 72px;
     color: var(--text);
 }
-#scheduleTable td input:focus { background: #232a4e; }
+#scheduleTable td input:focus { background: #272931; }
 
 /* ---- tools ---- */
 .tool-grid {
@@ -295,11 +295,11 @@ body {
     padding: 22px;
     box-shadow: 0 4px 18px rgba(0,0,0,.35);
 }
-.tool-card h3 { margin-bottom: 14px; color: #c9d2ff; }
+.tool-card h3 { margin-bottom: 14px; color: #f0f3ff; }
 
 #calcScreen {
-    background: #0b0e1c;
-    border: 1px solid #232948;
+    background: #0d0e12;
+    border: 1px solid #24262c;
     color: #e8ecff;
     font-size: 1.6rem;
     text-align: right;
@@ -319,12 +319,12 @@ body {
     font-size: 1.05rem;
     border: none;
     border-radius: 10px;
-    background: #232948;
+    background: #24262c;
     color: var(--text);
     cursor: pointer;
 }
-.calc-keys button:hover { background: #2c335c; }
-.calc-keys button.eq { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; grid-row: span 2; }
+.calc-keys button:hover { background: #2e3038; }
+.calc-keys button.eq { background: #eef1ff; color: #16171d; grid-row: span 2; }
 
 textarea, select, input[type=number], input[type=text], input[type=date] {
     width: 100%;
@@ -344,12 +344,12 @@ textarea:focus, select:focus, input:focus { border-color: var(--accent); }
 .row label { flex: 1; min-width: 90px; font-size: .9rem; color: var(--muted); }
 
 .stat-list { list-style: none; margin-top: 12px; }
-.stat-list li { padding: 6px 0; border-bottom: 1px dashed #262c4a; font-size: .92rem; color: #b9c1e2; }
-.stat-list b { color: #8f9dff; float: right; }
+.stat-list li { padding: 6px 0; border-bottom: 1px dashed #282a30; font-size: .92rem; color: #b9c1e2; }
+.stat-list b { color: #fff; float: right; }
 
 .result-box {
     margin-top: 12px;
-    background: #131830;
+    background: #141519;
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 10px 14px;
@@ -360,7 +360,7 @@ textarea:focus, select:focus, input:focus { border-color: var(--accent); }
 .big-time {
     font-size: 3rem;
     text-align: center;
-    color: #c9d2ff;
+    color: #f0f3ff;
     font-variant-numeric: tabular-nums;
     margin: 8px 0;
 }
@@ -385,7 +385,7 @@ footer { text-align: center; padding: 26px; color: var(--faint); font-size: .9re
     margin-bottom: 6px;
     text-align: center;
     font-weight: bold;
-    color: #8f9dff;
+    color: rgba(255,255,255,.75);
     font-size: .9rem;
 }
 .cal-grid {
@@ -403,8 +403,8 @@ footer { text-align: center; padding: 26px; color: var(--faint); font-size: .9re
     transition: border-color .2s, transform .2s, box-shadow .2s;
 }
 .cal-cell:hover { border-color: #39406b; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.4); }
-.cal-cell.today { border-color: var(--accent); background: #1b2145; }
-.cal-cell.sel { border-color: #9a7ce8; box-shadow: 0 6px 16px rgba(118,75,162,.35); }
+.cal-cell.today { border-color: rgba(255,255,255,.75); background: #1e2028; }
+.cal-cell.sel { border-color: #b9bdd0; box-shadow: 0 6px 16px rgba(0,0,0,.5); }
 .cal-cell.out { visibility: hidden; }
 .cal-num { font-weight: bold; margin-bottom: 6px; }
 .cal-badge {
@@ -415,9 +415,9 @@ footer { text-align: center; padding: 26px; color: var(--faint); font-size: .9re
     margin-right: 4px;
     margin-top: 2px;
 }
-.cal-badge.course { background: rgba(54,209,220,.14); color: #7fdce8; }
-.cal-badge.memo { background: rgba(255,209,102,.13); color: #ffd166; }
-.cal-badge.memo.alldone { background: rgba(46,158,91,.18); color: #7de3a5; }
+.cal-badge.course { background: rgba(255,255,255,.13); color: #f0f3ff; }
+.cal-badge.memo { background: rgba(255,255,255,.07); color: #c8cdd9; }
+.cal-badge.memo.alldone { background: rgba(255,255,255,.04); color: #8b90a0; }
 
 .panel-grid {
     display: grid;
@@ -426,12 +426,12 @@ footer { text-align: center; padding: 26px; color: var(--faint); font-size: .9re
     margin-top: 22px;
 }
 .panel-list { list-style: none; min-height: 60px; }
-.panel-list li { padding: 8px 4px; border-bottom: 1px dashed #262c4a; font-size: .95rem; }
+.panel-list li { padding: 8px 4px; border-bottom: 1px dashed #282a30; font-size: .95rem; }
 .panel-list li.empty { color: #5b648c; }
 .panel-list .p-tag {
     display: inline-block;
     background: rgba(54,209,220,.14);
-    color: #7fdce8;
+    color: #f0f3ff;
     font-size: .75rem;
     border-radius: 8px;
     padding: 1px 8px;
