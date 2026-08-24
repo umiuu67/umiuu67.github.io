@@ -31,14 +31,14 @@
     <main class="page wide">
         <h2>我的课程表</h2>
         <p class="tip">按学期与周次显示对应课程，与日历页自动联动；数据来自云端。</p>
-        <div class="table-wrap">
-            <table id="scheduleTable"></table>
-        </div>
         <div class="toolbar" style="justify-content:flex-start">
             <select id="termSel" style="width:auto; min-width:150px"></select>
             <select id="weekSel" style="width:auto; min-width:110px"></select>
             <button id="exportBtn" class="chip">导出备份</button>
             <button id="importBtn" class="chip">预览导入</button>
+        </div>
+        <div class="table-wrap">
+            <table id="scheduleTable"></table>
         </div>
         <div id="importPanel" class="import-panel">
             <p class="tip">支持：① 完整课表JSON（导出备份的格式，整包预览）② 文本行（含「周X」「第X-X节」，可选「X-Y周」），将加入当前选中的学期，仅本页预览。</p>
