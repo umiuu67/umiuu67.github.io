@@ -58,21 +58,21 @@ body {
 
 /* ---- home slanted trio ---- */
 .apps-band {
-    min-height: calc(100vh - 130px);
+    height: calc(100vh - 57px);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 60px 5vw 80px;
+    padding: 24px 5vw;
+    overflow: hidden;
 }
-.band-title { text-align: center; font-size: 1.9rem; color: #e8ecff; }
-.band-sub { text-align: center; color: var(--faint); font-size: .95rem; margin-top: 6px; }
 
 .trio {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 26px;
+    width: 100%;
     max-width: 1200px;
-    margin: 52px auto 0;
+    margin: 0 auto;
     align-items: center;
 }
 
@@ -430,6 +430,7 @@ footer { text-align: center; padding: 26px; color: var(--faint); font-size: .9re
     .trio { grid-template-columns: repeat(2, 1fr); max-width: 640px; }
 }
 @media (max-width: 700px) {
+    .apps-band { height: auto; min-height: calc(100vh - 110px); padding: 40px 5vw 50px; overflow: visible; }
     .trio { grid-template-columns: 1fr; max-width: 420px; gap: 34px; }
     .slant-card p { min-height: 0; }
     .nav { flex-direction: column; gap: 8px; }
