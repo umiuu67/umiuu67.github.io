@@ -1,8 +1,10 @@
 const KEY = 'my_schedule_cells';
+const CLOUD_URL = 'schedule.json';
 const DAYS = ['时间', '周一', '周二', '周三', '周四', '周五'];
 const TIMES = ['08:00-08:45', '08:55-09:40', '10:00-10:45', '10:55-11:40',
                '14:00-14:45', '14:55-15:40', '16:00-16:45', '16:55-17:40'];
-let cells = JSON.parse(localStorage.getItem(KEY) || '{}');
+let cells = {};
+try { cells = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { cells = {}; }
 
 const table = document.getElementById('scheduleTable');
 
@@ -34,8 +36,25 @@ function build() {
     });
 }
 
+function fetchCloud() {
+    return fetch(CLOUD_URL + '?t=' + Date.now())
+        .then(r => (r.ok ? r.json() : {}))
+        .then(d => (d && typeof d === 'object' && !Array.isArray(d) ? d : {}))
+        .catch(() => null);
+}
+
+const hasLocal = Object.keys(cells).length > 0;
+if (!hasLocal) {
+    fetchCloud().then(d => {
+        if (d && Object.keys(d).length > 0) {
+            cells = d;
+            build();
+        }
+    });
+}
+
 document.getElementById('clearSchedule').addEventListener('click', () => {
-    if (!confirm('确定清空整个课表吗？')) return;
+    if (!confirm('确定清空整个课表吗？（仅影响本设备的本地数据）')) return;
     cells = {};
     localStorage.removeItem(KEY);
     build();
@@ -57,10 +76,22 @@ document.getElementById('exportBtn').addEventListener('click', async () => {
     const json = JSON.stringify(cells);
     try {
         await navigator.clipboard.writeText(json);
-        alert('备份JSON已复制到剪贴板，可粘贴保存到备忘录或任意文件');
+        alert('备份JSON已复制到剪贴板，发给站长即可更新云端课表');
     } catch (e) {
         prompt('请手动全选复制：', json);
     }
+});
+
+document.getElementById('cloudBtn').addEventListener('click', () => {
+    localStorage.removeItem(KEY);
+    cells = {};
+    fetchCloud().then(d => {
+        cells = d || {};
+        build();
+        importMsg.textContent = d && Object.keys(d).length > 0
+            ? '✓ 已恢复云端默认课表'
+            : '⚠️ 云端暂无课表数据';
+    });
 });
 
 const DAYMAP = {
