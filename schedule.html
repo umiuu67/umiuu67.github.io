@@ -24,7 +24,18 @@
             <table id="scheduleTable"></table>
         </div>
         <div class="toolbar">
+            <button id="importBtn" class="chip">📋 导入课表</button>
+            <button id="exportBtn" class="chip">⬇️ 导出备份</button>
             <button id="clearSchedule" class="chip danger">清空课表</button>
+        </div>
+        <div id="importPanel" class="import-panel">
+            <p class="tip">两种格式均可：① 从教务系统或课程表App复制的文本，需含「周一」「第1-2节」等关键字；② 本页导出备份生成的JSON。</p>
+            <textarea id="importText" rows="9" placeholder="粘贴到此处..."></textarea>
+            <div class="row">
+                <button id="doImport" class="btn primary">解析并导入（覆盖现有）</button>
+                <button id="cancelImport" class="btn ghost">取消</button>
+            </div>
+            <p id="importMsg" class="tip"></p>
         </div>
     </main>
 

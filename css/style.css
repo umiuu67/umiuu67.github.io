@@ -128,7 +128,17 @@ body {
     cursor: pointer;
 }
 .memo-item .del:hover { color: #c0392b; }
-.toolbar { text-align: right; }
+.toolbar { text-align: right; display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.toolbar .chip.danger { margin-top: 0; }
+
+.import-panel {
+    display: none;
+    margin-bottom: 18px;
+    padding: 16px;
+    background: #f7f8fc;
+    border-radius: 10px;
+}
+.import-panel textarea { margin-bottom: 4px; }
 
 /* ---- schedule ---- */
 .table-wrap { overflow-x: auto; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
