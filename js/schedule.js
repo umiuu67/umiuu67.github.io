@@ -36,7 +36,11 @@ function build() {
             const ds = addDays(term().start, (weekIdx - 1) * 7 + (i - 1));
             const md = ds.substring(5).replace('-', '月') + '日';
             const sd = ds.substring(5).replace('-', '/');
-            th.textContent = i >= 6 ? d + '（' + sd + '）' : d + '（' + md + '）';
+            if (i >= 6) {
+                th.innerHTML = d + '<br><span style="font-size:.72rem;font-weight:600;opacity:.85">' + sd + '</span>';
+            } else {
+                th.textContent = d + '（' + md + '）';
+            }
         } else {
             th.textContent = d;
         }
