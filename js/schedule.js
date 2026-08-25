@@ -35,7 +35,8 @@ function build() {
         if (i > 0) {
             const ds = addDays(term().start, (weekIdx - 1) * 7 + (i - 1));
             const md = ds.substring(5).replace('-', '月') + '日';
-            th.textContent = d + '（' + md + '）';
+            const sd = ds.substring(5).replace('-', '/');
+            th.textContent = i >= 6 ? d + '（' + sd + '）' : d + '（' + md + '）';
         } else {
             th.textContent = d;
         }
