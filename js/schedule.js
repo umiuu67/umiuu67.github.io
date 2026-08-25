@@ -30,9 +30,15 @@ function build() {
     table.innerHTML = '';
     if (!t) return;
     const head = table.insertRow();
-    ['时间', '周一', '周二', '周三', '周四', '周五', '周六', '周日'].forEach(d => {
+    ['时间', '周一', '周二', '周三', '周四', '周五', '周六', '周日'].forEach((d, i) => {
         const th = document.createElement('th');
-        th.textContent = d;
+        if (i > 0) {
+            const ds = addDays(term().start, (weekIdx - 1) * 7 + (i - 1));
+            const md = ds.substring(5).replace('-', '月') + '日';
+            th.textContent = d + '（' + md + '）';
+        } else {
+            th.textContent = d;
+        }
         head.appendChild(th);
     });
     const times = data.times || [];
