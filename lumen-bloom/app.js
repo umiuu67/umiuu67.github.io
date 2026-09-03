@@ -124,7 +124,7 @@
     return seedParticle({});
   }
   function buildParticles() {
-    var n = Math.round(Math.min(5600, Math.max(2000, W * H / 350)));
+  var n = Math.round(Math.min(2800, Math.max(1200, W * H / 800)));
     particles.length = 0;
     for (var i = 0; i < n; i++) particles.push(makeParticle());
   }
@@ -197,7 +197,7 @@
   }
 
   function resize() {
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    dpr = Math.min(1.5, window.devicePixelRatio || 1);
     W = window.innerWidth;
     H = window.innerHeight;
     canvas.width = Math.round(W * dpr);
@@ -294,7 +294,7 @@
   function warmup() {
     var hue = themeHue();
     ctx.globalCompositeOperation = "lighter";
-    for (var s = 0; s < 320; s++) {
+    for (var s = 0; s < 8; s++) {
       for (var i = 0; i < particles.length; i++) {
         stepParticle(particles[i], hue, 1);
       }
