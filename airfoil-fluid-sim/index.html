@@ -1,0 +1,2193 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Airfoil Flow Lab · 翼型流体仿真</title>
+<style>
+  :root {
+    --bg: #04070b;
+    --panel: rgba(8, 15, 22, .78);
+    --panel-soft: rgba(10, 20, 28, .58);
+    --line: rgba(133, 225, 218, .10);
+    --line-strong: rgba(133, 235, 218, .30);
+    --text: #edf7fb;
+    --muted: #90a4b2;
+    --accent: #3ef3cd;
+    --accent-2: #ffc95c;
+    --accent-3: #6ba8ff;
+    --danger: #ff6b6b;
+    --panel-radius: 8px;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background:
+      linear-gradient(rgba(94, 255, 230, .022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(94, 255, 230, .022) 1px, transparent 1px),
+      radial-gradient(circle at 78% 0, rgba(38, 118, 150, .16), transparent 34%),
+      linear-gradient(160deg, #03060a 0%, #060e15 48%, #03060a 100%);
+    background-size: 32px 32px, 32px 32px, auto, auto;
+    color: var(--text);
+    font-family: Inter, "HarmonyOS Sans SC", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+    overflow: hidden;
+  }
+  #app {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 58px minmax(0, 1fr);
+  }
+  header {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 0 20px;
+    background: rgba(5, 8, 13, .88);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(18px);
+    position: relative;
+  }
+  header::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(62,243,205,.58), rgba(108,168,255,.22), rgba(255,201,92,.24), transparent);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .brand-mark {
+    width: 34px; height: 34px; flex: none;
+    display: grid; place-items: center;
+    color: #02110f;
+    background: linear-gradient(135deg, rgba(255,255,255,.92), var(--accent) 45%, #2494b8);
+    clip-path: polygon(8% 0, 100% 0, 100% 68%, 74% 100%, 0 100%, 0 9%);
+    box-shadow: 0 0 22px rgba(62,243,205,.25), inset 0 0 12px rgba(255,255,255,.18);
+  }
+  .brand-mark svg { width: 17px; height: 17px; }
+  h1 {
+    font-size: 16px;
+    margin: 0;
+    letter-spacing: .01em;
+    white-space: nowrap;
+    background: linear-gradient(90deg, #eafffb, #9fd8ca);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 12px rgba(62,243,205,.15));
+  }
+  .sub {
+    margin: 2px 0 0;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .02em;
+    white-space: nowrap;
+  }
+  .status {
+    display: flex; align-items: center; gap: 8px;
+    min-width: 0; overflow: hidden;
+  }
+  .status-chip {
+    border: 1px solid var(--line);
+    background: rgba(10, 16, 23, .74);
+    color: var(--muted);
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  #reChip {
+    color: #e8fffa;
+    border-color: rgba(62,243,205,.26);
+    background: rgba(62,243,205,.10);
+    box-shadow: 0 0 16px rgba(62,243,205,.07);
+  }
+  #runningChip.active {
+    color: #dffff7;
+    border-color: rgba(62,243,205,.55);
+    background: rgba(62,243,205,.13);
+    box-shadow: 0 0 18px rgba(62,243,205,.16);
+  }
+  #runningChip { display: inline-flex; align-items: center; gap: 6px; }
+  #runningChip .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(62,243,205,.8);
+  }
+  #runningChip.active .dot { animation: dot-pulse 1.6s ease-in-out infinite; }
+  #runningChip:not(.active) .dot {
+    background: var(--danger);
+    box-shadow: 0 0 8px rgba(255,107,107,.7);
+  }
+  @keyframes dot-pulse {
+    0%, 100% { opacity: .45; }
+    50% { opacity: 1; }
+  }
+  main {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 332px minmax(0, 1fr);
+  }
+  aside {
+    min-height: 0;
+    overflow: auto;
+    background: linear-gradient(180deg, rgba(5,11,16,.94), rgba(2,6,10,.98));
+    border-right: 1px solid var(--line);
+    padding: 12px 14px 18px;
+    scrollbar-width: thin;
+    scrollbar-color: #2c3d47 transparent;
+  }
+  aside::-webkit-scrollbar { width: 6px; }
+  aside::-webkit-scrollbar-thumb { background: #2c3d47; border-radius: 3px; }
+  section {
+    padding: 10px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0) 42%),
+      var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--panel-radius);
+    box-shadow: 0 12px 28px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.035);
+    position: relative;
+    overflow: hidden;
+  }
+  section + section { margin-top: 12px; }
+  section::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(62,243,205,.42), rgba(108,168,255,.10), transparent 72%);
+  }
+  h2 {
+    margin: 0 0 8px;
+    font-size: 10px;
+    color: #a9c0cb;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    position: relative;
+    padding-left: 12px;
+  }
+  h2::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 3px; bottom: 3px; width: 4px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, var(--accent), #58a8ff);
+    box-shadow: 0 0 12px rgba(62,243,205,.35);
+  }
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    background: rgba(4, 8, 12, .74);
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  button, select {
+    font: inherit;
+    color: var(--text);
+    background: rgba(15, 23, 32, .82);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    outline: none;
+  }
+  button { cursor: pointer; transition: background .18s, border-color .18s, color .18s, box-shadow .18s; }
+  button:hover { background: #192932; border-color: var(--line-strong); }
+  button:focus-visible, select:focus-visible { box-shadow: 0 0 0 2px rgba(65,224,192,.25); }
+  .tab {
+    min-height: 32px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 3px;
+  }
+  .tab svg { width: 13px; height: 13px; opacity: .75; flex: none; }
+  .tab.active {
+    background: rgba(65,224,192,.14);
+    color: #cffff4;
+    box-shadow: inset 0 0 0 1px rgba(65,224,192,.35), 0 0 14px rgba(62,243,205,.12);
+  }
+  .tab.active svg { opacity: 1; color: var(--accent); }
+  .control { margin-top: 10px; }
+  .label-row { display: flex; align-items: baseline; justify-content: space-between; }
+  label { font-size: 12px; color: #c9d8e1; }
+  .value {
+    font-size: 12px;
+    color: var(--accent-2);
+    font-variant-numeric: tabular-nums;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255,201,92,.07);
+    box-shadow: inset 0 0 0 1px rgba(255,201,92,.08);
+  }
+  input[type=range] {
+    width: 100%;
+    height: 22px;
+    margin: 4px 0 0;
+    appearance: none;
+    background: transparent;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent) 0%, #7cf5dd var(--fill, 50%), rgba(125,235,218,.14) var(--fill, 50%));
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(62,243,205,.12);
+  }
+  input[type=range]::-webkit-slider-thumb {
+    width: 14px; height: 14px;
+    margin-top: -5px;
+    appearance: none;
+    border: 0;
+    border-radius: 50%;
+    background: #dffff8;
+    box-shadow: 0 0 0 3px rgba(65,224,192,.18), 0 0 12px rgba(65,224,192,.35);
+    transition: transform .15s;
+  }
+  input[type=range]:hover::-webkit-slider-thumb { transform: scale(1.12); }
+  input[type=range]::-moz-range-track {
+    height: 4px;
+    background: rgba(125,235,218,.14);
+    border-radius: 2px;
+  }
+  input[type=range]::-moz-range-progress {
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), #7cf5dd);
+    border-radius: 2px;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 14px; height: 14px; border: 0; border-radius: 50%;
+    background: #eafffb; box-shadow: 0 0 0 3px rgba(65,224,192,.22), 0 0 12px rgba(65,224,192,.45);
+  }
+  .field { margin-top: 10px; }
+  select {
+    width: 100%;
+    height: auto;
+    min-height: 34px;
+    line-height: 1.2;
+    padding: 7px 30px 7px 10px;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2390a4b2' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  select:hover { border-color: var(--line-strong); }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .btn {
+    height: 32px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+  }
+  .btn svg { width: 13px; height: 13px; flex: none; }
+  .btn.primary {
+    background: linear-gradient(180deg, rgba(65,224,192,.24), rgba(65,224,192,.08));
+    border-color: rgba(65,224,192,.34);
+    color: #eafff9;
+    box-shadow: 0 0 18px rgba(65,224,192,.10), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .btn.primary:hover {
+    background: linear-gradient(180deg, rgba(65,224,192,.28), rgba(65,224,192,.14));
+  }
+  .hidden { display: none !important; }
+  .presets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 5px;
+  }
+  .chip {
+    height: 26px;
+    font-size: 11px;
+    color: #b9cdd8;
+    background: rgba(12,20,28,.8);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+  .chip:hover {
+    color: #eafffb;
+    border-color: rgba(62,243,205,.4);
+    background: rgba(62,243,205,.08);
+  }
+  .chip.active {
+    color: #eafffb;
+    border-color: rgba(62,243,205,.44);
+    background: rgba(62,243,205,.12);
+    box-shadow: 0 0 16px rgba(62,243,205,.10);
+  }
+  #clValue { color: var(--accent); }
+  .chart-box {
+    margin-top: 8px;
+    background: rgba(4,8,12,.6);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 8px 10px 7px;
+  }
+  .chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .chart-head #clRange { color: var(--accent); font-variant-numeric: tabular-nums; }
+  #clChart { display: block; width: 100%; height: 44px; }
+  .metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .metric {
+    padding: 9px 10px;
+    background: var(--panel-soft);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    min-width: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .metric::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), transparent);
+    opacity: .8;
+  }
+  .metric-name { font-size: 10px; color: var(--muted); }
+  .metric-value {
+    margin-top: 4px;
+    font-size: 17px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+  }
+  .metric-value.small { font-size: 14px; }
+  .warn { color: var(--danger); font-size: 11px; margin-top: 8px; display: none; }
+  .warn.visible { display: block; }
+  .warn.visible {
+    padding: 8px 10px;
+    border: 1px solid rgba(255,107,107,.22);
+    background: rgba(255,107,107,.07);
+    border-radius: 4px;
+  }
+  .stage {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    background:
+      radial-gradient(circle at 50% 48%, rgba(20,80,94,.14), transparent 58%),
+      linear-gradient(160deg, #020609, #010406 68%);
+    overflow: hidden;
+  }
+  .stage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgba(88,244,225,.024) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(88,244,225,.024) 1px, transparent 1px);
+    background-size: 30px 30px;
+    mask-image: radial-gradient(circle at 50% 48%, transparent 30%, #000 76%);
+    z-index: 0;
+  }
+  #glcanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 1; cursor: crosshair; }
+  .stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 50% 50%, transparent 58%, rgba(0,4,8,.52) 100%),
+      linear-gradient(90deg, rgba(2,7,11,.42), transparent 8%, transparent 92%, rgba(2,7,11,.32));
+    z-index: 2;
+  }
+  .sim-frame {
+    position: absolute;
+    z-index: 3;
+    border: 1px solid rgba(151, 229, 214, .22);
+    border-radius: 2px;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.28),
+      0 0 34px rgba(43,188,175,.07),
+      inset 0 0 24px rgba(43,188,175,.03);
+    pointer-events: none;
+  }
+  .sim-frame .corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    color: rgba(112,255,229,.78);
+    filter: drop-shadow(0 0 5px rgba(62,243,205,.35));
+  }
+  .sim-frame .corner.tl { left: -2px; top: -2px; border-top: 2px solid currentColor; border-left: 2px solid currentColor; }
+  .sim-frame .corner.tr { right: -2px; top: -2px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; }
+  .sim-frame .corner.bl { left: -2px; bottom: -2px; border-bottom: 2px solid currentColor; border-left: 2px solid currentColor; }
+  .sim-frame .corner.br { right: -2px; bottom: -2px; border-bottom: 2px solid currentColor; border-right: 2px solid currentColor; }
+  .frame-label {
+    position: absolute;
+    left: 10px;
+    bottom: 6px;
+    font-size: 9px;
+    color: rgba(174,220,213,.48);
+    letter-spacing: .22em;
+    white-space: nowrap;
+  }
+  .stage-hud {
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    border: 1px solid rgba(151,187,204,.13);
+    background: rgba(4,9,14,.66);
+    border-radius: 6px;
+    backdrop-filter: blur(14px);
+    pointer-events: none;
+    box-shadow: 0 12px 32px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .probe {
+    position: absolute;
+    right: 14px;
+    top: 12px;
+    z-index: 3;
+    padding: 9px 12px;
+    border: 1px solid rgba(151, 187, 204, .13);
+    background: rgba(4, 9, 14, .66);
+    border-radius: 6px;
+    backdrop-filter: blur(14px);
+    pointer-events: none;
+    display: none;
+    font-size: 11px;
+    color: #c9d8e1;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    box-shadow: 0 12px 32px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .probe.visible { display: block; }
+  .probe b { color: var(--accent-2); font-weight: 600; }
+  .flow-arrow {
+    width: 34px;
+    height: 14px;
+    color: var(--accent);
+    filter: drop-shadow(0 0 7px rgba(65,224,192,.42));
+  }
+  .flow-arrow.animating { animation: flow-pulse 1.8s ease-in-out infinite; }
+  @keyframes flow-pulse {
+    0%, 100% { opacity: .55; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(3px); }
+  }
+  .hud-main { min-width: 0; }
+  .hud-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #eef9f6;
+    line-height: 1.15;
+  }
+  .hud-meta {
+    margin-top: 2px;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .legend {
+    position: absolute;
+    left: 50%;
+    bottom: 14px;
+    transform: translateX(-50%);
+    z-index: 3;
+    width: min(620px, calc(100% - 32px));
+    padding: 10px 12px 9px;
+    border: 1px solid rgba(151,187,204,.12);
+    background: rgba(3,8,13,.68);
+    border-radius: 6px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 16px 38px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.04);
+    pointer-events: none;
+  }
+  .legend-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  #legendTitle { font-size: 11px; font-weight: 700; color: #d8ebe6; letter-spacing: .04em; }
+  #legendMode { font-size: 10px; color: var(--muted); white-space: nowrap; }
+  #legendBar {
+    width: 100%;
+    height: 8px;
+    margin: 7px 0 4px;
+    border-radius: 3px;
+    border: 1px solid rgba(255,255,255,.07);
+  }
+  .legend-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: rgba(211,229,236,.72);
+    font-variant-numeric: tabular-nums;
+  }
+  #err {
+    position: absolute; left: 16px; right: 16px; bottom: 16px;
+    display: none;
+    padding: 10px 12px;
+    border: 1px solid rgba(255,107,107,.4);
+    background: rgba(35,14,14,.92);
+    color: #ffd7d7;
+    font-size: 12px;
+    border-radius: 4px;
+    z-index: 5;
+  }
+  #err.visible { display: block; }
+  .hint {
+    position: absolute; right: 16px; bottom: 16px;
+    font-size: 10px; color: rgba(214,235,233,.44);
+    letter-spacing: .08em;
+    pointer-events: none; z-index: 2;
+  }
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+    aside {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+      max-height: 48vh;
+      padding: 12px;
+    }
+    section + section { margin-top: 12px; }
+    .metrics { grid-template-columns: repeat(4, 1fr); }
+    .metric-value { font-size: 15px; }
+    h1 { font-size: 14px; }
+    .sub { display: none; }
+    .stage-hud { left: 12px; top: 12px; gap: 9px; padding: 7px 9px; }
+    .legend { bottom: 12px; padding: 8px 9px 7px; }
+    #clChart { height: 44px; }
+  }
+  @media (max-width: 540px) {
+    #resolutionChip { display: none; }
+    .frame-label { display: none; }
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    .hint { display: none; }
+    .hud-meta { display: none; }
+    #legendMode { display: none; }
+    #stepChip { display: none; }
+    header { padding: 0 12px; }
+    .status { gap: 6px; }
+    .status-chip { padding: 4px 7px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12h10l6-5v4l-4 3 4 3v4l-6-5H3l-1.5-2z"></path>
+        </svg>
+      </div>
+      <div>
+        <h1>Airfoil Flow Lab</h1>
+        <p class="sub">D2Q9 格子玻尔兹曼 · WebGL2</p>
+      </div>
+    </div>
+    <div class="status">
+      <div id="resolutionChip" class="status-chip">--</div>
+      <div id="reChip" class="status-chip">Re --</div>
+      <div id="stepChip" class="status-chip">步数 0</div>
+      <div id="runningChip" class="status-chip active"><span class="dot"></span><span>运行中</span></div>
+    </div>
+  </header>
+  <main>
+    <aside>
+      <section>
+        <h2>物理视图</h2>
+        <div class="tabs" id="viewTabs">
+          <button class="tab active" data-view="0" title="速度场">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h17"/><path d="m13 6 6 6-6 6"/></svg>
+            <span>速度</span>
+          </button>
+          <button class="tab" data-view="1" title="压力场">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 15.5A8.5 8.5 0 1 0 3.8 15.5"/><path d="M12 15l3.5-5.5"/><path d="M6 18h12"/></svg>
+            <span>压力</span>
+          </button>
+          <button class="tab" data-view="2" title="涡量场">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8c5-4 13-4 18 0"/><path d="M21 8c-4 4-12 4-16 0"/><path d="M12 8v8"/><path d="m8 13 4 4 4-4"/></svg>
+            <span>涡量</span>
+          </button>
+          <button class="tab" data-view="3" title="被动烟线">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7c8 0 8 4 16 4"/><path d="M4 12c8 0 8 4 16 4"/><path d="M4 17c8 0 8 4 16 4"/></svg>
+            <span>烟线</span>
+          </button>
+        </div>
+      </section>
+      <section>
+        <h2>流动控制</h2>
+        <div class="control">
+          <div class="label-row"><label for="aoa">攻角</label><span class="value" id="aoaValue">6.0°</span></div>
+          <input id="aoa" type="range" min="-10" max="18" step="0.5" value="6">
+        </div>
+        <div class="control">
+          <div class="label-row"><label for="re">雷诺数</label><span class="value" id="reValue">620</span></div>
+          <input id="re" type="range" min="80" max="3000" step="10" value="620">
+        </div>
+        <div class="control">
+          <div class="label-row"><label for="u0">来流速度</label><span class="value" id="u0Value">0.050</span></div>
+          <input id="u0" type="range" min="0.020" max="0.100" step="0.001" value="0.050">
+        </div>
+        <div class="field">
+          <label for="airfoil">翼型</label>
+          <select id="airfoil">
+            <option value="0012">NACA 0012 · 对称</option>
+            <option value="2412" selected>NACA 2412 · 中升力</option>
+            <option value="4415">NACA 4415 · 高升力</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="quality">求解精度</label>
+          <select id="quality">
+            <option value="low">快速 · 480×240</option>
+            <option value="standard">标准 · 720×360</option>
+            <option value="high" selected>高精度 · 960×480</option>
+            <option value="ultra">超采样 · 1280×640</option>
+            <option value="research">研究级 · 2400×1200 · Re 3000+</option>
+          </select>
+        </div>
+        <div class="presets">
+          <button class="chip" data-preset="cruise">起飞巡航</button>
+          <button class="chip" data-preset="transient">高速抖振</button>
+          <button class="chip" data-preset="lowRe">低雷诺</button>
+          <button class="chip" data-preset="stall">大攻角失速</button>
+        </div>
+        <div class="actions">
+          <button id="pauseBtn" class="btn primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5v14"/><path d="M14 5v14"/></svg>
+            <span>暂停</span>
+          </button>
+          <button id="resetBtn" class="btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+            <span>重置</span>
+          </button>
+        </div>
+        <div id="stabilityWarn" class="warn">当前雷诺数接近稳定性上限，建议提高求解精度。</div>
+      </section>
+      <section>
+        <h2>实时测量</h2>
+        <div class="metrics">
+          <div class="metric"><div class="metric-name">升力系数 CL</div><div class="metric-value" id="clValue">0.000</div></div>
+          <div class="metric"><div class="metric-name">阻力系数 CD</div><div class="metric-value" id="cdValue">0.000</div></div>
+          <div class="metric"><div class="metric-name">升阻比</div><div class="metric-value small" id="ldValue">0.0</div></div>
+          <div class="metric"><div class="metric-name">帧率</div><div class="metric-value small" id="fpsValue">--</div></div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-head"><span>CL 时程</span><span id="clRange">--</span></div>
+          <canvas id="clChart"></canvas>
+        </div>
+      </section>
+    </aside>
+    <div class="stage">
+      <canvas id="glcanvas"></canvas>
+      <div id="simFrame" class="sim-frame">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+        <div class="frame-label">计算域</div>
+        <div class="stage-hud">
+          <svg class="flow-arrow animating" viewBox="0 0 34 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path d="M1 7h26"></path><path d="M21 2l7 5-7 5"></path>
+          </svg>
+          <div class="hud-main">
+            <div class="hud-title" id="hudTitle">速度场</div>
+            <div class="hud-meta" id="hudMeta">U∞ = 0.110 lattice units · TRT-D2Q9</div>
+          </div>
+        </div>
+        <div id="probe" class="probe"></div>
+        <div class="legend">
+          <div class="legend-top">
+            <div id="legendTitle">局部流速 / U∞</div>
+            <div id="legendMode">等值线间隔 0.25 U∞</div>
+          </div>
+          <div id="legendBar"></div>
+          <div class="legend-ticks">
+            <span>0</span><span>0.5</span><span>1.0</span><span>1.5</span><span>≥2.0</span>
+          </div>
+        </div>
+      </div>
+      <div id="err"></div>
+      <div class="hint">D2Q9 格子玻尔兹曼 · TRT 碰撞 · 动量交换法</div>
+    </div>
+  </main>
+</div>
+
+<script>
+"use strict";
+
+const errBox = document.getElementById('err');
+function showError(msg) {
+  errBox.textContent = msg;
+  errBox.classList.add('visible');
+  console.error(msg);
+}
+
+const canvas = document.getElementById('glcanvas');
+const gl = canvas.getContext('webgl2', {
+  alpha: false,
+  antialias: false,
+  depth: false,
+  stencil: false,
+  powerPreference: 'high-performance',
+  preserveDrawingBuffer: false
+});
+
+if (!gl) {
+  showError('当前浏览器不支持 WebGL2。请使用新版 Chrome / Edge / Firefox 打开。');
+  throw new Error('WebGL2 unavailable');
+}
+if (!gl.getExtension('EXT_color_buffer_float')) {
+  showError('当前 WebGL2 实现缺少 EXT_color_buffer_float，无法运行高精度求解器。');
+  throw new Error('EXT_color_buffer_float unavailable');
+}
+
+const VERT = `#version 300 es
+layout(location=0) in vec2 aPos;
+out vec2 vUV;
+void main() {
+  vUV = aPos * 0.5 + 0.5;
+  gl_Position = vec4(aPos, 0.0, 1.0);
+}`;
+
+const D2Q9 = `#version 300 es
+precision highp float;
+precision highp int;
+precision highp sampler2D;
+const vec2 DIR[9] = vec2[9](
+  vec2(0.0, 0.0), vec2(1.0, 0.0), vec2(0.0, 1.0),
+  vec2(-1.0, 0.0), vec2(0.0, -1.0), vec2(1.0, 1.0),
+  vec2(-1.0, 1.0), vec2(-1.0, -1.0), vec2(1.0, -1.0)
+);
+const float WT[9] = float[9](
+  0.4444444444444444, 0.1111111111111111, 0.1111111111111111,
+  0.1111111111111111, 0.1111111111111111, 0.02777777777777778,
+  0.02777777777777778, 0.02777777777777778, 0.02777777777777778
+);
+const int OPP[9] = int[9](0, 3, 4, 1, 2, 7, 8, 5, 6);
+float equilibrium(float rho, vec2 u, int i) {
+  float cu = 3.0 * dot(DIR[i], u);
+  return WT[i] * rho * (1.0 + cu + 0.5 * cu * cu - 1.5 * dot(u, u));
+}`;
+
+const INIT_FS = D2Q9 + `
+uniform sampler2D uMask;
+uniform int W;
+uniform int H;
+uniform float u0;
+layout(location=0) out vec4 outA;
+layout(location=1) out vec4 outB;
+layout(location=2) out vec4 outC;
+layout(location=3) out vec4 outAux;
+void main() {
+  ivec2 p = ivec2(gl_FragCoord.xy);
+  bool solid = texelFetch(uMask, p, 0).r > 0.5;
+  float rho = 1.0;
+  vec2 vel = solid ? vec2(0.0) : vec2(u0, 0.0);
+  float f[9];
+  for (int i = 0; i < 9; ++i) f[i] = equilibrium(rho, vel, i);
+  outA = vec4(f[0], f[1], f[2], f[3]);
+  outB = vec4(f[4], f[5], f[6], f[7]);
+  outC = vec4(f[8], rho, vel.x, vel.y);
+  outAux = vec4(0.0);
+}`;
+
+const COLLIDE_FS = D2Q9 + `
+uniform sampler2D texA;
+uniform sampler2D texB;
+uniform sampler2D texC;
+uniform sampler2D uMask;
+uniform int W;
+uniform int H;
+uniform float omegaPlus;
+uniform float omegaMinus;
+uniform float sponge;
+uniform float u0;
+layout(location=0) out vec4 outA;
+layout(location=1) out vec4 outB;
+layout(location=2) out vec4 outC;
+layout(location=3) out vec4 outAux;
+
+bool solidAt(ivec2 p) {
+  if (p.x < 0 || p.y < 0 || p.x >= W || p.y >= H) return false;
+  return texelFetch(uMask, p, 0).r > 0.5;
+}
+
+void main() {
+  ivec2 p = ivec2(gl_FragCoord.xy);
+  if (texelFetch(uMask, p, 0).r > 0.5) {
+    outA = vec4(0.4444444444444444, 0.1111111111111111, 0.1111111111111111, 0.1111111111111111);
+    outB = vec4(0.1111111111111111, 0.02777777777777778, 0.02777777777777778, 0.02777777777777778);
+    outC = vec4(0.02777777777777778, 1.0, 0.0, 0.0);
+    outAux = vec4(0.0);
+    return;
+  }
+
+  vec4 a = texelFetch(texA, p, 0);
+  vec4 b = texelFetch(texB, p, 0);
+  vec4 c = texelFetch(texC, p, 0);
+  float f0 = a.r, f1 = a.g, f2 = a.b, f3 = a.a;
+  float f4 = b.r, f5 = b.g, f6 = b.b, f7 = b.a;
+  float f8 = c.r;
+  float rhoRaw = f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8;
+  vec2 vel = vec2(
+    f1 - f3 + f5 - f6 - f7 + f8,
+    f2 - f4 + f5 + f6 - f7 - f8
+  ) / max(1e-6, rhoRaw);
+  if (!(rhoRaw > 0.2 && rhoRaw < 4.0) || !(abs(vel.x) < 0.35) || !(abs(vel.y) < 0.35)) {
+    vel = vec2(u0, 0.0);
+    float rhoSafe = 1.0;
+    float s0 = equilibrium(rhoSafe, vel, 0); float s1 = equilibrium(rhoSafe, vel, 1); float s2 = equilibrium(rhoSafe, vel, 2); float s3 = equilibrium(rhoSafe, vel, 3);
+    float s4 = equilibrium(rhoSafe, vel, 4); float s5 = equilibrium(rhoSafe, vel, 5); float s6 = equilibrium(rhoSafe, vel, 6); float s7 = equilibrium(rhoSafe, vel, 7); float s8 = equilibrium(rhoSafe, vel, 8);
+    outA = vec4(s0, s1, s2, s3);
+    outB = vec4(s4, s5, s6, s7);
+    outC = vec4(s8, rhoSafe, vel.x, vel.y);
+    outAux = vec4(0.0);
+    return;
+  }
+  float rho = max(1e-6, rhoRaw);
+
+  float q0 = equilibrium(rho, vel, 0);
+  float q1 = equilibrium(rho, vel, 1);
+  float q2 = equilibrium(rho, vel, 2);
+  float q3 = equilibrium(rho, vel, 3);
+  float q4 = equilibrium(rho, vel, 4);
+  float q5 = equilibrium(rho, vel, 5);
+  float q6 = equilibrium(rho, vel, 6);
+  float q7 = equilibrium(rho, vel, 7);
+  float q8 = equilibrium(rho, vel, 8);
+
+  float m13 = 0.5 * (f1 - f3), me13 = 0.5 * (q1 - q3);
+  float p13 = 0.5 * (f1 + f3), pe13 = 0.5 * (q1 + q3);
+  float m24 = 0.5 * (f2 - f4), me24 = 0.5 * (q2 - q4);
+  float p24 = 0.5 * (f2 + f4), pe24 = 0.5 * (q2 + q4);
+  float m57 = 0.5 * (f5 - f7), me57 = 0.5 * (q5 - q7);
+  float p57 = 0.5 * (f5 + f7), pe57 = 0.5 * (q5 + q7);
+  float m68 = 0.5 * (f6 - f8), me68 = 0.5 * (q6 - q8);
+  float p68 = 0.5 * (f6 + f8), pe68 = 0.5 * (q6 + q8);
+
+  float post0 = f0 - omegaPlus * (f0 - q0);
+  float post1 = f1 - omegaPlus * (p13 - pe13) - omegaMinus * (m13 - me13);
+  float post3 = f3 - omegaPlus * (p13 - pe13) + omegaMinus * (m13 - me13);
+  float post2 = f2 - omegaPlus * (p24 - pe24) - omegaMinus * (m24 - me24);
+  float post4 = f4 - omegaPlus * (p24 - pe24) + omegaMinus * (m24 - me24);
+  float post5 = f5 - omegaPlus * (p57 - pe57) - omegaMinus * (m57 - me57);
+  float post7 = f7 - omegaPlus * (p57 - pe57) + omegaMinus * (m57 - me57);
+  float post6 = f6 - omegaPlus * (p68 - pe68) - omegaMinus * (m68 - me68);
+  float post8 = f8 - omegaPlus * (p68 - pe68) + omegaMinus * (m68 - me68);
+
+  float px = float(p.x) / float(W);
+  float py = float(p.y) / float(H);
+  float edge = min(min(px, 1.0 - px), min(py, 1.0 - py));
+  float s = 1.0 - smoothstep(0.0, 0.10, edge);
+  if (s > 0.0) {
+    float blend = clamp(s * sponge, 0.0, 1.0);
+    float e0 = equilibrium(1.0, vec2(u0, 0.0), 0);
+    float e1 = equilibrium(1.0, vec2(u0, 0.0), 1);
+    float e2 = equilibrium(1.0, vec2(u0, 0.0), 2);
+    float e3 = equilibrium(1.0, vec2(u0, 0.0), 3);
+    float e4 = equilibrium(1.0, vec2(u0, 0.0), 4);
+    float e5 = equilibrium(1.0, vec2(u0, 0.0), 5);
+    float e6 = equilibrium(1.0, vec2(u0, 0.0), 6);
+    float e7 = equilibrium(1.0, vec2(u0, 0.0), 7);
+    float e8 = equilibrium(1.0, vec2(u0, 0.0), 8);
+    post0 = mix(post0, e0, blend);
+    post1 = mix(post1, e1, blend);
+    post2 = mix(post2, e2, blend);
+    post3 = mix(post3, e3, blend);
+    post4 = mix(post4, e4, blend);
+    post5 = mix(post5, e5, blend);
+    post6 = mix(post6, e6, blend);
+    post7 = mix(post7, e7, blend);
+    post8 = mix(post8, e8, blend);
+  }
+
+  vec2 force = vec2(0.0);
+  if (solidAt(p + ivec2(1, 0))) {
+    force += 2.0 * post1 * vec2(1.0, 0.0);
+  }
+  if (solidAt(p + ivec2(0, 1))) {
+    force += 2.0 * post2 * vec2(0.0, 1.0);
+  }
+  if (solidAt(p + ivec2(-1, 0))) {
+    force += 2.0 * post3 * vec2(-1.0, 0.0);
+  }
+  if (solidAt(p + ivec2(0, -1))) {
+    force += 2.0 * post4 * vec2(0.0, -1.0);
+  }
+  if (solidAt(p + ivec2(1, 1))) {
+    force += 2.0 * post5 * vec2(1.0, 1.0);
+  }
+  if (solidAt(p + ivec2(-1, 1))) {
+    force += 2.0 * post6 * vec2(-1.0, 1.0);
+  }
+  if (solidAt(p + ivec2(-1, -1))) {
+    force += 2.0 * post7 * vec2(-1.0, -1.0);
+  }
+  if (solidAt(p + ivec2(1, -1))) {
+    force += 2.0 * post8 * vec2(1.0, -1.0);
+  }
+
+  outA = vec4(post0, post1, post2, post3);
+  outB = vec4(post4, post5, post6, post7);
+  outC = vec4(post8, rho, vel.x, vel.y);
+  outAux = vec4(force, vec2(0.0));
+}`;
+
+const STREAM_FS = D2Q9 + `
+uniform sampler2D texA;
+uniform sampler2D texB;
+uniform sampler2D texC;
+uniform sampler2D uMask;
+uniform int W;
+uniform int H;
+uniform float u0;
+layout(location=0) out vec4 outA;
+layout(location=1) out vec4 outB;
+layout(location=2) out vec4 outC;
+
+bool solidAt(ivec2 p) {
+  if (p.x < 0 || p.y < 0 || p.x >= W || p.y >= H) return false;
+  return texelFetch(uMask, p, 0).r > 0.5;
+}
+
+void main() {
+  ivec2 p = ivec2(gl_FragCoord.xy);
+  if (texelFetch(uMask, p, 0).r > 0.5) {
+    outA = vec4(WT[0], WT[1], WT[2], WT[3]);
+    outB = vec4(WT[4], WT[5], WT[6], WT[7]);
+    outC = vec4(WT[8], 1.0, 0.0, 0.0);
+    return;
+  }
+
+  float nf0; float nf1; float nf2; float nf3;
+  float nf4; float nf5; float nf6; float nf7; float nf8;
+  vec4 a0 = vec4(0.0);
+  vec4 b0 = vec4(0.0);
+  vec4 c0 = vec4(0.0);
+  if (p.x == W - 1) {
+    vec4 aO = texelFetch(texA, p - ivec2(1, 0), 0);
+    vec4 bO = texelFetch(texB, p - ivec2(1, 0), 0);
+    vec4 cO = texelFetch(texC, p - ivec2(1, 0), 0);
+    nf0 = aO.r;
+    nf1 = aO.g;
+    nf2 = aO.b;
+    nf3 = aO.a;
+    nf4 = bO.r;
+    nf5 = bO.g;
+    nf6 = bO.b;
+    nf7 = bO.a;
+    nf8 = cO.r;
+  } else if (p.x == 0) {
+    nf0 = equilibrium(1.0, vec2(u0, 0.0), 0);
+    nf1 = equilibrium(1.0, vec2(u0, 0.0), 1);
+    nf2 = equilibrium(1.0, vec2(u0, 0.0), 2);
+    nf3 = equilibrium(1.0, vec2(u0, 0.0), 3);
+    nf4 = equilibrium(1.0, vec2(u0, 0.0), 4);
+    nf5 = equilibrium(1.0, vec2(u0, 0.0), 5);
+    nf6 = equilibrium(1.0, vec2(u0, 0.0), 6);
+    nf7 = equilibrium(1.0, vec2(u0, 0.0), 7);
+    nf8 = equilibrium(1.0, vec2(u0, 0.0), 8);
+  } else if (p.y == 0 || p.y == H - 1) {
+    ivec2 src = p.y == 0 ? p + ivec2(0, 1) : p - ivec2(0, 1);
+    vec4 aO = texelFetch(texA, src, 0);
+    vec4 bO = texelFetch(texB, src, 0);
+    vec4 cO = texelFetch(texC, src, 0);
+    nf0 = aO.r; nf1 = aO.g; nf2 = aO.b; nf3 = aO.a;
+    nf4 = bO.r; nf5 = bO.g; nf6 = bO.b; nf7 = bO.a;
+    nf8 = cO.r;
+  } else {
+    a0 = texelFetch(texA, p, 0);
+    b0 = texelFetch(texB, p, 0);
+    c0 = texelFetch(texC, p, 0);
+    vec4 aE = texelFetch(texA, p - ivec2(1, 0), 0);
+    vec4 aN = texelFetch(texA, p - ivec2(0, 1), 0);
+    vec4 aW = texelFetch(texA, p + ivec2(1, 0), 0);
+    vec4 bS = texelFetch(texB, p + ivec2(0, 1), 0);
+    vec4 bNE = texelFetch(texB, p - ivec2(1, 1), 0);
+    vec4 bNW = texelFetch(texB, p + ivec2(1, 1), 0);
+    // Pull-streaming uses source = p - DIR[i]; diagonal labels need this explicitly.
+    vec4 bSW = texelFetch(texB, p + ivec2(1, -1), 0);
+    vec4 bSE = texelFetch(texB, p - ivec2(1, -1), 0);
+    vec4 cSE = texelFetch(texC, p - ivec2(1, -1), 0);
+    nf0 = a0.r;
+    nf1 = aE.g;
+    nf2 = aN.b;
+    nf3 = aW.a;
+    nf4 = bS.r;
+    nf5 = bNE.g;
+    nf6 = bSW.b;
+    nf7 = bNW.a;
+    nf8 = cSE.r;
+  }
+
+  if (p.x > 0 && p.y > 0 && p.x < W - 1 && p.y < H - 1) {
+    if (solidAt(p + ivec2(1, 0))) nf3 = a0.g;
+    if (solidAt(p + ivec2(0, 1))) nf4 = a0.b;
+    if (solidAt(p + ivec2(-1, 0))) nf1 = a0.a;
+    if (solidAt(p + ivec2(0, -1))) nf2 = b0.r;
+    if (solidAt(p + ivec2(1, 1))) nf7 = b0.g;
+    if (solidAt(p + ivec2(-1, 1))) nf8 = b0.b;
+    if (solidAt(p + ivec2(-1, -1))) nf5 = b0.a;
+    if (solidAt(p + ivec2(1, -1))) nf6 = c0.r;
+  }
+
+  float rho = max(1e-6, nf0 + nf1 + nf2 + nf3 + nf4 + nf5 + nf6 + nf7 + nf8);
+  vec2 vel = vec2(
+    nf1 - nf3 + nf5 - nf6 - nf7 + nf8,
+    nf2 - nf4 + nf5 + nf6 - nf7 - nf8
+  ) / rho;
+
+  outA = vec4(nf0, nf1, nf2, nf3);
+  outB = vec4(nf4, nf5, nf6, nf7);
+  outC = vec4(nf8, rho, vel.x, vel.y);
+}`;
+
+const SMOKE_FS = D2Q9 + `
+uniform sampler2D texC;
+uniform sampler2D smokeTex;
+uniform sampler2D uMask;
+uniform int W;
+uniform int H;
+uniform int frame;
+out vec4 fragColor;
+
+vec4 fetchC(ivec2 p) {
+  p = clamp(p, ivec2(0), ivec2(W - 1, H - 1));
+  return texelFetch(texC, p, 0);
+}
+vec4 sampleC(vec2 pos) {
+  vec2 q = clamp(pos, vec2(0.5), vec2(float(W) - 0.5, float(H) - 0.5));
+  ivec2 ip = ivec2(floor(q));
+  vec2 t = fract(q);
+  vec4 c00 = fetchC(ip);
+  vec4 c10 = fetchC(ip + ivec2(1, 0));
+  vec4 c01 = fetchC(ip + ivec2(0, 1));
+  vec4 c11 = fetchC(ip + ivec2(1, 1));
+  return mix(mix(c00, c10, t.x), mix(c01, c11, t.x), t.y);
+}
+float fetchSmoke(ivec2 p) {
+  p = clamp(p, ivec2(0), ivec2(W - 1, H - 1));
+  return texelFetch(smokeTex, p, 0).r;
+}
+float sampleSmoke(vec2 pos) {
+  vec2 q = clamp(pos, vec2(0.5), vec2(float(W) - 0.5, float(H) - 0.5));
+  ivec2 ip = ivec2(floor(q));
+  vec2 t = fract(q);
+  float s00 = fetchSmoke(ip);
+  float s10 = fetchSmoke(ip + ivec2(1, 0));
+  float s01 = fetchSmoke(ip + ivec2(0, 1));
+  float s11 = fetchSmoke(ip + ivec2(1, 1));
+  return mix(mix(s00, s10, t.x), mix(s01, s11, t.x), t.y);
+}
+
+void main() {
+  vec2 pos = gl_FragCoord.xy;
+  vec4 field = sampleC(pos);
+  vec2 vel = field.zw;
+  float dye = sampleSmoke(pos - vel) * 0.9993;
+  ivec2 ip = ivec2(pos);
+  float srcX = float(W) * 0.0667;
+  float srcSpacing = max(8.0, float(H) * 0.0896);
+  bool source = abs(pos.x - srcX) < 0.75 && mod(float(ip.y), srcSpacing) < 1.15;
+  if (source) dye = max(dye, 0.82);
+  if (texelFetch(uMask, ip, 0).r > 0.5) dye = 0.0;
+  fragColor = vec4(clamp(dye, 0.0, 1.0), 0.0, 0.0, 1.0);
+}`;
+
+const DISPLAY_FS = D2Q9 + `
+uniform sampler2D texC;
+uniform sampler2D smokeTex;
+uniform sampler2D uMask;
+uniform int W;
+uniform int H;
+uniform int mode;
+uniform float u0;
+uniform vec2 canvasSize;
+out vec4 fragColor;
+
+vec4 fetchC(ivec2 p) {
+  p = clamp(p, ivec2(0), ivec2(W - 1, H - 1));
+  return texelFetch(texC, p, 0);
+}
+vec4 sampleC(vec2 pos) {
+  vec2 q = clamp(pos, vec2(0.5), vec2(float(W) - 0.5, float(H) - 0.5));
+  ivec2 ip = ivec2(floor(q));
+  vec2 t = fract(q);
+  vec4 c00 = fetchC(ip);
+  vec4 c10 = fetchC(ip + ivec2(1, 0));
+  vec4 c01 = fetchC(ip + ivec2(0, 1));
+  vec4 c11 = fetchC(ip + ivec2(1, 1));
+  return mix(mix(c00, c10, t.x), mix(c01, c11, t.x), t.y);
+}
+float sampleMask(vec2 uv) { return texture(uMask, uv).r; }
+
+vec3 speedColor(float x) {
+  x = clamp(x, 0.0, 1.0);
+  vec3 c0 = vec3(0.843, 0.941, 1.000);
+  vec3 c1 = vec3(0.247, 0.498, 0.839);
+  vec3 c2 = vec3(0.055, 0.129, 0.169);
+  vec3 c3 = vec3(1.000, 0.784, 0.298);
+  vec3 c4 = vec3(1.000, 0.302, 0.357);
+  vec3 c5 = vec3(1.000, 0.969, 0.890);
+  if (x < 0.25) return mix(c0, c1, smoothstep(0.0, 0.25, x));
+  if (x < 0.50) return mix(c1, c2, smoothstep(0.25, 0.50, x));
+  if (x < 0.625) return mix(c2, c3, smoothstep(0.50, 0.625, x));
+  if (x < 0.85) return mix(c3, c4, smoothstep(0.625, 0.85, x));
+  return mix(c4, c5, smoothstep(0.85, 1.0, x));
+}
+vec3 pressureColor(float cp) {
+  float t = clamp((cp + 2.2) / 3.2, 0.0, 1.0);
+  vec3 c0 = vec3(0.055, 0.224, 0.520);
+  vec3 c1 = vec3(0.227, 0.510, 0.820);
+  vec3 c2 = vec3(0.043, 0.098, 0.122);
+  vec3 c3 = vec3(1.000, 0.729, 0.333);
+  vec3 c4 = vec3(1.000, 0.302, 0.357);
+  if (t < 0.34) return mix(c0, c1, smoothstep(0.0, 0.34, t));
+  if (t < 0.6875) return mix(c1, c2, smoothstep(0.34, 0.6875, t));
+  if (t < 0.86) return mix(c2, c3, smoothstep(0.6875, 0.86, t));
+  return mix(c3, c4, smoothstep(0.86, 1.0, t));
+}
+vec3 curlColor(float q) {
+  float t = tanh(abs(q) * 1.35);
+  vec3 dark = vec3(0.039, 0.063, 0.078);
+  vec3 blue = vec3(0.235, 0.667, 0.949);
+  vec3 warm = vec3(1.000, 0.522, 0.204);
+  vec3 col = q > 0.0 ? warm : blue;
+  return mix(dark, col, pow(t, 0.68));
+}
+
+vec3 backdropColor(vec2 uv, vec2 simUV) {
+  vec2 gridP = uv * canvasSize / 46.0;
+  vec2 gridW = max(fwidth(gridP), vec2(0.0001));
+  vec2 gridD = abs(fract(gridP) - 0.5) / gridW;
+  float grid = max(1.0 - min(gridD.x, 1.0), 1.0 - min(gridD.y, 1.0));
+  vec2 outside = max(-simUV, simUV - 1.0);
+  float outsideDist = length(outside * vec2(float(W), float(H)));
+  float halo = exp(-outsideDist * 0.045);
+  vec3 col = mix(vec3(0.020, 0.035, 0.041), vec3(0.004, 0.009, 0.013), smoothstep(0.25, 0.78, distance(uv, vec2(0.5))));
+  col += vec3(0.008, 0.048, 0.052) * grid * 0.38;
+  col += vec3(0.018, 0.088, 0.092) * halo * 0.32;
+  return col;
+}
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / canvasSize;
+  float canvasAspect = canvasSize.x / canvasSize.y;
+  float simAspect = float(W) / float(H);
+  vec2 simUV = uv;
+  if (canvasAspect > simAspect) {
+    simUV.x = 0.5 + (uv.x - 0.5) * canvasAspect / simAspect;
+  } else {
+    simUV.y = 0.5 + (uv.y - 0.5) * simAspect / canvasAspect;
+  }
+  bool inside = simUV.x >= 0.0 && simUV.x <= 1.0 && simUV.y >= 0.0 && simUV.y <= 1.0;
+  vec3 col = backdropColor(uv, simUV);
+  vec2 simPos = vec2(0.0);
+  float speed = 0.0;
+  float mask = 0.0;
+  if (inside) {
+    simPos = simUV * vec2(float(W), float(H));
+    vec4 field = sampleC(simPos);
+    vec2 vel = field.zw;
+    speed = length(vel) / max(0.04, u0);
+    mask = sampleMask(simUV);
+
+  if (mode == 0) {
+      col = speedColor(speed / 2.0);
+      float band = speed / 0.25;
+      float line = abs(fract(band + 0.5) - 0.5) / max(0.002, fwidth(band));
+      col *= 1.0 + (1.0 - smoothstep(0.0, 1.0, line)) * 0.11;
+    } else if (mode == 1) {
+      float rho = sampleC(simPos).y;
+      float cp = (rho - 1.0) / max(0.0008, 1.5 * u0 * u0);
+      col = pressureColor(cp);
+    } else if (mode == 2) {
+      float e = 1.2;
+      float dl = sampleC(simPos - vec2(e, 0.0)).w;
+      float dr = sampleC(simPos + vec2(e, 0.0)).w;
+      float db = sampleC(simPos - vec2(0.0, e)).z;
+      float dt = sampleC(simPos + vec2(0.0, e)).z;
+      float curl = ((dr - dl) - (dt - db)) / (2.0 * e) / max(0.04, u0);
+      col = curlColor(curl);
+    } else {
+      float dye = texture(smokeTex, simUV).r;
+      dye *= smoothstep(float(W) * 0.0729, float(W) * 0.1229, simPos.x);
+      vec3 base = speedColor(speed / 2.0) * 0.18;
+      col = mix(base, vec3(0.90, 0.97, 0.90), clamp(dye, 0.0, 1.0) * 0.85);
+    }
+
+    float body = smoothstep(0.48, 0.52, mask);
+    vec3 bodyCol = vec3(0.085, 0.092, 0.100);
+    vec3 edge = vec3(0.28, 0.36, 0.34) * smoothstep(0.42, 0.52, mask) * (1.0 - smoothstep(0.52, 0.62, mask));
+    col = mix(col, bodyCol + edge, body);
+    vec2 edgeDist = min(simUV, 1.0 - simUV) * vec2(float(W), float(H));
+    col += vec3(0.030, 0.145, 0.140) * exp(-min(edgeDist.x, edgeDist.y) * 0.22) * 0.16;
+  }
+  fragColor = vec4(col, 1.0);
+}`;
+
+const REDUCE1_FS = D2Q9 + `
+uniform sampler2D auxTex;
+uniform int W;
+uniform int H;
+uniform int tileW;
+uniform int tileH;
+out vec4 fragColor;
+void main() {
+  ivec2 tile = ivec2(gl_FragCoord.xy);
+  vec2 sum = vec2(0.0);
+  for (int y = 0; y < tileH; ++y) {
+    for (int x = 0; x < tileW; ++x) {
+      ivec2 p = tile * ivec2(tileW, tileH) + ivec2(x, y);
+      if (p.x < W && p.y < H) sum += texelFetch(auxTex, p, 0).xy;
+    }
+  }
+  fragColor = vec4(sum, vec2(0.0));
+}`;
+
+const REDUCE2_FS = D2Q9 + `
+uniform sampler2D tileTex;
+out vec4 fragColor;
+void main() {
+  vec2 sum = vec2(0.0);
+  for (int y = 0; y < 64; ++y) {
+    for (int x = 0; x < 64; ++x) {
+      sum += texelFetch(tileTex, ivec2(x, y), 0).xy;
+    }
+  }
+  fragColor = vec4(sum, vec2(0.0));
+}`;
+
+function compileShader(type, source) {
+  const sh = gl.createShader(type);
+  gl.shaderSource(sh, source);
+  gl.compileShader(sh);
+  if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+    const log = gl.getShaderInfoLog(sh);
+    gl.deleteShader(sh);
+    throw new Error('Shader compile failed: ' + log);
+  }
+  return sh;
+}
+
+function makeProgram(fsSource) {
+  const vs = compileShader(gl.VERTEX_SHADER, VERT);
+  const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
+  const p = gl.createProgram();
+  gl.attachShader(p, vs);
+  gl.attachShader(p, fs);
+  gl.linkProgram(p);
+  gl.deleteShader(vs);
+  gl.deleteShader(fs);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+    const log = gl.getProgramInfoLog(p);
+    gl.deleteProgram(p);
+    throw new Error('Program link failed: ' + log);
+  }
+  return p;
+}
+
+const progInit = makeProgram(INIT_FS);
+const progCollide = makeProgram(COLLIDE_FS);
+const progStream = makeProgram(STREAM_FS);
+const progSmoke = makeProgram(SMOKE_FS);
+const progDisplay = makeProgram(DISPLAY_FS);
+const progReduce1 = makeProgram(REDUCE1_FS);
+const progReduce2 = makeProgram(REDUCE2_FS);
+
+const uniformLocCache = new Map();
+function uniformLocation(program, name) {
+  let cache = uniformLocCache.get(program);
+  if (!cache) {
+    cache = new Map();
+    uniformLocCache.set(program, cache);
+  }
+  let loc = cache.get(name);
+  if (loc === undefined) {
+    loc = gl.getUniformLocation(program, name);
+    cache.set(name, loc);
+  }
+  return loc;
+}
+
+const vao = gl.createVertexArray();
+gl.bindVertexArray(vao);
+const vbo = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+gl.enableVertexAttribArray(0);
+gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+gl.bindVertexArray(null);
+
+function makeTex(w, h, internal, format, type, filter) {
+  const tex = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, internal, w, h, 0, format, type, null);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return tex;
+}
+
+function makeFbo(attachments) {
+  const fbo = gl.createFramebuffer();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  const buffers = [];
+  attachments.forEach((tex, i) => {
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, tex, 0);
+    buffers.push(gl.COLOR_ATTACHMENT0 + i);
+  });
+  gl.drawBuffers(buffers);
+  const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+  if (status !== gl.FRAMEBUFFER_COMPLETE) throw new Error('Framebuffer incomplete: 0x' + status.toString(16));
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  return fbo;
+}
+
+const QUALITY = {
+  low: { W: 480, H: 240, substeps: 2, maxRe: 1200 },
+  standard: { W: 720, H: 360, substeps: 3, maxRe: 2000 },
+  high: { W: 960, H: 480, substeps: 4, maxRe: 2640 },
+  ultra: { W: 1280, H: 640, substeps: 5, maxRe: 3520 },
+  research: { W: 2400, H: 1200, substeps: 6, maxRe: 6600 }
+};
+
+function resolvableRe(qualityKey, u0 = state.u0) {
+  const q = QUALITY[qualityKey];
+  return 250 * u0 * q.H * 0.22;
+}
+
+function ensureQualityForRe() {
+  if (resolvableRe(state.quality) >= state.re) return;
+  const capable = Object.keys(QUALITY).find(key => resolvableRe(key) >= state.re);
+  if (!capable) return;
+  state.quality = capable;
+  el('quality').value = capable;
+}
+
+const state = {
+  aoa: 6,
+  re: 620,
+  effectiveRe: 620,
+  u0: 0.05,
+  airfoil: '2412',
+  quality: 'high',
+  view: 0,
+  paused: false,
+  step: 0,
+  W: 0,
+  H: 0,
+  chord: 0,
+  cur: 0,
+  smokeCur: 0,
+  fps: 0,
+  cl: 0,
+  cd: 0,
+  clAvg: 0,
+  cdAvg: 0,
+  forceRaw: [0, 0],
+  maxForceSample: 0,
+  tau: 0,
+  solid: 0
+};
+
+let fieldA = [];
+let fieldB = [];
+let fieldC = [];
+let auxTexs = [];
+let maskTex = null;
+let smokeTexs = [];
+let collideFbos = [];
+let streamFbos = [];
+let smokeFbos = [];
+let tileTex = null;
+let tileFbo = null;
+let sumTex = null;
+let sumFbo = null;
+let reduceBuf = null;
+let debugBuf = new Float32Array(4);
+let debugFbo = null;
+let debugStatsBuf = null;
+let forceSamples = [];
+
+function deleteSimResources() {
+  const textures = [...fieldA, ...fieldB, ...fieldC, ...auxTexs, ...smokeTexs, maskTex, tileTex, sumTex];
+  textures.forEach(t => t && gl.deleteTexture(t));
+  [...collideFbos, ...streamFbos, ...smokeFbos, tileFbo, sumFbo].forEach(f => f && gl.deleteFramebuffer(f));
+  fieldA = []; fieldB = []; fieldC = []; auxTexs = []; smokeTexs = [];
+  collideFbos = []; streamFbos = []; smokeFbos = [];
+  maskTex = null; tileTex = null; tileFbo = null; sumTex = null; sumFbo = null;
+}
+
+function nacaThickness(tc, x) {
+  return 5 * tc * (0.2969 * Math.sqrt(x) - 0.1260 * x - 0.3516 * x * x + 0.2843 * x * x * x - 0.1015 * x * x * x * x);
+}
+
+function nacaCamber(code, x) {
+  const m = Number(code[0]) / 100;
+  const p = Number(code[1]) / 10;
+  if (m < 1e-6 || p < 1e-6) return 0;
+  return x < p ? m / (p * p) * (2 * p * x - x * x)
+               : m / ((1 - p) * (1 - p)) * ((1 - 2 * p) + 2 * p * x - x * x);
+}
+
+function buildMask() {
+  const { W, H } = state;
+  const chord = Math.round(H * 0.22);
+  state.chord = chord;
+  const cx = Math.round(W * 0.27);
+  const cy = Math.round(H * 0.50);
+  const a = state.aoa * Math.PI / 180;
+  const cosA = Math.cos(a), sinA = Math.sin(a);
+  const data = new Uint8Array(W * H);
+  let solidCount = 0;
+  const code = state.airfoil;
+  const tc = Number(code.slice(2, 4)) / 100;
+  for (let y = 0; y < H; ++y) {
+    for (let x = 0; x < W; ++x) {
+      let hit = 0;
+      for (let sy = 0; sy < 4; ++sy) {
+        for (let sx = 0; sx < 4; ++sx) {
+          const px = x + (sx + 0.5) / 4;
+          const py = y + (sy + 0.5) / 4;
+          const dx = px - cx;
+          const dy = py - cy;
+          const s = dx * cosA - dy * sinA + chord * 0.5;
+          const n = dx * sinA + dy * cosA;
+          if (s >= 0 && s <= chord) {
+            const xn = s / chord;
+            const yt = nacaThickness(tc, xn) * chord;
+            const yc = nacaCamber(code, xn) * chord;
+            if (n >= yc - yt && n <= yc + yt) hit++;
+          }
+        }
+      }
+      const v = hit >= 8 ? 255 : (hit >= 4 ? 110 : 0);
+      data[y * W + x] = v;
+      if (hit >= 8) solidCount++;
+    }
+  }
+  if (!maskTex) maskTex = makeTex(W, H, gl.R8, gl.RED, gl.UNSIGNED_BYTE, gl.LINEAR);
+  gl.bindTexture(gl.TEXTURE_2D, maskTex);
+  gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, W, H, gl.RED, gl.UNSIGNED_BYTE, data);
+  state.solid = solidCount;
+  return solidCount;
+}
+
+function buildTargets() {
+  const { W, H } = state;
+  for (let i = 0; i < 2; ++i) {
+    fieldA[i] = makeTex(W, H, gl.RGBA32F, gl.RGBA, gl.FLOAT, gl.NEAREST);
+    fieldB[i] = makeTex(W, H, gl.RGBA32F, gl.RGBA, gl.FLOAT, gl.NEAREST);
+    fieldC[i] = makeTex(W, H, gl.RGBA32F, gl.RGBA, gl.FLOAT, gl.NEAREST);
+    auxTexs[i] = makeTex(W, H, gl.RGBA32F, gl.RGBA, gl.FLOAT, gl.NEAREST);
+    smokeTexs[i] = makeTex(W, H, gl.RGBA16F, gl.RGBA, gl.HALF_FLOAT, gl.LINEAR);
+    collideFbos[i] = makeFbo([fieldA[i], fieldB[i], fieldC[i], auxTexs[i]]);
+    streamFbos[i] = makeFbo([fieldA[i], fieldB[i], fieldC[i]]);
+    smokeFbos[i] = makeFbo([smokeTexs[i]]);
+  }
+  tileTex = makeTex(64, 64, gl.RGBA32F, gl.RGBA, gl.FLOAT, gl.NEAREST);
+  tileFbo = makeFbo([tileTex]);
+  sumTex = makeTex(1, 1, gl.RGBA32F, gl.RGBA, gl.FLOAT, gl.NEAREST);
+  sumFbo = makeFbo([sumTex]);
+  reduceBuf = new Float32Array(4);
+}
+
+function relaxation() {
+  if (state.debugNoCollide) {
+    state.tau = 1 / state.u0;
+    return { omegaPlus: 0, omegaMinus: 0 };
+  }
+  const requestedNu = state.u0 * state.chord / state.re;
+  const tau = Math.max(0.512, 3.0 * requestedNu + 0.5);
+  const nu = (tau - 0.5) / 3.0;
+  state.effectiveRe = Math.min(state.re, Math.round(state.u0 * state.chord / nu));
+  const omegaPlus = 1.0 / tau;
+  const omegaMinus = 1.0 / (0.5 + 0.1875 / Math.max(1e-4, 1.0 / omegaPlus - 0.5));
+  state.tau = tau;
+  return { omegaPlus, omegaMinus };
+}
+
+function setProgram(program, uniforms) {
+  gl.useProgram(program);
+  for (const [name, value] of Object.entries(uniforms)) {
+    const loc = uniformLocation(program, name);
+    if (loc === null) continue;
+    if (typeof value === 'number' && Number.isInteger(value)) gl.uniform1i(loc, value);
+    else if (typeof value === 'number') gl.uniform1f(loc, value);
+    else if (typeof value === 'boolean') gl.uniform1i(loc, value ? 1 : 0);
+    else if (Array.isArray(value)) {
+      if (value.length === 3 && value[2] === 'vec2') gl.uniform2f(loc, value[0], value[1]);
+      else if (value.every(v => Number.isInteger(v))) gl.uniform1iv(loc, value);
+      else gl.uniform1fv(loc, value);
+    }
+  }
+}
+
+function bindSimInputs(program, source = state.cur) {
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, fieldA[source]);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, fieldB[source]);
+  gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, fieldC[source]);
+  gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, maskTex);
+  const locA = uniformLocation(program, 'texA');
+  const locB = uniformLocation(program, 'texB');
+  const locC = uniformLocation(program, 'texC');
+  const locM = uniformLocation(program, 'uMask');
+  if (locA) gl.uniform1i(locA, 0);
+  if (locB) gl.uniform1i(locB, 1);
+  if (locC) gl.uniform1i(locC, 2);
+  if (locM) gl.uniform1i(locM, 3);
+}
+
+function resetSim() {
+  const q = QUALITY[state.quality];
+  const W = q.W, H = q.H;
+  const geometryChanged = W !== state.W || H !== state.H;
+  if (geometryChanged) {
+    deleteSimResources();
+    state.W = W; state.H = H;
+    buildTargets();
+  }
+  buildMask();
+  const rel = relaxation();
+
+  gl.bindVertexArray(vao);
+  gl.viewport(0, 0, W, H);
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, maskTex);
+  setProgram(progInit, { W, H, u0: state.u0 });
+  const initMaskLoc = uniformLocation(progInit, 'uMask');
+  if (initMaskLoc) gl.uniform1i(initMaskLoc, 0);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, collideFbos[state.cur]);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  gl.clearColor(0, 0, 0, 0);
+  for (const tex of smokeTexs) {
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+  }
+  for (const fbo of smokeFbos) {
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+  }
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  state.step = 0;
+  state.clAvg = 0;
+  state.cdAvg = 0;
+  state.cl = 0;
+  state.cd = 0;
+  forceSamples = [];
+  clHistory.length = 0;
+  updateSliderFills();
+  drawClChart();
+  updateStatusChips();
+}
+
+function reduceForce() {
+  gl.bindVertexArray(vao);
+  gl.viewport(0, 0, 64, 64);
+  setProgram(progReduce1, {
+    W: state.W, H: state.H,
+    tileW: Math.ceil(state.W / 64),
+    tileH: Math.ceil(state.H / 64)
+  });
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, auxTexs[1 - state.cur]);
+  const loc = uniformLocation(progReduce1, 'auxTex');
+  if (loc) gl.uniform1i(loc, 0);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, tileFbo);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+  gl.viewport(0, 0, 1, 1);
+  gl.useProgram(progReduce2);
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, tileTex);
+  const locTile = uniformLocation(progReduce2, 'tileTex');
+  if (locTile) gl.uniform1i(locTile, 0);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, sumFbo);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.FLOAT, reduceBuf);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  state.forceRaw = [reduceBuf[0], reduceBuf[1]];
+  return [reduceBuf[0], reduceBuf[1]];
+}
+
+function readTexturePixel(tex, x, y) {
+  if (!debugFbo) {
+    debugFbo = gl.createFramebuffer();
+  }
+  gl.bindFramebuffer(gl.FRAMEBUFFER, debugFbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+  gl.readPixels(x, y, 1, 1, gl.RGBA, gl.FLOAT, debugBuf);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  return [...debugBuf];
+}
+
+function stepSim() {
+  const dst = 1 - state.cur;
+  const rel = relaxation();
+  gl.bindVertexArray(vao);
+  gl.viewport(0, 0, state.W, state.H);
+
+  gl.useProgram(progCollide);
+  bindSimInputs(progCollide);
+  setProgram(progCollide, {
+    W: state.W, H: state.H,
+    omegaPlus: rel.omegaPlus,
+    omegaMinus: rel.omegaMinus,
+    sponge: 0.90,
+    u0: state.u0
+  });
+  gl.bindFramebuffer(gl.FRAMEBUFFER, collideFbos[dst]);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+  gl.useProgram(progStream);
+  bindSimInputs(progStream, dst);
+  setProgram(progStream, { W: state.W, H: state.H, u0: state.u0 });
+  gl.bindFramebuffer(gl.FRAMEBUFFER, streamFbos[state.cur]);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+  if (state.view === 3) {
+    gl.useProgram(progSmoke);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, fieldC[state.cur]);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, smokeTexs[state.smokeCur]);
+    gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, maskTex);
+    const locC = uniformLocation(progSmoke, 'texC');
+    const locS = uniformLocation(progSmoke, 'smokeTex');
+    const locM = uniformLocation(progSmoke, 'uMask');
+    if (locC) gl.uniform1i(locC, 0);
+    if (locS) gl.uniform1i(locS, 1);
+    if (locM) gl.uniform1i(locM, 2);
+    setProgram(progSmoke, { W: state.W, H: state.H, frame: state.step });
+    gl.bindFramebuffer(gl.FRAMEBUFFER, smokeFbos[1 - state.smokeCur]);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    state.smokeCur = 1 - state.smokeCur;
+  }
+
+  state.cur = state.cur;
+  state.step++;
+  if (state.step % 8 === 0) {
+    const [fx, fy] = reduceForce();
+    if (Number.isFinite(fx) && Number.isFinite(fy)) {
+      forceSamples.push([fx, fy]);
+      if (forceSamples.length > 96) forceSamples.shift();
+      const sum = forceSamples.reduce((a, s) => [a[0] + s[0], a[1] + s[1]], [0, 0]);
+      state.cdAvg = sum[0] / forceSamples.length;
+      state.clAvg = sum[1] / forceSamples.length;
+      state.maxForceSample = Math.max(Math.abs(fx), Math.abs(fy));
+    }
+  }
+}
+
+function drawScene() {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const cssW = canvas.clientWidth || 1;
+  const cssH = canvas.clientHeight || 1;
+  const pw = Math.max(1, Math.round(cssW * dpr));
+  const ph = Math.max(1, Math.round(cssH * dpr));
+  if (canvas.width !== pw || canvas.height !== ph) {
+    canvas.width = pw;
+    canvas.height = ph;
+  }
+  gl.bindVertexArray(vao);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.viewport(0, 0, pw, ph);
+  gl.useProgram(progDisplay);
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, fieldC[state.cur]);
+  gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, maskTex);
+  gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, smokeTexs[state.smokeCur]);
+  const locC = uniformLocation(progDisplay, 'texC');
+  const locM = uniformLocation(progDisplay, 'uMask');
+  const locS = uniformLocation(progDisplay, 'smokeTex');
+  if (locC) gl.uniform1i(locC, 0);
+  if (locM) gl.uniform1i(locM, 1);
+  if (locS) gl.uniform1i(locS, 2);
+  setProgram(progDisplay, {
+    W: state.W, H: state.H,
+    mode: state.view,
+    u0: state.u0,
+    canvasSize: [pw, ph, 'vec2']
+  });
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+}
+
+let lastTime = performance.now();
+let fpsSmooth = 60;
+let lastUiUpdate = 0;
+
+function loop(now) {
+  const dt = Math.max(1, now - lastTime);
+  lastTime = now;
+  fpsSmooth += (1000 / dt - fpsSmooth) * 0.08;
+  if (!state.paused) {
+    const q = QUALITY[state.quality];
+    for (let i = 0; i < q.substeps; ++i) stepSim();
+  }
+  drawScene();
+  if (now - lastUiUpdate > 120) {
+    lastUiUpdate = now;
+    updateMetrics();
+    updateStatusChips();
+    if (!state.paused && state.step >= 500) {
+      clHistory.push(state.cl);
+      if (clHistory.length > 180) clHistory.shift();
+      drawClChart();
+    }
+    updateProbe();
+  }
+  requestAnimationFrame(loop);
+}
+
+const el = id => document.getElementById(id);
+
+const simFrame = el('simFrame');
+function updateStageFrame() {
+  const host = canvas.parentElement;
+  const cw = host.clientWidth || 1;
+  const ch = host.clientHeight || 1;
+  const simAspect = (state.W || 960) / (state.H || 480);
+  let fw = cw;
+  let fh = ch;
+  if (cw / ch > simAspect) fw = ch * simAspect;
+  else fh = cw / simAspect;
+  simFrame.style.width = `${fw}px`;
+  simFrame.style.height = `${fh}px`;
+  simFrame.style.left = `${(cw - fw) / 2}px`;
+  simFrame.style.top = `${(ch - fh) / 2}px`;
+  canvas.style.width = `${fw}px`;
+  canvas.style.height = `${fh}px`;
+  canvas.style.left = `${(cw - fw) / 2}px`;
+  canvas.style.top = `${(ch - fh) / 2}px`;
+}
+
+const clHistory = [];
+const clChart = el('clChart');
+const clCtx = clChart.getContext('2d');
+const SLIDERS = ['aoa', 're', 'u0'];
+
+function updateSliderFill(input) {
+  const min = Number(input.min) || 0;
+  const max = Number(input.max) || 100;
+  const value = Number(input.value) || 0;
+  input.style.setProperty('--fill', (100 * (value - min) / Math.max(1e-6, max - min)) + '%');
+}
+
+function updateSliderFills() {
+  SLIDERS.forEach(id => updateSliderFill(el(id)));
+}
+
+function drawClChart() {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const cw = clChart.clientWidth || 1;
+  const ch = clChart.clientHeight || 1;
+  const pw = Math.round(cw * dpr);
+  const ph = Math.round(ch * dpr);
+  if (clChart.width !== pw || clChart.height !== ph) {
+    clChart.width = pw;
+    clChart.height = ph;
+  }
+  clCtx.clearRect(0, 0, pw, ph);
+  clCtx.fillStyle = 'rgba(62,243,205,.035)';
+  clCtx.fillRect(0, 0, pw, ph);
+
+  const values = clHistory.filter(v => Number.isFinite(v));
+  if (!values.length) {
+    clCtx.strokeStyle = 'rgba(125,235,218,.18)';
+    clCtx.lineWidth = Math.max(1, dpr);
+    clCtx.setLineDash([3 * dpr, 4 * dpr]);
+    clCtx.beginPath();
+    clCtx.moveTo(0, ph / 2);
+    clCtx.lineTo(pw, ph / 2);
+    clCtx.stroke();
+    clCtx.setLineDash([]);
+    el('clRange').textContent = '--';
+    return;
+  }
+
+  const sorted = [...values].sort((a, b) => a - b);
+  const quantile = p => sorted[Math.min(sorted.length - 1, Math.max(0, Math.floor((sorted.length - 1) * p)))];
+  let lo = quantile(.06);
+  let hi = quantile(.94);
+  if (hi - lo < .08) {
+    lo = Math.min(...values, 0) - .04;
+    hi = Math.max(...values, 0) + .04;
+  } else {
+    lo = Math.min(lo, 0);
+    hi = Math.max(hi, 0);
+  }
+  const span = Math.max(.02, hi - lo);
+  lo -= span * .12;
+  hi += span * .12;
+  const yOf = v => ph - (v - lo) / Math.max(1e-6, hi - lo) * ph;
+
+  clCtx.strokeStyle = 'rgba(125,235,218,.15)';
+  clCtx.lineWidth = Math.max(1, dpr);
+  clCtx.setLineDash([3 * dpr, 4 * dpr]);
+  [lo, hi].forEach(v => {
+    const y = yOf(v);
+    clCtx.beginPath();
+    clCtx.moveTo(0, y);
+    clCtx.lineTo(pw, y);
+    clCtx.stroke();
+  });
+  clCtx.strokeStyle = 'rgba(125,235,218,.32)';
+  const y0 = yOf(0);
+  clCtx.beginPath();
+  clCtx.moveTo(0, y0);
+  clCtx.lineTo(pw, y0);
+  clCtx.stroke();
+  clCtx.setLineDash([]);
+
+  clCtx.beginPath();
+  for (let i = 0; i < clHistory.length; ++i) {
+    if (!Number.isFinite(clHistory[i])) continue;
+    const x = (i / Math.max(1, clHistory.length - 1)) * pw;
+    const y = yOf(clHistory[i]);
+    if (i === 0) clCtx.moveTo(x, y);
+    else clCtx.lineTo(x, y);
+  }
+  clCtx.lineWidth = Math.max(1.25, 1.8 * dpr);
+  clCtx.lineJoin = 'round';
+  clCtx.lineCap = 'round';
+  clCtx.strokeStyle = '#3ef3cd';
+  clCtx.shadowColor = 'rgba(62,243,205,.45)';
+  clCtx.shadowBlur = 6 * dpr;
+  clCtx.stroke();
+  clCtx.shadowBlur = 0;
+
+  el('clRange').textContent = `${lo >= 0 ? '+' : ''}${lo.toFixed(2)} ~ ${hi >= 0 ? '+' : ''}${hi.toFixed(2)}`;
+}
+
+const PRESETS = {
+  cruise: { label: '起飞巡航', aoa: 6, re: 620, u0: .05, airfoil: '2412', quality: 'high' },
+  transient: { label: '高速抖振', aoa: 8, re: 3000, u0: .1, airfoil: '0012', quality: 'ultra' },
+  lowRe: { label: '低雷诺', aoa: 4, re: 120, u0: .02, airfoil: '2412', quality: 'high' },
+  stall: { label: '大攻角失速', aoa: 16, re: 900, u0: .06, airfoil: '4415', quality: 'high' }
+};
+
+function applyPreset(name) {
+  const preset = PRESETS[name];
+  if (!preset) return;
+  document.querySelectorAll('.presets .chip').forEach(node => {
+    node.classList.toggle('active', node.dataset.preset === name);
+  });
+  Object.assign(state, { aoa: preset.aoa, re: preset.re, u0: preset.u0, airfoil: preset.airfoil, quality: preset.quality });
+  el('aoa').value = state.aoa;
+  el('aoaValue').textContent = state.aoa.toFixed(1) + '°';
+  el('re').value = state.re;
+  el('reValue').textContent = String(state.re);
+  el('u0').value = state.u0;
+  el('u0Value').textContent = state.u0.toFixed(3);
+  el('airfoil').value = state.airfoil;
+  el('quality').value = state.quality;
+  resetSim();
+}
+
+function clearPresetHighlight() {
+  document.querySelectorAll('.presets .chip').forEach(node => node.classList.remove('active'));
+}
+
+const VIEW_META = [
+  {
+    title: '速度场',
+    legend: '局部流速 / U∞',
+    mode: '蓝=慢 · 深色≈U∞ · 暖=快 · 等值线 0.25 U∞',
+    bar: 'linear-gradient(90deg,#d7f0ff 0%,#3f7fd6 25%,#0e212b 50%,#ffc84c 62.5%,#ff4d5b 85%,#fff7e3 100%)',
+    ticks: ['0', '0.5', '1.0', '1.5', '≥2.0']
+  },
+  {
+    title: '压力系数 Cp',
+    legend: '压力系数 Cp',
+    mode: '蓝 = 吸力峰 · 橙红 = 高压',
+    bar: 'linear-gradient(90deg,#1e63d6 0%,#62c6ff 34%,#0b191f 68.75%,#ffba55 86%,#ff4d5b 100%)',
+    ticks: ['-2.2', '-1.4', '-0.6', '+0.2', '+1.0']
+  },
+  {
+    title: '涡量场',
+    legend: '局部旋向与强度',
+    mode: '亮橙 / 亮蓝 = 相反旋向 · 亮度 = 强度',
+    bar: 'linear-gradient(90deg,#55b9ff,#0a1014 50%,#ff8534)',
+    ticks: ['强顺涡', '弱', '零', '弱', '强逆涡']
+  },
+  {
+    title: '被动烟线',
+    legend: '示踪浓度',
+    mode: '亮线为上游注入的被动标量',
+    bar: 'linear-gradient(90deg,rgba(10,18,24,.78),rgba(230,247,230,.96))',
+    ticks: ['无示踪', '稀薄', '中等', '浓密', '饱和']
+  }
+];
+
+function updateLegend() {
+  const meta = VIEW_META[state.view];
+  el('hudTitle').textContent = meta.title;
+  el('legendTitle').textContent = meta.legend;
+  el('legendMode').textContent = meta.mode;
+  el('legendBar').style.background = meta.bar;
+  const ticks = document.querySelectorAll('.legend-ticks span');
+  ticks.forEach((node, i) => { node.textContent = meta.ticks[i] || ''; });
+}
+
+function updateStatusChips() {
+  el('resolutionChip').textContent = `${state.W}×${state.H}`;
+  el('reChip').textContent = `Re ${state.effectiveRe === state.re ? state.re : `${Math.round(state.effectiveRe)} / ${state.re}`}`;
+  el('stepChip').textContent = `步数 ${state.step.toLocaleString('zh-CN')}`;
+  el('runningChip').lastElementChild.textContent = state.paused ? '已暂停' : '运行中';
+  el('runningChip').classList.toggle('active', !state.paused);
+  el('hudMeta').textContent = `U∞ = ${state.u0.toFixed(3)} lattice units · τ = ${state.tau.toFixed(3)} · TRT-D2Q9`;
+  document.querySelector('.flow-arrow').classList.toggle('animating', !state.paused);
+}
+
+function updateMetrics() {
+  const q = 0.5 * state.u0 * state.u0 * state.chord;
+  state.cl = state.clAvg / q;
+  state.cd = state.cdAvg / q;
+  el('clValue').textContent = state.cl.toFixed(3);
+  el('cdValue').textContent = Math.max(0, state.cd).toFixed(4);
+  el('ldValue').textContent = state.cd > 1e-6 ? (state.cl / state.cd).toFixed(1) : '--';
+  el('fpsValue').textContent = Math.round(fpsSmooth);
+  const rel = relaxation();
+  const clamped = state.effectiveRe < state.re;
+  el('stabilityWarn').textContent = clamped
+    ? `低精度网格已限制有效雷诺数为 ${Math.round(state.effectiveRe)}，切换更高精度可解除。`
+    : '当前雷诺数接近稳定性上限，建议提高求解精度。';
+  el('stabilityWarn').classList.toggle('visible', clamped || state.tau <= 0.5125 || state.tau > 1.55);
+}
+
+el('aoa').addEventListener('input', e => {
+  state.aoa = Number(e.target.value);
+  el('aoaValue').textContent = state.aoa.toFixed(1) + '°';
+  updateSliderFill(e.target);
+  clearPresetHighlight();
+  resetSim();
+});
+el('re').addEventListener('input', e => {
+  state.re = Number(e.target.value);
+  ensureQualityForRe();
+  el('reValue').textContent = String(state.re);
+  updateSliderFill(e.target);
+  clearPresetHighlight();
+  resetSim();
+});
+el('u0').addEventListener('input', e => {
+  state.u0 = Number(e.target.value);
+  ensureQualityForRe();
+  el('u0Value').textContent = state.u0.toFixed(3);
+  updateSliderFill(e.target);
+  clearPresetHighlight();
+  resetSim();
+});
+el('airfoil').addEventListener('change', e => {
+  state.airfoil = e.target.value;
+  clearPresetHighlight();
+  resetSim();
+});
+el('quality').addEventListener('change', e => {
+  state.quality = e.target.value;
+  clearPresetHighlight();
+  resetSim();
+});
+document.querySelectorAll('#viewTabs .tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#viewTabs .tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.view = Number(btn.dataset.view);
+    updateLegend();
+  });
+});
+document.querySelectorAll('.presets .chip').forEach(chip => {
+  chip.addEventListener('click', () => applyPreset(chip.dataset.preset));
+});
+el('pauseBtn').addEventListener('click', () => {
+  state.paused = !state.paused;
+  el('pauseBtn').innerHTML = state.paused
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5v14l12-7z"/></svg><span>继续</span>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5v14"/><path d="M14 5v14"/></svg><span>暂停</span>';
+  updateStatusChips();
+});
+el('resetBtn').addEventListener('click', resetSim);
+
+let probePos = null;
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  probePos = [e.clientX - rect.left, e.clientY - rect.top];
+  el('probe').classList.add('visible');
+});
+canvas.addEventListener('mouseleave', () => {
+  probePos = null;
+  el('probe').classList.remove('visible');
+});
+
+function updateProbe() {
+  if (!probePos) return;
+  const cssW = canvas.clientWidth || 1;
+  const cssH = canvas.clientHeight || 1;
+  const uvx = probePos[0] / cssW;
+  const uvy = 1 - probePos[1] / cssH;
+  const canvasAspect = cssW / cssH;
+  const simAspect = state.W / state.H;
+  let sx = uvx;
+  let sy = uvy;
+  if (canvasAspect > simAspect) sx = 0.5 + (uvx - 0.5) * canvasAspect / simAspect;
+  else sy = 0.5 + (uvy - 0.5) * simAspect / canvasAspect;
+  if (sx < 0 || sx > 1 || sy < 0 || sy > 1) return;
+  const px = Math.min(state.W - 1, Math.max(0, Math.floor(sx * state.W)));
+  const py = Math.min(state.H - 1, Math.max(0, Math.floor(sy * state.H)));
+  const f = readTexturePixel(fieldC[state.cur], px, py);
+  if (f[2] === 0 && f[3] === 0 && Math.abs(f[1] - 1) < 1e-6) {
+    el('probe').innerHTML = '机体内部';
+    return;
+  }
+  const speed = Math.hypot(f[2], f[3]) / Math.max(0.04, state.u0);
+  const cp = (f[1] - 1) / Math.max(0.0008, 1.5 * state.u0 * state.u0);
+  el('probe').innerHTML = `u/U∞ <b>${speed.toFixed(2)}</b> · Cp <b>${cp >= 0 ? '+' : ''}${cp.toFixed(2)}</b>`;
+}
+
+window.addEventListener('keydown', e => {
+  if (e.code !== 'Space' || e.repeat) return;
+  const tag = document.activeElement && document.activeElement.tagName;
+  if (tag === 'BUTTON' || tag === 'SELECT' || tag === 'INPUT') return;
+  e.preventDefault();
+  el('pauseBtn').click();
+});
+
+window.addEventListener('resize', () => {
+  drawClChart();
+  updateStageFrame();
+});
+new ResizeObserver(updateStageFrame).observe(canvas);
+updateSliderFills();
+updateStageFrame();
+document.querySelector('.presets .chip[data-preset="cruise"]').classList.add('active');
+resetSim();
+updateLegend();
+requestAnimationFrame(loop);
+
+window.__sim = {
+  stats() {
+    const q = 0.5 * state.u0 * state.u0 * state.chord;
+    return {
+      steps: state.step,
+      cl: state.clAvg / q,
+      cd: state.cdAvg / q,
+      fps: Math.round(fpsSmooth),
+      grid: [state.W, state.H],
+      chord: state.chord,
+      solid: state.solid,
+      tau: state.tau,
+      samples: forceSamples.length,
+      forceRaw: state.forceRaw,
+      maxForceSample: state.maxForceSample
+    };
+  },
+  readField(x = Math.floor(state.W * 0.15), y = Math.floor(state.H * 0.5)) {
+    return readTexturePixel(fieldC[state.cur], x, y);
+  },
+  readA(x = Math.floor(state.W * 0.15), y = Math.floor(state.H * 0.5)) {
+    return readTexturePixel(fieldA[state.cur], x, y);
+  },
+  readB(x = Math.floor(state.W * 0.15), y = Math.floor(state.H * 0.5)) {
+    return readTexturePixel(fieldB[state.cur], x, y);
+  },
+  readAux(x = Math.floor(state.W * 0.15), y = Math.floor(state.H * 0.5)) {
+    return readTexturePixel(auxTexs[1 - state.cur], x, y);
+  },
+  readTex(which = 'A', buffer = state.cur, x = 120, y = 120) {
+    const bank = which === 'A' ? fieldA : which === 'B' ? fieldB : which === 'C' ? fieldC : auxTexs;
+    return readTexturePixel(bank[buffer] || bank[0], x, y);
+  },
+  debugStats() {
+    const n = state.W * state.H;
+    if (!debugStatsBuf || debugStatsBuf.length !== n * 4) debugStatsBuf = new Float32Array(n * 4);
+    if (!debugFbo) debugFbo = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, debugFbo);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, fieldC[state.cur], 0);
+    gl.readPixels(0, 0, state.W, state.H, gl.RGBA, gl.FLOAT, debugStatsBuf);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    let minRho = Infinity, maxRho = -Infinity, maxSpeed = 0, bad = 0;
+    let minAt = [0, 0], maxAt = [0, 0], maxAtSpeed = [0, 0], rhoSum = 0;
+    let maxCurl = 0, curlSum = 0, curlCount = 0;
+    for (let i = 0; i < n; ++i) {
+      const rho = debugStatsBuf[i * 4 + 1];
+      const vx = debugStatsBuf[i * 4 + 2];
+      const vy = debugStatsBuf[i * 4 + 3];
+      if (!Number.isFinite(rho) || !Number.isFinite(vx) || !Number.isFinite(vy)) {
+        bad++;
+        continue;
+      }
+      minRho = Math.min(minRho, rho);
+      maxRho = Math.max(maxRho, rho);
+      if (rho === minRho) minAt = [i % state.W, Math.floor(i / state.W)];
+      if (rho === maxRho) maxAt = [i % state.W, Math.floor(i / state.W)];
+      rhoSum += rho;
+      maxSpeed = Math.max(maxSpeed, Math.hypot(vx, vy));
+      if (Math.hypot(vx, vy) === maxSpeed) maxAtSpeed = [i % state.W, Math.floor(i / state.W)];
+      const x = i % state.W;
+      const y = Math.floor(i / state.W);
+      if (x > 0 && x < state.W - 1 && y > 0 && y < state.H - 1 && Math.hypot(vx, vy) > 1e-5) {
+        const left = debugStatsBuf[(i - 1) * 4 + 3];
+        const right = debugStatsBuf[(i + 1) * 4 + 3];
+        const below = debugStatsBuf[(i - state.W) * 4 + 2];
+        const above = debugStatsBuf[(i + state.W) * 4 + 2];
+        const curl = ((right - left) - (above - below)) / (2 * Math.max(1e-8, state.u0));
+        maxCurl = Math.max(maxCurl, Math.abs(curl));
+        curlSum += curl * curl;
+        curlCount++;
+      }
+    }
+    return {
+      minRho, maxRho, meanRho: rhoSum / n, minAt, maxAt, maxSpeed, maxAtSpeed, bad, steps: state.step,
+      maxCurl, rmsCurl: Math.sqrt(curlSum / Math.max(1, curlCount)), curlCount
+    };
+  },
+  set(patch) {
+    Object.assign(state, patch);
+    clearPresetHighlight();
+    el('aoa').value = state.aoa;
+    el('aoaValue').textContent = Number(state.aoa).toFixed(1) + '°';
+    el('re').value = state.re;
+    el('reValue').textContent = String(state.re);
+    el('u0').value = state.u0;
+    el('u0Value').textContent = Number(state.u0).toFixed(3);
+    el('airfoil').value = state.airfoil;
+    el('quality').value = state.quality;
+    updateSliderFills();
+    resetSim();
+  },
+  pause(value) {
+    state.paused = !!value;
+    el('pauseBtn').innerHTML = state.paused
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5v14l12-7z"/></svg><span>继续</span>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5v14"/><path d="M14 5v14"/></svg><span>暂停</span>';
+    updateStatusChips();
+  },
+  stepOnce() { stepSim(); }
+};
+</script>
+</body>
+</html>
