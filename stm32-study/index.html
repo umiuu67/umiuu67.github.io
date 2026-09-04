@@ -328,27 +328,112 @@
       background: #f8faf9;
       display: flex;
       flex-direction: column;
-      padding: 18px;
     }
+    .dock-tabs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      border-bottom: 1px solid var(--line);
+      padding: 8px;
+      gap: 4px;
+    }
+    .dock-tab {
+      min-height: 32px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 0 3px;
+      white-space: nowrap;
+    }
+    .dock-tab.active { background: #fff; color: var(--ink); font-weight: 650; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .dock-panel { min-height: 330px; max-height: 620px; overflow: auto; padding: 18px; }
     .dock-label {
       display: flex;
       justify-content: space-between;
       margin-bottom: 10px;
-      color: var(--muted);
-      font-size: 12px;
+      font-size: 13px;
+      font-weight: 650;
     }
-    .dock-bar { height: 5px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+    .dock-label span:last-child { color: var(--muted); font-weight: 400; }
+    .dock-bar { height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
     .dock-bar i { display: block; height: 100%; width: 0; background: var(--green); }
-    .dock-hint { margin: 10px 0 18px; color: var(--muted); font-size: 13px; }
-    .dock-metric { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
-    .dock-metric > div {
+    .dock-hint { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+    .dock-metric {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .dock-metric div {
+      min-width: 0;
       border: 1px solid var(--line);
       border-radius: 7px;
       background: #fff;
       padding: 10px;
     }
     .dock-metric strong { display: block; font-size: 17px; }
-    .dock-metric span { color: var(--muted); font-size: 12px; }
+    .dock-metric span { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .dock-focus { margin: 0; padding-left: 18px; }
+    .dock-focus li { margin: 9px 0; }
+    .dock-practice { color: #35464a; font-size: 13px; }
+    .dock-practice p { margin: 8px 0; }
+    .dock-practice ul, .dock-practice ol { padding-left: 20px; }
+    .personal-note {
+      width: 100%;
+      min-height: 250px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px;
+      background: #fff;
+    }
+    .note-status {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .timeline-picker {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .timeline-picker select, .timeline-picker input {
+      width: 100%;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 8px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .timeline-waypoint {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 4px;
+    }
+    .dot {
+      width: 100%;
+      min-width: 0;
+      aspect-ratio: 1;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1;
+      padding: 0;
+    }
+    .dot.done { background: var(--green); border-color: var(--green); color: #fff; }
+    .dot.current { outline: 2px solid var(--orange); outline-offset: 1px; }
 
     footer {
       text-align: center;
@@ -399,6 +484,8 @@
         border-left: 0;
         border-top: 1px solid var(--line);
       }
+      .dock-panel { min-height: 0; max-height: none; }
+      .timeline-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
       .topbar { flex-wrap: wrap; }
       .topbar .btn { margin-left: auto; }
     }
@@ -444,8 +531,16 @@
     const $ = s => document.querySelector(s);
     const KEY_DONE = 'stm32study.done';
     const KEY_CUR = 'stm32study.cur';
+    const KEY_DOCK = 'stm32study.dock';
+    const KEY_NOTES = 'stm32study.notes';
+    const KEY_TIMELINE = 'stm32study.timelinePhase';
     let done = new Set(JSON.parse(localStorage.getItem(KEY_DONE) || '[]'));
     let current = Math.min(parseInt(localStorage.getItem(KEY_CUR) || '1', 10) || 1, COURSE.lessons.length);
+    let dock = localStorage.getItem(KEY_DOCK) || 'progress';
+    let notes = JSON.parse(localStorage.getItem(KEY_NOTES) || '{}');
+    let timelinePhase = localStorage.getItem(KEY_TIMELINE) || 'all';
+    if (!['progress', 'focus', 'practice', 'note', 'timeline'].includes(dock)) dock = 'progress';
+    if (timelinePhase !== 'all' && !COURSE.phases.some(phase => phase.id === timelinePhase)) timelinePhase = 'all';
 
     function biliUrl(page, t) {
       return `https://www.bilibili.com/video/${COURSE.meta.bvid}?p=${page}` + (t ? `&t=${t}` : '');
@@ -457,6 +552,9 @@
     function save() {
       localStorage.setItem(KEY_DONE, JSON.stringify([...done]));
       localStorage.setItem(KEY_CUR, String(current));
+      localStorage.setItem(KEY_DOCK, dock);
+      localStorage.setItem(KEY_NOTES, JSON.stringify(notes));
+      localStorage.setItem(KEY_TIMELINE, timelinePhase);
     }
     function renderProgress() {
       const n = done.size, total = COURSE.lessons.length, pct = Math.round(n / total * 100);
@@ -527,6 +625,18 @@
       const next = COURSE.lessons[current];
       const isDone = done.has(l.page);
       const progress = renderProgress();
+      const phaseItems = COURSE.lessons.filter(item => item.phase === l.phase);
+      const phaseDone = phaseItems.filter(item => done.has(item.page)).length;
+      const phasePercent = Math.round(phaseDone / phaseItems.length * 100);
+      const dockTabs = ['progress', 'focus', 'practice', 'note', 'timeline'].map(name => {
+        const labels = { progress: '进度', focus: '目标', practice: '练习', note: '笔记', timeline: '导航' };
+        return `<button class="dock-tab ${dock === name ? 'active' : ''}" data-dock="${name}" type="button">${labels[name]}</button>`;
+      }).join('');
+      const noteHtml = esc(notes[l.page] || '');
+      const timelinePages = COURSE.lessons.filter(item => timelinePhase === 'all' || item.phase === timelinePhase);
+      const timelineOptions = ['<option value="all">全部阶段</option>']
+        .concat(COURSE.phases.map(phase => `<option value="${phase.id}" ${timelinePhase === phase.id ? 'selected' : ''}>${esc(phase.name)}</option>`))
+        .join('');
       document.title = `P${l.page} ${l.title} · STM32 学习模式`;
       $('#viewTitle').textContent = `P${l.page} ${l.title}`;
       $('#bili-open').href = biliUrl(l.page);
@@ -549,7 +659,7 @@
           <button class="btn" id="next-btn" ${next ? '' : 'disabled'}>下一节</button>
         </div>`;
 
-      const points = l.points && l.points.length ? l.points.map(p => `<li>${p}</li>`).join('') : '<li>回顾本节核心操作。</li>';
+      const points = l.points && l.points.length ? l.points.map(p => `<li>${esc(p)}</li>`).join('') : '<li>回顾本节核心操作。</li>';
       html += `
         <div class="lesson-overview">
           <section class="overview-block">
@@ -572,14 +682,49 @@
             ${md(l.notes || '笔记整理中…')}
           </div>
           <aside class="study-dock">
-            <div class="dock-label"><span>课程进度</span><span>${progress.n}/${progress.total}</span></div>
-            <div class="dock-bar"><i style="width:${progress.pct}%"></i></div>
-            <p class="dock-hint">${progress.pct}% 已完成，剩余 ${progress.total - progress.n} 节。</p>
-            <div class="dock-metric">
-              <div><strong>${COURSE.phases.length}</strong><span>学习阶段</span></div>
-              <div><strong>P${l.page}</strong><span>当前课程</span></div>
+            <div class="dock-tabs" role="tablist">${dockTabs}</div>
+            <div class="dock-panel">
+              <div class="dock-page" data-dock-page="progress" ${dock === 'progress' ? '' : 'hidden'}>
+                <div class="dock-label"><span>课程进度</span><span>${progress.n}/${progress.total}</span></div>
+                <div class="dock-bar"><i style="width:${progress.pct}%"></i></div>
+                <p class="dock-hint">${progress.pct}% 已完成，剩余 ${progress.total - progress.n} 节。</p>
+                <div class="dock-metric">
+                  <div><strong>${phaseDone}/${phaseItems.length}</strong><span>${phase ? esc(phase.name) : ''}</span></div>
+                  <div><strong>P${l.page}</strong><span>当前课程</span></div>
+                  <div><strong>${phasePercent}%</strong><span>阶段进度</span></div>
+                  <div><strong>${progress.pct}%</strong><span>总进度</span></div>
+                </div>
+                <a class="btn primary" href="${biliUrl(l.page)}" target="_blank" rel="noopener">打开 B 站本节</a>
+              </div>
+              <div class="dock-page" data-dock-page="focus" ${dock === 'focus' ? '' : 'hidden'}>
+                <div class="dock-label"><span>本节目标</span><span>P${l.page}</span></div>
+                <ol class="dock-focus">${points}</ol>
+              </div>
+              <div class="dock-page" data-dock-page="practice" ${dock === 'practice' ? '' : 'hidden'}>
+                <div class="dock-label"><span>动手练习</span><span>完成再标记</span></div>
+                <div class="dock-practice">
+                  <p>${esc(l.summary || '先回看本节，再做一次关键操作。')}</p>
+                  <ul>${l.points && l.points.length ? l.points.map(item => `<li>${esc(item)}</li>`).join('') : '<li>按视频步骤重做一次。</li>'}</ul>
+                </div>
+                <a class="btn primary" href="${biliUrl(l.page)}" target="_blank" rel="noopener">回看视频</a>
+              </div>
+              <div class="dock-page" data-dock-page="note" ${dock === 'note' ? '' : 'hidden'}>
+                <div class="dock-label"><span>我的理解</span><span>自动保存</span></div>
+                <textarea class="personal-note" id="personalNote" placeholder="用自己的话写下本节关键点、还没懂的地方，或以后要重看的例子。">${noteHtml}</textarea>
+                <div class="note-status"><span id="noteStatus">输入后自动保存</span><span>${(notes[l.page] || '').length} 字</span></div>
+              </div>
+              <div class="dock-page" data-dock-page="timeline" ${dock === 'timeline' ? '' : 'hidden'}>
+                <div class="dock-label"><span>54 节导航</span><span>P${l.page}/${progress.total}</span></div>
+                <div class="timeline-picker">
+                  <select id="timelinePhase" aria-label="按阶段筛选导航">${timelineOptions}</select>
+                  <div class="timeline-waypoint">
+                    <input id="timelineJump" type="number" min="1" max="${progress.total}" placeholder="输入节号">
+                    <button class="btn" id="timelineGo" type="button">跳到</button>
+                  </div>
+                </div>
+                <div class="timeline-grid">${timelinePages.map(dotHtml).join('')}</div>
+              </div>
             </div>
-            <a class="btn primary" href="${biliUrl(l.page)}" target="_blank" rel="noopener">打开 B 站本节</a>
           </aside>
         </div>`;
 
@@ -591,7 +736,49 @@
       const pv = $('#prev-btn'), nx = $('#next-btn');
       if (pv) pv.addEventListener('click', () => { current--; save(); render(); window.scrollTo(0, 0); });
       if (nx) nx.addEventListener('click', () => { current++; save(); render(); window.scrollTo(0, 0); });
+      document.querySelectorAll('#main .dock-tab').forEach(el => {
+        el.addEventListener('click', () => {
+          dock = el.dataset.dock;
+          save();
+          document.querySelectorAll('#main .dock-tab').forEach(node => node.classList.toggle('active', node.dataset.dock === dock));
+          document.querySelectorAll('#main [data-dock-page]').forEach(node => node.hidden = node.dataset.dockPage !== dock);
+        });
+      });
+      $('#personalNote').addEventListener('input', event => {
+        notes[l.page] = event.target.value;
+        save();
+        $('#noteStatus').textContent = '已自动保存';
+        $('#noteStatus').nextElementSibling.textContent = `${event.target.value.length} 字`;
+      });
+      $('#timelinePhase').addEventListener('change', event => {
+        timelinePhase = event.target.value;
+        save();
+        render();
+      });
+      $('#timelineGo').addEventListener('click', () => {
+        const value = Number($('#timelineJump').value);
+        if (value >= 1 && value <= COURSE.lessons.length) {
+          current = value;
+          save();
+          render();
+          window.scrollTo(0, 0);
+        }
+      });
+      $('#timelineJump').addEventListener('keydown', event => {
+        if (event.key === 'Enter') $('#timelineGo').click();
+      });
+      document.querySelectorAll('#main .dot').forEach(el => {
+        el.addEventListener('click', () => {
+          current = Number(el.dataset.nav);
+          save();
+          render();
+          window.scrollTo(0, 0);
+        });
+      });
       renderSidebar();
+    }
+    function dotHtml(item) {
+      return `<button class="dot ${done.has(item.page) ? 'done' : ''} ${item.page === current ? 'current' : ''}" data-nav="${item.page}" title="P${item.page} ${esc(item.title)}">${item.page}</button>`;
     }
     function openSidebar() { document.body.classList.add('sidebar-open'); }
     function closeSidebar() { document.body.classList.remove('sidebar-open'); }
