@@ -1,0 +1,2084 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>翁恺 C 语言学习模式</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f3f5f3;
+      --surface: #ffffff;
+      --surface-2: #e9edeb;
+      --ink: #172026;
+      --muted: #617076;
+      --line: #d7dfdc;
+      --green: #177a58;
+      --green-soft: #dff1e8;
+      --orange: #c2541f;
+      --orange-soft: #fbe8dc;
+      --blue: #2f6fba;
+      --shadow: 0 10px 30px rgba(23, 32, 38, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.6 "Microsoft YaHei UI", "PingFang SC", "Segoe UI", sans-serif;
+    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: var(--blue); }
+
+    .app {
+      min-height: 100%;
+      display: grid;
+      grid-template-columns: 292px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #1b262b;
+      color: #fff;
+      padding: 24px 18px;
+      overflow: auto;
+    }
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,.16);
+    }
+    .logo {
+      width: 38px; height: 38px;
+      display: grid; place-items: center;
+      border-radius: 9px;
+      background: var(--green);
+      font-weight: 700;
+      color: #fff;
+    }
+    .sidebar-brand strong { display: block; font-size: 16px; }
+    .sidebar-brand span { font-size: 12px; color: rgba(255,255,255,.62); }
+
+    .continue {
+      width: 100%;
+      border: 0;
+      border-radius: 7px;
+      padding: 11px 12px;
+      margin: 18px 0 22px;
+      background: #fff;
+      color: #172026;
+      font-weight: 650;
+      text-align: left;
+    }
+    .continue small { display: block; color: var(--muted); font-weight: 400; }
+
+    .side-heading {
+      margin: 0 0 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,.56);
+    }
+    .module {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 4px 10px;
+      align-items: center;
+      background: transparent;
+      border: 0;
+      border-radius: 7px;
+      color: rgba(255,255,255,.82);
+      padding: 9px 10px;
+      margin-bottom: 4px;
+      text-align: left;
+    }
+    .module:hover, .module.active { background: rgba(255,255,255,.11); color: #fff; }
+    .module-count { font-size: 12px; color: rgba(255,255,255,.58); }
+    .mini-bar {
+      grid-column: 1 / 2;
+      height: 3px;
+      border-radius: 99px;
+      background: rgba(255,255,255,.18);
+      overflow: hidden;
+    }
+    .mini-bar i { display: block; height: 100%; background: #57c79c; }
+    .side-note {
+      margin-top: auto;
+      padding-top: 20px;
+      color: rgba(255,255,255,.52);
+      font-size: 12px;
+    }
+
+    .main { flex: 1; width: 100%; min-width: 0; display: flex; flex-direction: column; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 68px;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(12px);
+    }
+    .page-title { min-width: 120px; font-weight: 700; }
+    .segmented {
+      display: inline-flex;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface-2);
+    }
+    .segmented button {
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 12px;
+    }
+    .segmented button.active {
+      background: #fff;
+      color: var(--ink);
+      font-weight: 650;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .search {
+      margin-left: auto;
+      position: relative;
+      width: min(340px, 38vw);
+    }
+    .search input {
+      width: 100%;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 12px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .progress-line { height: 4px; background: var(--surface-2); }
+    .progress-line i { display: block; height: 100%; width: 0; background: var(--green); }
+
+    .content { padding: 24px; }
+    .content, .lesson-panel, .lesson-note, .study-dock { min-width: 0; }
+    .view[hidden] { display: none; }
+
+    .lesson-panel {
+      max-width: 1180px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: clip;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .lesson-head {
+      padding: 26px 30px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfb;
+    }
+    .lesson-kicker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 5px;
+      padding: 3px 7px;
+      font-size: 12px;
+      background: var(--surface-2);
+      color: var(--muted);
+    }
+    .tag.time { background: #e8eefb; color: #28598d; }
+    .tag.done { background: var(--green-soft); color: var(--green); }
+    .lesson-head h1 { margin: 0; font-size: 27px; line-height: 1.32; }
+
+    .lesson-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      padding: 16px 30px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 13px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .btn:hover { border-color: #b5c2bd; background: #f7f9f8; }
+    .btn.primary { background: var(--green); border-color: var(--green); color: #fff; }
+    .btn.primary:hover { background: #12664a; }
+    .btn.good { background: var(--green-soft); border-color: #b9dcc9; color: var(--green); font-weight: 650; }
+    .btn[disabled] { opacity: .4; cursor: not-allowed; }
+
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+    }
+    .lesson-note {
+      padding: 26px 30px 34px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .note-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 13px;
+      border-bottom: 1px solid var(--line);
+    }
+    .note-toolbar h2 { margin: 0; font-size: 18px; }
+    .note-toolbar span { color: var(--muted); font-size: 12px; }
+    .lesson-note h2 { margin: 27px 0 12px; font-size: 17px; }
+    .lesson-note h3 {
+      margin: 28px 0 11px;
+      padding-top: 16px;
+      border-top: 1px solid #edf1ef;
+      font-size: 16px;
+      color: #21483d;
+    }
+    .lesson-note h3:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+    .lesson-note p { margin: 0 0 14px; }
+    .lesson-note ul, .lesson-note ol { margin: 0 0 16px; padding-left: 22px; }
+    .lesson-note li + li { margin-top: 5px; }
+    .lesson-note li > p, .lesson-note li > ul, .lesson-note li > ol { margin: 0; }
+    .lesson-note blockquote {
+      margin: 0 0 16px;
+      padding: 10px 14px;
+      border-left: 3px solid var(--green);
+      background: var(--green-soft);
+      color: #225343;
+    }
+    .lesson-note blockquote p { margin: 0; }
+    .lesson-note pre {
+      margin: 0 0 18px;
+      padding: 15px;
+      overflow: auto;
+      border-radius: 7px;
+      background: #202a2f;
+      color: #e8efec;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .lesson-note code {
+      border-radius: 4px;
+      background: #e6ebe8;
+      color: #1e3a31;
+      padding: 2px 5px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: .92em;
+    }
+    .lesson-note pre code { background: transparent; color: inherit; padding: 0; }
+    .lesson-note table {
+      width: 100%;
+      margin: 0 0 18px;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 6px;
+    }
+    .lesson-note th, .lesson-note td {
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    .lesson-note th { background: #f2f6f4; }
+    .lesson-note hr { height: 1px; border: 0; background: var(--line); margin: 22px 0; }
+    .code-shell { position: relative; margin: 0 0 18px; }
+    .code-shell pre { margin: 0; padding: 42px 15px 15px; overflow: auto; }
+    .code-actions {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: inline-flex;
+      gap: 6px;
+    }
+    .code-actions button {
+      min-height: 28px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 5px;
+      padding: 0 8px;
+      background: rgba(255,255,255,.1);
+      color: #e8efec;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .code-actions button:hover { background: rgba(255,255,255,.2); }
+    .code-actions button:disabled { opacity: .55; cursor: default; }
+    .run-code, .open-code { display: none; }
+    body.helper-online .run-code, body.helper-online .open-code { display: inline-flex; }
+
+    .run-output {
+      margin: -8px 0 18px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 8px;
+      background: #101820;
+      color: #dce7e2;
+      overflow: hidden;
+    }
+    .run-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .run-badge { flex: 0 0 auto; font-size: 12px; line-height: 1; padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.12); color: #e8efec; }
+    .run-badge.ok { background: rgba(88,190,120,.22); color: #a9e4bb; }
+    .run-badge.err { background: rgba(240,98,90,.22); color: #f4b9b3; }
+    .run-meta { font-size: 12px; color: rgba(255,255,255,.55); }
+    .run-close, .run-again {
+      min-height: 26px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 5px;
+      padding: 0 10px;
+      background: rgba(255,255,255,.08);
+      color: #e8efec;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .run-close:hover, .run-again:hover { background: rgba(255,255,255,.18); }
+    .run-close { margin-left: auto; }
+    .run-stdin-row { display: flex; gap: 8px; align-items: stretch; padding: 10px 14px 0; }
+    .run-stdin {
+      flex: 1;
+      min-height: 56px;
+      resize: vertical;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 6px;
+      background: rgba(255,255,255,.06);
+      color: #e8efec;
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .run-stdin:focus { outline: none; border-color: rgba(120,190,150,.55); }
+    .run-pre {
+      margin: 10px 0 0;
+      padding: 12px 14px;
+      overflow: auto;
+      max-height: 320px;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #dce7e2;
+    }
+    .run-pre:last-child { margin-bottom: 12px; }
+    .run-stderr { color: #f4b9b3; }
+    .run-label { padding: 10px 14px 0; font-size: 11px; letter-spacing: .08em; color: rgba(255,255,255,.45); }
+    .run-empty { color: rgba(255,255,255,.4); font-style: italic; }
+
+    .lesson-overview {
+      display: grid;
+      grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr);
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .overview-block { padding: 18px 30px; min-width: 0; }
+    .overview-block + .overview-block { border-left: 1px solid var(--line); }
+    .overview-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .overview-mark {
+      display: inline-grid;
+      place-items: center;
+      width: 23px;
+      height: 23px;
+      border-radius: 6px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .overview-block.practice .overview-mark { background: var(--orange-soft); color: var(--orange); }
+    .overview-title h2 { margin: 0; font-size: 15px; }
+    .overview-block ol, .overview-block ul { margin: 0; padding-left: 20px; }
+    .overview-block li { margin: 6px 0; color: #35464a; }
+    .overview-block .practice-preview { color: #35464a; font-size: 13.5px; }
+    .overview-block .practice-preview p { margin: 6px 0; }
+    .overview-block .practice-preview ul, .overview-block .practice-preview ol { margin: 8px 0; }
+
+    .study-dock {
+      min-width: 0;
+      position: sticky;
+      top: 84px;
+      align-self: start;
+      max-height: calc(100vh - 100px);
+      border-left: 1px solid var(--line);
+      background: #f8faf9;
+      display: flex;
+      flex-direction: column;
+    }
+    .dock-tabs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      border-bottom: 1px solid var(--line);
+      padding: 8px;
+      gap: 4px;
+    }
+    .dock-tab {
+      min-height: 32px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 0 3px;
+      white-space: nowrap;
+    }
+    .dock-tab.active { background: #fff; color: var(--ink); font-weight: 650; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .dock-panel { min-height: 330px; max-height: 620px; overflow: auto; padding: 18px; }
+    .dock-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+    .dock-label span:last-child { color: var(--muted); font-weight: 400; }
+    .dock-bar { height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+    .dock-bar i { display: block; height: 100%; background: var(--green); }
+    .dock-hint { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+    .dock-metric {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .dock-metric div {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+    }
+    .dock-metric strong { display: block; font-size: 17px; }
+    .dock-metric span { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .dock-focus { margin: 0; padding-left: 18px; }
+    .dock-focus li { margin: 9px 0; }
+    .dock-practice { color: #35464a; font-size: 13px; }
+    .dock-practice p { margin: 8px 0; }
+    .dock-practice ul, .dock-practice ol { padding-left: 20px; }
+    .personal-note {
+      width: 100%;
+      min-height: 250px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px;
+      background: #fff;
+    }
+    .note-status {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .timeline-picker {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .timeline-picker select, .timeline-picker input {
+      width: 100%;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 8px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .timeline-waypoint {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 4px;
+    }
+    .dot {
+      width: 100%;
+      min-width: 0;
+      aspect-ratio: 1;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1;
+      padding: 0;
+    }
+    .dot.done { background: var(--green); border-color: var(--green); color: #fff; }
+    .dot.current { outline: 2px solid var(--orange); outline-offset: 1px; }
+    .dock-empty { color: var(--muted); font-size: 13px; text-align: center; padding: 30px 8px; }
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 80;
+      max-width: min(360px, calc(100vw - 44px));
+      padding: 11px 14px;
+      border-radius: 7px;
+      background: #17262b;
+      color: #fff;
+      box-shadow: 0 12px 30px rgba(0,0,0,.22);
+      font-size: 13px;
+      transform: translateY(12px);
+      opacity: 0;
+      transition: opacity .18s ease, transform .18s ease;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.error { background: #38201f; border: 1px solid rgba(240,120,110,.45); }
+
+    .path-head {
+      max-width: 1180px;
+      margin: 0 auto 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .path-head h1 { margin: 0; font-size: 22px; }
+    .path-head .toggle { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+    .path-head input { width: 17px; height: 17px; accent-color: var(--green); }
+    .path-head .tag { white-space: nowrap; }
+    .path-tools {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+    .path-tools .toggle { margin-left: 0; }
+    .filter-tabs {
+      display: inline-flex;
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--surface-2);
+    }
+    .filter-tabs button {
+      min-height: 31px;
+      border: 0;
+      border-radius: 5px;
+      padding: 0 10px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .filter-tabs button.active { background: #fff; color: var(--ink); font-weight: 650; }
+    .filter-tabs button:hover:not(.active) { color: var(--ink); }
+    .path-select {
+      min-height: 34px;
+      max-width: 170px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 8px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .path-phase-list {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+    .phase-chip {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-height: 27px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 8px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .phase-chip.active { border-color: #a6c9b8; background: var(--green-soft); color: var(--green); font-weight: 650; }
+    .phase-chip:hover { color: var(--ink); }
+    .phase-chip small { display: block; margin-top: 1px; font-size: 10px; font-weight: 400; opacity: .72; }
+    .path-subtitle { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+    .path-guide {
+      max-width: 1180px;
+      margin: 0 auto 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, .82fr);
+      gap: 1px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--line);
+    }
+    .path-guide > div {
+      min-width: 0;
+      padding: 13px 15px;
+      background: var(--surface);
+    }
+    .path-guide h2 { margin: 0 0 6px; font-size: 12px; color: var(--muted); font-weight: 650; }
+    .path-guide p { margin: 0; color: #35464a; font-size: 13px; line-height: 1.55; }
+
+    .path-wrap { max-width: 1180px; margin: 0 auto; }
+    .chapter { margin-bottom: 26px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); overflow: hidden; }
+    .chapter-title {
+      margin: 0;
+      padding: 15px 18px;
+      font-size: 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fafcfb;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .chapter-title span { color: var(--muted); font-size: 13px; }
+    .chapter-title .chapter-meta { display: flex; align-items: center; gap: 8px; }
+    .chapter-bar {
+      grid-column: 1 / -1;
+      height: 4px;
+      background: var(--surface-2);
+    }
+    .chapter-bar i { display: block; height: 100%; background: var(--green); }
+    .lesson-row {
+      display: grid;
+      grid-template-columns: 22px 82px minmax(0, 1fr) auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 18px;
+      border-bottom: 1px solid #edf1ef;
+    }
+    .lesson-row:last-child { border-bottom: 0; }
+    .lesson-row:hover { background: #f8faf9; }
+    .lesson-row.current { background: #f4faf7; }
+    .lesson-row input { width: 17px; height: 17px; accent-color: var(--green); }
+    .row-clock { color: var(--blue); font-variant-numeric: tabular-nums; }
+    .row-title { min-width: 0; overflow-wrap: anywhere; }
+    .row-title strong { display: block; font-weight: 600; }
+    .row-title small { color: var(--muted); }
+    .row-title .row-focus {
+      display: block;
+      margin: 6px 0 0;
+      color: #3d514d;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .row-hit { display: block; margin-top: 5px; color: var(--orange); font-size: 12px; line-height: 1.45; }
+    .row-detail {
+      grid-column: 2 / -1;
+      margin-top: -2px;
+      padding: 10px 0 2px;
+      color: #35464a;
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .row-detail strong { color: var(--green); }
+    .row-detail p { margin: 0 0 6px; }
+    .row-detail p:last-child { margin-bottom: 0; }
+    .row-detail .row-practice { white-space: pre-wrap; }
+    .row-actions { display: flex; gap: 6px; }
+    .icon-btn {
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 9px;
+      background: #fff;
+      color: var(--muted);
+    }
+    .icon-btn:hover { color: var(--ink); }
+    .icon-btn.expand {
+      min-width: 58px;
+      border-color: #c6d9d2;
+      background: #f5faf7;
+      color: var(--green);
+    }
+    .icon-btn.expand[aria-expanded="true"] { border-color: #b9dcc9; background: var(--green-soft); font-weight: 650; }
+    .lesson-row.current { position: relative; }
+    .lesson-row.current::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--orange);
+    }
+    .lesson-row.completed .row-title strong { color: var(--muted); text-decoration: line-through; }
+    .empty { padding: 34px; text-align: center; color: var(--muted); }
+
+    .review-dashboard {
+      max-width: 1180px;
+      margin: 0 auto 18px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+    }
+    .review-stat {
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 13px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+    .review-stat strong { font-size: 23px; color: var(--green); font-variant-numeric: tabular-nums; }
+    .review-stat.badge-blue strong { color: var(--blue); }
+    .review-stat.badge-orange strong { color: var(--orange); }
+    .review-stat span { color: var(--muted); font-size: 12px; }
+    .review-progress {
+      max-width: 1180px;
+      margin: 0 auto 20px;
+      height: 6px;
+      border-radius: 99px;
+      background: var(--surface-2);
+      overflow: hidden;
+    }
+    .review-progress i { display: block; height: 100%; background: var(--green); }
+
+    .review-grid {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 20px;
+    }
+    .review-panel { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+    .review-panel.wide { grid-column: 1 / -1; }
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 58px;
+      padding: 12px 18px;
+      margin: 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 17px;
+      background: #fafcfb;
+    }
+    .check-item { display: flex; gap: 10px; align-items: flex-start; padding: 12px 18px; border-bottom: 1px solid #edf1ef; }
+    .check-item:last-child { border-bottom: 0; }
+    .check-item input { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--green); }
+    .check-item.done span { color: var(--muted); text-decoration: line-through; }
+    .check-item.review-done { background: #f5faf7; }
+    .panel-tools {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .panel-select {
+      min-height: 32px;
+      max-width: 145px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 8px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 12px;
+    }
+    .review-empty { padding: 30px 18px; color: var(--muted); text-align: center; }
+    .review-tools {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfb;
+    }
+    .review-tools .btn { min-height: 32px; padding: 0 9px; font-size: 12px; }
+    .review-guide {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, .95fr);
+      gap: 1px;
+      margin-bottom: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--line);
+    }
+    .review-guide > div { min-width: 0; padding: 12px 14px; background: var(--surface); }
+    .review-guide h2 { margin: 0 0 5px; font-size: 12px; color: var(--muted); }
+    .review-guide p { margin: 0; color: #35464a; font-size: 12px; line-height: 1.5; }
+    .review-lesson-list { max-height: 520px; overflow: auto; }
+    .review-lesson-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-bottom: 1px solid #edf1ef;
+    }
+    .review-lesson-row:last-child { border-bottom: 0; }
+    .review-lesson-row.reviewed { background: #f5faf7; }
+    .review-lesson-main { min-width: 0; flex: 1; }
+    .review-lesson-main strong { display: block; font-size: 13px; overflow-wrap: anywhere; }
+    .review-lesson-main small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .review-lesson-row .btn { min-height: 30px; padding: 0 8px; font-size: 12px; }
+    .review-score { display: inline-flex; align-items: baseline; gap: 5px; }
+    .review-score strong { font-size: 20px; color: var(--green); font-variant-numeric: tabular-nums; }
+    .review-lesson-row .tag { flex: 0 0 auto; }
+    .check-go {
+      min-height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: 0 7px;
+      background: #fff;
+      color: var(--blue);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .check-go:hover { border-color: #b5c2bd; background: #f7f9f8; }
+    .check-meta { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .check-item .check-main { min-width: 0; flex: 1; }
+    .check-item .check-main span:first-child { overflow-wrap: anywhere; }
+    .mistake-go {
+      min-height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: 0 7px;
+      background: #fff;
+      color: var(--green);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .mistake-go:hover { border-color: #b9dcc9; background: var(--green-soft); }
+    .mistake-wrap { width: 100%; overflow-x: auto; }
+    .mistake-table { width: 100%; border-collapse: collapse; }
+    .mistake-table th, .mistake-table td { padding: 11px 14px; border-bottom: 1px solid #edf1ef; text-align: left; vertical-align: top; }
+    .mistake-table th { background: #f8faf9; color: var(--muted); font-size: 13px; }
+    .mistake-table tr:last-child td { border-bottom: 0; }
+    .mistake-table code { border-radius: 4px; background: #e6ebe8; padding: 1px 4px; font-size: .92em; }
+    .mistake-group-row td {
+      padding: 8px 14px;
+      background: #f2f6f4;
+      color: #24483d;
+      font-weight: 650;
+      font-size: 13px;
+    }
+
+    .menu-button {
+      display: none;
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 11px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .sidebar-close {
+      display: none;
+      min-height: 30px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 6px;
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      padding: 0 9px;
+    }
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 35;
+      background: rgba(20,28,32,.45);
+    }
+
+    @media (max-width: 1000px) {
+      .app { display: block; }
+      .main { order: unset; }
+      .sidebar {
+        position: fixed;
+        z-index: 45;
+        inset: 0 auto 0 0;
+        width: min(84vw, 320px);
+        height: 100vh;
+        padding: 20px 18px 26px;
+        transform: translateX(-105%);
+        transition: transform .22s ease;
+      }
+      body.sidebar-open .sidebar { transform: translateX(0); }
+      body.sidebar-open { overflow: hidden; }
+      .menu-button { display: inline-flex; }
+      .sidebar-close { display: inline-flex; }
+      .sidebar-backdrop {
+        display: block;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .22s ease;
+      }
+      body.sidebar-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
+      .side-note { margin-top: 18px; }
+      .content { padding: 13px; }
+      .lesson-head { padding: 19px 18px 16px; }
+      .lesson-head h1 { font-size: 22px; }
+      .lesson-actions { padding: 13px 18px; gap: 7px; }
+      .lesson-actions .btn { min-height: 36px; padding: 0 10px; }
+      .lesson-grid { grid-template-columns: minmax(0, 1fr); }
+      .review-grid { grid-template-columns: minmax(0, 1fr); }
+      .lesson-actions > * { max-width: 100%; }
+      .study-dock {
+        position: static;
+        max-height: none;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+      .lesson-overview { grid-template-columns: minmax(0, 1fr); }
+      .overview-block { padding: 15px 18px; }
+      .overview-block + .overview-block { border-left: 0; border-top: 1px solid var(--line); }
+      .dock-panel { min-height: 0; max-height: none; }
+      .timeline-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+      .topbar { flex-wrap: wrap; }
+      .search { width: 100%; margin-left: 0; order: 5; }
+      .path-tools { align-items: flex-start; }
+      .path-tools .toggle { margin-left: 0; }
+      .path-tools .toggle, .filter-tabs { width: 100%; }
+      .filter-tabs button { flex: 1; }
+      .path-select { max-width: none; width: 100%; }
+      .path-guide, .review-guide { grid-template-columns: minmax(0, 1fr); }
+      .path-guide > div, .review-guide > div { border-bottom: 1px solid var(--line); }
+      .path-guide > div:last-child, .review-guide > div:last-child { border-bottom: 0; }
+      .chapter-title { flex-wrap: wrap; }
+      .chapter-title .chapter-meta { width: 100%; }
+      .review-dashboard { grid-template-columns: minmax(0, 1fr); }
+      .review-stat { flex-direction: column; gap: 2px; }
+      .review-grid { grid-template-columns: minmax(0, 1fr); }
+      .review-panel.wide { grid-column: auto; }
+      .review-tools { align-items: stretch; }
+      .panel-tools { justify-content: flex-start; }
+      .panel-select { max-width: none; width: 100%; }
+      .review-lesson-row { align-items: center; flex-wrap: nowrap; }
+      .review-lesson-main { flex: 1; }
+      .review-lesson-row .btn { margin-left: 0; flex: 0 0 auto; }
+      .lesson-row { grid-template-columns: 22px 70px minmax(0, 1fr); }
+      .lesson-row .row-detail { grid-column: 2 / 4; }
+      .row-actions {
+        grid-column: 2 / 4;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+    }
+
+    @media print {
+      .sidebar, .topbar, .progress-line, .lesson-actions, .study-dock, .timeline, .sidebar-backdrop { display: none !important; }
+      .app { display: block; }
+      .content { padding: 0; }
+      .lesson-panel { border: 0; box-shadow: none; }
+      .lesson-grid { display: block; }
+      .lesson-overview { grid-template-columns: 1fr 1fr; }
+      .overview-block { padding: 10px 4px; }
+      .lesson-note { padding: 0 4px; overflow: visible; }
+      .code-actions { display: none !important; }
+      .run-output { display: none !important; }
+      html, body { height: auto !important; overflow: visible !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo">C</div>
+        <div>
+          <strong>翁恺 C 语言</strong>
+          <span>129 节学习系统</span>
+        </div>
+        <button class="sidebar-close" id="sidebarClose" aria-label="关闭目录">关闭</button>
+      </div>
+      <button class="continue" id="continueButton"></button>
+      <p class="side-heading">学习阶段</p>
+      <nav id="moduleList"></nav>
+      <div class="side-note">
+        <span id="courseClock"></span><br>
+        进度与笔记保存在本机浏览器。
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-button" id="menuButton" aria-label="打开目录" aria-expanded="false">目录</button>
+        <div class="page-title" id="viewTitle">当前学习</div>
+        <div class="segmented" role="tablist">
+          <button data-view="focus">当前学习</button>
+          <button data-view="path">课程路径</button>
+          <button data-view="review">复习室</button>
+        </div>
+        <label class="search">
+          <input id="searchInput" type="search" placeholder="搜索标题或笔记内容" autocomplete="off">
+        </label>
+      </header>
+      <div class="progress-line"><i id="globalProgress"></i></div>
+
+      <section class="content view" id="focusView"></section>
+      <section class="content view" id="pathView" hidden></section>
+      <section class="content view" id="reviewView" hidden></section>
+    </main>
+  </div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="./c-course-data.js"></script>
+  <script>
+    const course = window.COURSE;
+    const lessons = course.lessons;
+    const STORAGE_KEY = `wengkai-c-study-${course.totalSeconds}`;
+    const savedState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    const state = Object.assign({
+      view: ['#focus', '#path', '#review'].includes(location.hash) ? location.hash.slice(1) : 'focus',
+      current: lessons.find(item => !savedState.completed?.[item.page])?.page || lessons[0].page,
+      module: 'all',
+      query: '',
+      hideDone: false,
+      pathMode: 'all',
+      showFocus: true,
+      expanded: {},
+      dock: 'progress',
+      timelinePhase: 'all',
+      reviewPhase: 'all',
+      checkPhase: 'all',
+      mistakeGroup: 'all',
+      reviewDate: '',
+      reviewedPages: [],
+      reviewPages: [],
+      completed: {},
+      tasks: {},
+      notes: {}
+    }, savedState);
+
+    const $ = selector => document.querySelector(selector);
+    const views = { focus: $('#focusView'), path: $('#pathView'), review: $('#reviewView') };
+    const codeCache = [];
+    const codeMetaCache = [];
+    const HELPER_BASE = 'http://127.0.0.1:4177';
+    let helperReady = false;
+
+    function setSidebar(open) {
+      document.body.classList.toggle('sidebar-open', open);
+      $('#menuButton').setAttribute('aria-expanded', String(open));
+    }
+    function closeSidebar() {
+      setSidebar(false);
+    }
+    function copyText(text, button) {
+      const done = () => {
+        const old = button.textContent;
+        button.textContent = '已复制';
+        setTimeout(() => { button.textContent = old; }, 1200);
+      };
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => {
+          const area = document.createElement('textarea');
+          area.value = text;
+          area.style.position = 'fixed';
+          area.style.opacity = '0';
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand('copy');
+          area.remove();
+          done();
+        });
+        return;
+      }
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand('copy');
+      area.remove();
+      done();
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+    function isDone(page) { return Boolean(state.completed[page]); }
+    function lesson(page) { return lessons.find(item => item.page === page) || lessons[0]; }
+    function fmtClock(sec) {
+      const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+      return h ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` : `${m}:${String(s).padStart(2, '0')}`;
+    }
+    function fmtDuration(sec) {
+      return sec >= 60 ? `${Math.round(sec / 60)} 分钟` : `${sec} 秒`;
+    }
+    function escapeHtml(text) {
+      return text.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+    function todayKey() {
+      const date = new Date();
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+    function phaseList() {
+      return [...new Set(lessons.map(item => item.phase))];
+    }
+    function normalizeStudyState() {
+      const phases = phaseList();
+      const checkPhases = [...new Set((course.checkMeta || []).map(item => item.phase).filter(Boolean))];
+      const mistakeTopics = [...new Set((course.mistakes || []).map(item => item.topic).filter(Boolean))];
+      const numericCurrent = Number(state.current);
+      state.current = Number.isInteger(numericCurrent) && lessons.some(item => item.page === numericCurrent)
+        ? numericCurrent
+        : lessons[0].page;
+      if (state.module !== 'all' && !phases.includes(state.module)) state.module = 'all';
+      if (!['all', 'incomplete', 'phase'].includes(state.pathMode)) state.pathMode = 'all';
+      if (state.dock !== 'progress' && !['focus', 'practice', 'note', 'timeline'].includes(state.dock)) state.dock = 'progress';
+      if (state.timelinePhase !== 'all' && !phases.includes(state.timelinePhase)) state.timelinePhase = 'all';
+      if (state.reviewPhase !== 'all' && !phases.includes(state.reviewPhase)) state.reviewPhase = 'all';
+      if (state.checkPhase !== 'all' && !checkPhases.includes(state.checkPhase)) state.checkPhase = 'all';
+      if (state.mistakeGroup !== 'all' && !mistakeTopics.includes(state.mistakeGroup)) state.mistakeGroup = 'all';
+      if (!['#focus', '#path', '#review'].includes(`#${state.view}`)) state.view = 'focus';
+      ['completed', 'tasks', 'notes', 'expanded'].forEach(key => {
+        if (!state[key] || typeof state[key] !== 'object' || Array.isArray(state[key])) state[key] = {};
+      });
+      state.query = String(state.query || '');
+      state.showFocus = Boolean(state.showFocus);
+      state.hideDone = Boolean(state.hideDone);
+    }
+    function showToast(message, isError) {
+      const toast = $('#toast');
+      toast.textContent = message;
+      toast.classList.toggle('error', Boolean(isError));
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), isError ? 3600 : 2200);
+    }
+    async function probeHelper() {
+      try {
+        const response = await fetch(`${HELPER_BASE}/ping`, { signal: AbortSignal.timeout(1500) });
+        helperReady = Boolean(response.ok);
+      } catch (error) {
+        helperReady = false;
+      }
+      document.body.classList.toggle('helper-online', helperReady);
+    }
+    async function helperPost(route, payload) {
+      const response = await fetch(`${HELPER_BASE}${route}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(30000)
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data) throw new Error((data && data.error) || `HTTP ${response.status}`);
+      return data;
+    }
+    function helperErrorHint(error) {
+      return /fetch|network|abort/i.test(`${error.name} ${error.message}`)
+        ? '本地助手未响应，请先双击“启动学习服务.bat”'
+        : error.message;
+    }
+    async function runCode(index, button) {
+      const shell = button.closest('.code-shell') || button.closest('.run-output')?.previousElementSibling;
+      if (!shell || !shell.classList.contains('code-shell')) return;
+      const oldPanel = shell.nextElementSibling?.classList.contains('run-output') ? shell.nextElementSibling : null;
+      const stdinValue = oldPanel?.querySelector('.run-stdin')?.value || '';
+      const original = button.textContent;
+      button.disabled = true;
+      button.textContent = '运行中…';
+      try {
+        const result = await helperPost('/run', { code: codeCache[index] || '', stdin: stdinValue });
+        renderRunPanel(shell, index, result, stdinValue);
+      } catch (error) {
+        showToast(`运行失败：${helperErrorHint(error)}`, true);
+      } finally {
+        button.disabled = false;
+        button.textContent = original;
+      }
+    }
+    function renderRunPanel(shell, index, result, stdinValue) {
+      const old = shell.nextElementSibling;
+      if (old?.classList.contains('run-output')) old.remove();
+      const badge = result.compileError ? ['err', '编译失败']
+        : result.timedOut ? ['err', '运行超时']
+        : result.exitCode === 0 ? ['ok', '运行完成']
+        : ['err', `退出码 ${result.exitCode}`];
+      const meta = result.compileError ? 'gcc 编译未通过，检查下方报错'
+        : result.timedOut ? '超过 5 秒已终止，疑似死循环'
+        : `退出码 ${result.exitCode} · ${((result.elapsedMs || 0) / 1000).toFixed(2)} 秒`;
+      const stdoutHtml = result.stdout ? escapeHtml(result.stdout) : '<span class="run-empty">(无输出)</span>';
+      let html = `<div class="run-output"><div class="run-head"><span class="run-badge ${badge[0]}">${badge[1]}</span><span class="run-meta">${escapeHtml(meta)}</span><button class="run-close" type="button" data-close-run>关闭</button></div><div class="run-stdin-row"><textarea class="run-stdin" placeholder="程序输入（供 scanf 读取，可用换行分隔）">${escapeHtml(stdinValue)}</textarea><button class="run-again" type="button" data-run="${index}">重新运行</button></div><pre class="run-pre run-stdout">${stdoutHtml}</pre>`;
+      if (result.compileError) {
+        html += `<div class="run-label">编译错误</div><pre class="run-pre run-stderr">${escapeHtml(result.compileError)}</pre>`;
+      } else if (result.stderr) {
+        html += `<div class="run-label">错误输出</div><pre class="run-pre run-stderr">${escapeHtml(result.stderr)}</pre>`;
+      }
+      html += '</div>';
+      shell.insertAdjacentHTML('afterend', html);
+    }
+    async function openInIde(index, button) {
+      const meta = codeMetaCache[index] || {};
+      const original = button.textContent;
+      button.disabled = true;
+      try {
+        const result = await helperPost('/launch', {
+          code: codeCache[index] || '',
+          lessonPage: meta.page,
+          lessonTitle: meta.title
+        });
+        showToast(result.existed
+          ? `已在 Red Panda 中打开：${result.fileName}（你在 IDE 里的修改被保留）`
+          : `已在 Red Panda 中打开：${result.fileName}`);
+      } catch (error) {
+        showToast(`打开失败：${helperErrorHint(error)}`, true);
+      } finally {
+        button.disabled = false;
+      }
+    }
+    function searchSnippet(text, query, limit = 150) {
+      const clean = text.replace(/[*#`>\n]+/g, ' ').replace(/\s+/g, ' ').trim();
+      const index = clean.toLowerCase().indexOf(query.toLowerCase());
+      if (index < 0) return '';
+      const start = Math.max(0, index - 45);
+      const end = Math.min(clean.length, index + query.length + 70);
+      return `${start ? '…' : ''}${clean.slice(start, end)}${end < clean.length ? '…' : ''}`;
+    }
+    function buildReviewPages() {
+      const pool = lessons.filter(item => !isDone(item.page));
+      const candidates = pool.length ? pool : lessons;
+      const picks = [];
+      const seen = new Set();
+      phaseList().forEach(name => {
+        if (picks.length >= 6) return;
+        const samePhase = candidates.filter(item => item.phase === name);
+        if (!samePhase.length) return;
+        const item = samePhase[Math.floor(Math.random() * samePhase.length)];
+        if (!seen.has(item.page)) {
+          seen.add(item.page);
+          picks.push(item.page);
+        }
+      });
+      const rest = candidates.filter(item => !seen.has(item.page));
+      while (picks.length < 6 && rest.length) {
+        const item = rest[Math.floor(Math.random() * rest.length)];
+        seen.add(item.page);
+        picks.push(item.page);
+        rest.splice(rest.indexOf(item), 1);
+      }
+      return picks;
+    }
+    function ensureReviewPhase(name = state.reviewPhase) {
+      if (name === 'all' || state.reviewPages.some(page => lesson(page).phase === name)) return false;
+      const pool = lessons.filter(item => item.phase === name && !state.reviewPages.includes(item.page));
+      if (!pool.length) return false;
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      state.reviewPages.push(pick.page);
+      return true;
+    }
+    function normalizeReviewState() {
+      const today = todayKey();
+      state.reviewPages = (state.reviewPages || []).map(Number).filter((page, index, list) =>
+        Number.isInteger(page) && lessons.some(item => item.page === page) && list.indexOf(page) === index
+      ).slice(0, 8);
+      state.reviewedPages = (state.reviewedPages || []).map(Number).filter((page, index, list) =>
+        Number.isInteger(page) && lessons.some(item => item.page === page) && list.indexOf(page) === index
+      );
+      if (state.reviewDate !== today || !state.reviewPages.length) {
+        state.reviewDate = today;
+        state.reviewedPages = [];
+        state.reviewPages = buildReviewPages();
+      }
+      ensureReviewPhase();
+    }
+    function markReviewed(page) {
+      if (!state.reviewedPages.includes(page)) {
+        state.reviewedPages.push(page);
+        saveState();
+      }
+    }
+    function openLesson(page, message) {
+      state.current = Number(page);
+      state.view = 'focus';
+      saveState();
+      render();
+      if (message) showToast(message);
+    }
+    function reviewItems() {
+      return state.reviewPages.map(page => lesson(page)).filter(item =>
+        state.reviewPhase === 'all' || item.phase === state.reviewPhase
+      );
+    }
+    function checkItems() {
+      return course.checklist.map((text, index) => {
+        const meta = course.checkMeta?.[index] || {};
+        return { text, index, meta, done: Boolean(state.tasks[index]) };
+      }).filter(item => state.checkPhase === 'all' || item.meta.phase === state.checkPhase);
+    }
+    function mistakeGroups() {
+      const groups = new Map();
+      course.mistakes.forEach(item => {
+        if (state.mistakeGroup !== 'all' && item.topic !== state.mistakeGroup) return;
+        if (!groups.has(item.topic)) groups.set(item.topic, []);
+        groups.get(item.topic).push(item);
+      });
+      return groups;
+    }
+    function phaseGuideFor(name) {
+      return course.phaseGuide?.find(item => item.name === name) || course.phaseGuide?.[0];
+    }
+    function completedCount(list = lessons) { return list.filter(item => isDone(item.page)).length; }
+    function overallStudyPercent() {
+      const lessonPercent = lessons.length ? Math.round(completedCount() / lessons.length * 100) : 0;
+      const checkPercent = course.checklist.length
+        ? Math.round(Object.values(state.tasks).filter(Boolean).length / course.checklist.length * 100)
+        : 0;
+      const reviewList = reviewItems();
+      const reviewedToday = state.reviewedPages.filter(page => reviewList.some(item => item.page === page)).length;
+      const reviewPercent = reviewList.length ? Math.round(reviewedToday / reviewList.length * 100) : 0;
+      return Math.round((lessonPercent + checkPercent + reviewPercent) / 3);
+    }
+    function nextIncomplete(fromPage = 0) {
+      return lessons.find(item => item.page > fromPage && !isDone(item.page))?.page
+        || lessons.find(item => !isDone(item.page))?.page
+        || lessons[0].page;
+    }
+
+    function renderInline(text) {
+      const tokens = [];
+      const token = value => {
+        tokens.push(value);
+        return `\u0000${tokens.length - 1}\u0000`;
+      };
+      return escapeHtml(text)
+        .replace(/`([^`]+)`/g, (_, code) => token(`<code>${code}</code>`))
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, (_, label, href) => token(`<a href="${href}" target="_blank" rel="noreferrer">${label}</a>`))
+        .replace(/\*\*([^*]+)\*\*/g, (_, value) => token(`<strong>${value}</strong>`))
+        .replace(/\u0000(\d+)\u0000/g, (_, index) => tokens[Number(index)]);
+    }
+    function renderMarkdown(source, meta) {
+      const chunks = source.split(/```/);
+      let html = '';
+      chunks.forEach((chunk, index) => {
+        if (index % 2) {
+          const raw = chunk.replace(/^\n/, '').replace(/\n$/, '');
+          const code = raw.replace(/^(?:c|bash|text|in|out|sh)\n/, '');
+          codeCache.push(code);
+          codeMetaCache.push({ page: meta?.page, title: meta?.title });
+          html += `<div class="code-shell"><div class="code-actions"><button class="copy-code" type="button" data-copy="${codeCache.length - 1}">复制</button><button class="run-code" type="button" data-run="${codeCache.length - 1}">运行</button><button class="open-code" type="button" data-open="${codeCache.length - 1}">打开</button></div><pre><code>${escapeHtml(code)}</code></pre></div>`;
+          return;
+        }
+        const blocks = [];
+        let list = null;
+        let quote = false;
+        let table = [];
+        const closeList = () => {
+          if (list) { blocks.push(`</${list}>`); list = null; }
+        };
+        const closeQuote = () => {
+          if (quote) { blocks.push('</blockquote>'); quote = false; }
+        };
+        const flushTable = () => {
+          if (!table.length) return;
+          const rows = table.filter(row => !row.every(cell => /^:?-{3,}:?$/.test(cell.trim())));
+          if (rows.length) {
+            const [head, ...body] = rows;
+            blocks.push('<div class="table-wrap"><table><thead><tr>');
+            blocks.push(head.map(cell => `<th>${renderInline(cell)}</th>`).join(''));
+            blocks.push('</tr></thead><tbody>');
+            body.forEach(row => blocks.push(`<tr>${row.map(cell => `<td>${renderInline(cell)}</td>`).join('')}</tr>`));
+            blocks.push('</tbody></table></div>');
+          }
+          table = [];
+        };
+        const flush = () => {
+          closeList();
+          closeQuote();
+          flushTable();
+        };
+        for (const rawLine of chunk.split('\n')) {
+          const line = rawLine.trim();
+          if (!line) { flush(); continue; }
+          const tableCells = line.startsWith('|') && line.endsWith('|')
+            ? line.slice(1, -1).split('|').map(cell => cell.trim())
+            : null;
+          const tableSeparator = tableCells && tableCells.length > 1 && tableCells.every(cell => /^:?-{3,}:?$/.test(cell));
+          if (tableCells && tableCells.length > 1) {
+            closeList();
+            closeQuote();
+            table.push(tableCells);
+            continue;
+          }
+          if (table.length) flushTable();
+          const hashHeading = line.match(/^(#{1,6})\s+(.+)$/);
+          const boldHeading = line.match(/^\*\*([^*]+)\*\*$/);
+          if (hashHeading || boldHeading) {
+            flush();
+            const level = Math.min(3, hashHeading ? hashHeading[1].length : 3);
+            blocks.push(`<h${level}>${renderInline(hashHeading ? hashHeading[2] : boldHeading[1])}</h${level}>`);
+            continue;
+          }
+          if (/^-{3,}$/.test(line)) {
+            flush();
+            blocks.push('<hr>');
+            continue;
+          }
+          if (line.startsWith('> ')) {
+            closeList();
+            if (!quote) { blocks.push('<blockquote>'); quote = true; }
+            blocks.push(`<p>${renderInline(line.slice(2))}</p>`);
+            continue;
+          }
+          closeQuote();
+          const ul = line.match(/^[-*]\s+(.+)$/);
+          const ol = line.match(/^\d+\.\s+(.+)$/);
+          if (ul) {
+            if (list !== 'ul') { if (list) blocks.push('</ul>'); blocks.push('<ul>'); list = 'ul'; }
+            blocks.push(`<li>${renderInline(ul[1])}</li>`);
+          } else if (ol) {
+            if (list !== 'ol') { if (list) blocks.push(`</${list}>`); blocks.push('<ol>'); list = 'ol'; }
+            blocks.push(`<li>${renderInline(ol[1])}</li>`);
+          } else {
+            if (list) { blocks.push(`</${list}>`); list = null; }
+            if (line) blocks.push(`<p>${renderInline(line)}</p>`);
+          }
+        }
+        flush();
+        html += blocks.join('');
+      });
+      return html;
+    }
+
+    function renderSidebar() {
+      const total = completedCount();
+      const percent = Math.round(total / lessons.length * 100);
+      const currentLesson = lesson(state.current);
+      $('#continueButton').innerHTML = `<small>${percent}% 已完成 · 继续学习</small>P${currentLesson.page} ${escapeHtml(currentLesson.title)}`;
+      $('#courseClock').textContent = `总时长 ${fmtClock(course.totalSeconds)}`;
+      $('#globalProgress').style.width = `${overallStudyPercent()}%`;
+
+      const phases = [...new Set(lessons.map(item => item.phase))];
+      $('#moduleList').innerHTML = [
+        moduleButton('all', '全部课程', lessons.length, total)
+      ].concat(phases.map(name => {
+        const list = lessons.filter(item => item.phase === name);
+        return moduleButton(name, name, list.length, completedCount(list));
+      })).join('');
+    }
+    function moduleButton(value, label, count, done) {
+      const percent = Math.round(done / count * 100);
+      return `<button class="module ${state.module === value ? 'active' : ''}" data-module="${escapeHtml(value)}">
+        <span>${escapeHtml(label)}</span><span class="module-count">${done}/${count}</span>
+        <span class="mini-bar"><i style="width:${percent}%"></i></span>
+      </button>`;
+    }
+
+    function renderFocus() {
+      const item = lesson(state.current);
+      const prev = lessons.find(last => last.page === item.page - 1);
+      const next = lessons.find(item2 => item2.page === item.page + 1);
+      const done = isDone(item.page);
+      const total = completedCount();
+      const percent = Math.round(total / lessons.length * 100);
+      codeCache.length = 0;
+      const dockTabs = ['progress', 'focus', 'practice', 'note', 'timeline'].map(name => {
+        const labels = { progress: '进度', focus: '目标', practice: '练习', note: '笔记', timeline: '导航' }[name];
+        return `<button class="dock-tab ${state.dock === name ? 'active' : ''}" data-dock="${name}" type="button">${labels}</button>`;
+      }).join('');
+      const focusList = (item.focus || []).map((line, index) => `<li>${renderInline(line)}</li>`).join('');
+      const phaseItems = lessons.filter(item2 => item2.phase === item.phase);
+      const chapterItems = lessons.filter(item2 => item2.chapter === item.chapter);
+      const phaseDone = completedCount(phaseItems);
+      const chapterDone = completedCount(chapterItems);
+      const phasePercent = Math.round(phaseDone / phaseItems.length * 100);
+      const chapterPercent = Math.round(chapterDone / chapterItems.length * 100);
+      const noteHtml = escapeHtml(state.notes[item.page] || '');
+      const timelinePages = lessons.filter(item2 => state.timelinePhase === 'all' || item2.phase === state.timelinePhase);
+      const timelineOptions = ['<option value="all">全部阶段</option>']
+        .concat(phaseList().map(name => `<option value="${escapeHtml(name)}" ${state.timelinePhase === name ? 'selected' : ''}>${escapeHtml(name)}</option>`))
+        .join('');
+      $('#focusView').innerHTML = `
+        <article class="lesson-panel">
+          <header class="lesson-head">
+            <div class="lesson-kicker">
+              <span class="tag">P${item.page}</span>
+              <span class="tag">${escapeHtml(item.chapter)}</span>
+              <span class="tag">${escapeHtml(item.phase)}</span>
+              <span class="tag time">${escapeHtml(item.clock)}</span>
+              <span class="tag">${fmtDuration(item.duration)}</span>
+              ${done ? '<span class="tag done">已完成</span>' : ''}
+            </div>
+            <h1>${escapeHtml(item.title)}</h1>
+          </header>
+          <div class="lesson-actions">
+            <button class="btn" data-nav="${prev ? prev.page : ''}" ${prev ? '' : 'disabled'}>上一节</button>
+            <a class="btn primary" href="${item.url}" target="_blank" rel="noreferrer">打开 B 站本节</a>
+            <button class="btn ${done ? '' : 'good'}" data-toggle-done="${item.page}">${done ? '标为未完成' : '标记完成'}</button>
+            <button class="btn" id="exportLesson">导出本节</button>
+            <button class="btn" data-nav="${next ? next.page : ''}" ${next ? '' : 'disabled'}>下一节</button>
+          </div>
+          <div class="lesson-overview">
+            <section class="overview-block">
+              <div class="overview-title"><span class="overview-mark">目</span><h2>本节目标</h2></div>
+              <ol>${focusList || '<li>先读懂本节要解决的问题。</li>'}</ol>
+            </section>
+            <section class="overview-block practice">
+              <div class="overview-title"><span class="overview-mark">练</span><h2>先动手</h2></div>
+              <div class="practice-preview">${renderMarkdown(item.practice || '', { page: item.page, title: item.title })}</div>
+            </section>
+          </div>
+          <div class="lesson-grid">
+            <div class="lesson-note">
+              <div class="note-toolbar">
+                <h2>完整讲解</h2>
+                <span>${item.focus?.length || 0} 个目标 · ${Math.round((item.body || '').length / 100) / 10} 千字</span>
+                <button class="btn" id="copyLessonBody" type="button">复制本节</button>
+              </div>
+              ${renderMarkdown(item.body || '', { page: item.page, title: item.title })}
+            </div>
+            <aside class="study-dock">
+              <div class="dock-tabs" role="tablist">
+                ${dockTabs}
+              </div>
+              <div class="dock-panel">
+                <div class="dock-page" data-dock-page="progress" ${state.dock === 'progress' ? '' : 'hidden'}>
+                  <div class="dock-label"><span>课程进度</span><span>${total}/${lessons.length}</span></div>
+                  <div class="dock-bar"><i style="width:${percent}%"></i></div>
+                  <p class="dock-hint">${percent}% 已完成，剩余 ${lessons.length - total} 节。</p>
+                  <div class="dock-metric">
+                    <div><strong>${phaseDone}/${phaseItems.length}</strong><span>${escapeHtml(item.phase)}</span></div>
+                    <div><strong>${chapterDone}/${chapterItems.length}</strong><span>${escapeHtml(item.chapter)}</span></div>
+                    <div><strong>${phasePercent}%</strong><span>阶段进度</span></div>
+                    <div><strong>${chapterPercent}%</strong><span>章节进度</span></div>
+                  </div>
+                  <a class="btn primary" href="${item.url}" target="_blank" rel="noreferrer">打开 B 站本节</a>
+                </div>
+                <div class="dock-page" data-dock-page="focus" ${state.dock === 'focus' ? '' : 'hidden'}>
+                  <div class="dock-label"><span>本节目标</span><span>P${item.page}</span></div>
+                  <ol class="dock-focus">${focusList || '<li>先读懂本节要解决的问题。</li>'}</ol>
+                </div>
+                <div class="dock-page" data-dock-page="practice" ${state.dock === 'practice' ? '' : 'hidden'}>
+                  <div class="dock-label"><span>动手练习</span><span>完成再标记</span></div>
+                  <div class="dock-practice">${renderMarkdown(item.practice || '', { page: item.page, title: item.title })}</div>
+                  <a class="btn primary" href="${item.url}" target="_blank" rel="noreferrer">回看视频</a>
+                </div>
+                <div class="dock-page" data-dock-page="note" ${state.dock === 'note' ? '' : 'hidden'}>
+                  <div class="dock-label"><span>我的理解</span><span>自动保存</span></div>
+                  <textarea class="personal-note" id="personalNote" placeholder="用自己的话写下本节关键点、还没懂的地方，或以后要重看的例子。">${noteHtml}</textarea>
+                  <div class="note-status"><span id="noteStatus">输入后自动保存</span><span>${(state.notes[item.page] || '').length} 字</span></div>
+                </div>
+                <div class="dock-page" data-dock-page="timeline" ${state.dock === 'timeline' ? '' : 'hidden'}>
+                  <div class="dock-label"><span>129 节导航</span><span>P${item.page}/${lessons.length}</span></div>
+                  <div class="timeline-picker">
+                    <select id="timelinePhase" aria-label="按阶段筛选导航">${timelineOptions}</select>
+                    <div class="timeline-waypoint">
+                      <input id="timelineJump" type="number" min="1" max="${lessons.length}" placeholder="输入节号">
+                      <button class="btn" id="timelineGo" type="button">跳到</button>
+                    </div>
+                  </div>
+                  <div class="timeline-grid">${timelinePages.map(dotHtml).join('')}</div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </article>`;
+      $('#copyLessonBody').addEventListener('click', event => copyText(item.body || '', event.currentTarget));
+      $('#personalNote').addEventListener('input', event => {
+        state.notes[item.page] = event.target.value;
+        saveState();
+        $('#noteStatus').textContent = '已自动保存';
+        $('#noteStatus').nextElementSibling.textContent = `${event.target.value.length} 字`;
+      });
+      $('#timelinePhase').addEventListener('change', event => {
+        state.timelinePhase = event.target.value;
+        saveState();
+        renderFocus();
+      });
+      $('#timelineGo').addEventListener('click', () => {
+        const value = Number($('#timelineJump').value);
+        if (value >= 1 && value <= lessons.length) {
+          state.current = value;
+          state.view = 'focus';
+          saveState();
+          render();
+        }
+      });
+      $('#timelineJump').addEventListener('keydown', event => {
+        if (event.key === 'Enter') $('#timelineGo').click();
+      });
+    }
+    function dotHtml(item) {
+      return `<button class="dot ${isDone(item.page) ? 'done' : ''} ${item.page === state.current ? 'current' : ''}" data-nav="${item.page}" title="P${item.page} ${escapeHtml(item.title)}">${item.page}</button>`;
+    }
+
+    function visibleLessons() {
+      const query = state.query.trim().toLowerCase();
+      const currentPhase = lesson(state.current).phase;
+      return lessons.filter(item => {
+        if (state.module !== 'all' && item.phase !== state.module) return false;
+        if (state.pathMode === 'incomplete' && isDone(item.page)) return false;
+        if (state.pathMode === 'phase' && item.phase !== currentPhase) return false;
+        if (state.hideDone && isDone(item.page)) return false;
+        if (!query) return true;
+        return [item.title, item.body, item.focus?.join(' '), item.practice, item.chapter, item.phase]
+          .join(' ').toLowerCase().includes(query);
+      });
+    }
+    function filterTabHtml(name, label) {
+      return `<button class="${state.pathMode === name ? 'active' : ''}" data-path-mode="${name}" type="button">${label}</button>`;
+    }
+    function renderPath() {
+      const list = visibleLessons();
+      const groups = new Map();
+      list.forEach(item => {
+        if (!groups.has(item.chapter)) groups.set(item.chapter, []);
+        groups.get(item.chapter).push(item);
+      });
+      const groupsHtml = [...groups].map(([chapter, items]) => {
+        const done = completedCount(items);
+        const duration = items.reduce((sum, item) => sum + (item.duration || 0), 0);
+        const currentInChapter = items.some(item => item.page === state.current);
+        const chapterPercent = Math.round(done / items.length * 100);
+        return `<section class="chapter">
+          <h2 class="chapter-title">${escapeHtml(chapter)}<span class="chapter-meta">
+            <span>${fmtClock(duration)}</span>
+            <span>${done}/${items.length} 完成</span>
+            ${currentInChapter ? '<span class="tag done">当前阶段</span>' : ''}
+          </span></h2>
+          <div class="chapter-bar"><i style="width:${chapterPercent}%"></i></div>
+          ${items.map(rowHtml).join('')}
+        </section>`;
+      }).join('');
+      const query = state.query.trim();
+      const listDuration = list.reduce((sum, item) => sum + (item.duration || 0), 0);
+      const phaseOptions = ['<option value="all">全部阶段</option>']
+        .concat(phaseList().map(name => `<option value="${escapeHtml(name)}" ${state.module === name ? 'selected' : ''}>${escapeHtml(name)}</option>`))
+        .join('');
+      const phaseChips = [`<button class="phase-chip ${state.module === 'all' ? 'active' : ''}" data-path-phase="all" type="button">全部</button>`]
+        .concat(phaseList().map(name => {
+          const guide = phaseGuideFor(name);
+          return `<button class="phase-chip ${state.module === name ? 'active' : ''}" data-path-phase="${escapeHtml(name)}" type="button">
+            <span>${escapeHtml(name)}</span>${guide ? `<small>${escapeHtml(guide.range)}</small>` : ''}
+          </button>`;
+        }))
+        .join('');
+      const guidePhase = state.module === 'all' ? lesson(state.current).phase : state.module;
+      const guide = phaseGuideFor(guidePhase);
+      $('#pathView').innerHTML = `
+        <div class="path-head">
+          <div>
+            <h1>${state.module === 'all' ? '课程路径' : escapeHtml(state.module)}</h1>
+            <p class="path-subtitle">${query ? `正在搜索“${escapeHtml(query)}”` : `${fmtClock(listDuration)} · ${list.length} 节`}</p>
+          </div>
+          <span class="tag">${list.length} 节</span>
+          <div class="path-tools">
+            <div class="filter-tabs" role="group" aria-label="路径筛选">
+              ${filterTabHtml('all', '全部')}
+              ${filterTabHtml('incomplete', '未完成')}
+              ${filterTabHtml('phase', lesson(state.current).phase)}
+            </div>
+            <select class="path-select" id="pathPhase" aria-label="按阶段筛选">${phaseOptions}</select>
+            <label class="toggle"><input type="checkbox" id="showFocus" ${state.showFocus ? 'checked' : ''}>显示本节目标</label>
+          </div>
+          <div class="path-phase-list">${phaseChips}</div>
+        </div>
+        ${guide ? `<div class="path-guide">
+          <div><h2>阶段目标</h2><p>${escapeHtml(guide.goal || '')}</p></div>
+          <div><h2>练习方法</h2><p>${escapeHtml(guide.apply || '')}</p></div>
+          <div><h2>通过标准</h2><p>${escapeHtml(guide.check || '')}</p></div>
+        </div>` : ''}
+        <div class="path-wrap">${groupsHtml || '<div class="empty">没有匹配的课程节。</div>'}</div>`;
+      $('#showFocus').addEventListener('change', event => {
+        state.showFocus = event.target.checked;
+        saveState();
+        renderPath();
+      });
+    }
+    function rowHtml(item) {
+      const done = isDone(item.page);
+      const expanded = Boolean(state.expanded[item.page]);
+      const current = item.page === state.current;
+      const query = state.query.trim();
+      const hit = query ? searchSnippet(item.body || '', query, 180) : '';
+      const focusLine = state.showFocus && item.focus?.[0] ? `<div class="row-focus">${renderInline(item.focus[0])}</div>` : '';
+      const detail = expanded ? rowDetailHtml(item) : '';
+      return `<div class="lesson-row ${done ? 'completed' : ''} ${current ? 'current' : ''}" data-page="${item.page}">
+        <input type="checkbox" data-toggle-done="${item.page}" ${done ? 'checked' : ''} aria-label="标记 P${item.page}">
+        <span class="row-clock">${escapeHtml(item.clock)}</span>
+        <div class="row-title">
+          <strong>P${item.page} · ${escapeHtml(item.title)}</strong>
+          <small>${escapeHtml(item.phase)} · ${fmtDuration(item.duration)}</small>
+          ${focusLine}
+          ${hit ? `<div class="row-hit">${escapeHtml(hit)}</div>` : ''}
+        </div>
+        <div class="row-actions">
+          <button class="icon-btn expand" data-expand="${item.page}" aria-expanded="${expanded}" type="button">${expanded ? '收起' : '重点'}</button>
+          <button class="icon-btn" data-nav="${item.page}">学习</button>
+          <a class="icon-btn" href="${item.url}" target="_blank" rel="noreferrer">打开</a>
+        </div>
+        ${detail}
+      </div>`;
+    }
+    function rowDetailHtml(item) {
+      return `<div class="row-detail">
+        <p><strong>本节目标</strong> ${(item.focus || []).map(renderInline).join(' · ')}</p>
+        <p class="row-practice"><strong>动手练习</strong>
+${escapeHtml(item.practice || '')}</p>
+      </div>`;
+    }
+
+    function renderReview() {
+      const total = completedCount();
+      const tasksDone = Object.values(state.tasks).filter(Boolean).length;
+      const today = todayKey();
+      const reviewList = reviewItems();
+      const reviewedToday = state.reviewedPages.filter(page => reviewList.some(item => item.page === page)).length;
+      const reviewPercent = reviewList.length ? Math.round(reviewedToday / reviewList.length * 100) : 0;
+      const checkPercent = course.checklist.length ? Math.round(tasksDone / course.checklist.length * 100) : 0;
+      const overallPercent = overallStudyPercent();
+      const reviewPhaseOptions = ['<option value="all">全部阶段</option>']
+        .concat(phaseList().map(name => `<option value="${escapeHtml(name)}" ${state.reviewPhase === name ? 'selected' : ''}>${escapeHtml(name)}</option>`))
+        .join('');
+      const checkPhaseValues = [...new Set((course.checkMeta || []).map(item => item.phase).filter(Boolean))];
+      const checkPhaseOptions = ['<option value="all">全部能力</option>']
+        .concat(checkPhaseValues.map(name => `<option value="${escapeHtml(name)}" ${state.checkPhase === name ? 'selected' : ''}>${escapeHtml(name)}</option>`))
+        .join('');
+      const mistakeTopics = [...new Set((course.mistakes || []).map(item => item.topic).filter(Boolean))];
+      const mistakeOptions = ['<option value="all">全部主题</option>']
+        .concat(mistakeTopics.map(name => `<option value="${escapeHtml(name)}" ${state.mistakeGroup === name ? 'selected' : ''}>${escapeHtml(name)}</option>`))
+        .join('');
+      const guide = phaseGuideFor(lesson(state.current).phase);
+      const reviewRows = reviewList.length ? reviewList.map(item => {
+        const reviewed = state.reviewedPages.includes(item.page);
+        return `<div class="review-lesson-row ${reviewed ? 'reviewed' : ''}">
+          <span class="tag ${reviewed ? 'done' : ''}">P${item.page}</span>
+          <div class="review-lesson-main">
+            <strong>${escapeHtml(item.title)}</strong>
+            <small>${escapeHtml(item.phase)} · ${fmtDuration(item.duration)}</small>
+          </div>
+          <button class="btn ${reviewed ? 'good' : 'primary'}" data-review-open="${item.page}" type="button">${reviewed ? '重看' : '开始'}</button>
+        </div>`;
+      }).join('') : `<div class="review-empty">这个阶段没有今日复习课节。</div>`;
+      const checkRows = checkItems().map(item => {
+        const meta = item.meta || {};
+        const metaText = [meta.skill, meta.phase].filter(Boolean).join(' · ');
+        return `<div class="check-item ${item.done ? 'done' : ''}" data-task="${item.index}">
+          <label class="check-main">
+            <input type="checkbox" data-task="${item.index}" ${item.done ? 'checked' : ''} aria-label="完成能力检查 ${item.index + 1}">
+            <span>${escapeHtml(item.text)}${metaText ? `<span class="check-meta">${escapeHtml(metaText)}</span>` : ''}</span>
+          </label>
+          ${meta.page ? `<button class="check-go" data-check-go="${meta.page}" type="button">P${meta.page}</button>` : ''}
+        </div>`;
+      }).join('');
+      const mistakeRows = [...mistakeGroups()].map(([topic, rows]) => `
+        <tr class="mistake-group-row"><td colspan="3">${escapeHtml(topic)}<span style="float:right;opacity:.7">${rows.length} 条</span></td></tr>
+        ${rows.map(row => `<tr>
+          <td>${renderInline(row.bad)}</td>
+          <td>${renderInline(row.good)}</td>
+          <td><button class="mistake-go" data-mistake-go="${row.page}" type="button">P${row.page}</button></td>
+        </tr>`).join('')}
+      `).join('');
+      $('#reviewView').innerHTML = `
+        <div class="review-dashboard">
+          <div class="review-stat"><strong>${total}/${lessons.length}</strong><span>课程完成</span></div>
+          <div class="review-stat badge-blue"><strong>${tasksDone}/${course.checklist.length}</strong><span>能力检查</span></div>
+          <div class="review-stat badge-orange"><strong>${reviewPercent}%</strong><span>今日复习 · ${reviewedToday}/${reviewList.length}</span></div>
+        </div>
+        <div class="review-progress"><i style="width:${overallPercent}%"></i></div>
+        <div class="review-grid">
+          <section class="review-panel">
+            <h2 class="panel-title">今日复习<span><span class="review-score"><strong>${reviewedToday}</strong>/${reviewList.length}</span></span></h2>
+            <div class="review-tools">
+              <select id="reviewPhase" class="panel-select" aria-label="按阶段筛选今日复习">${reviewPhaseOptions}</select>
+              <button class="btn" data-review-action="shuffle" type="button">换一批</button>
+              <button class="btn" data-review-action="reset" type="button">重置</button>
+            </div>
+            ${guide ? `<div class="review-guide">
+              <div><h2>当前阶段</h2><p>${escapeHtml(guide.name)} · ${escapeHtml(guide.range)}</p></div>
+              <div><h2>重点</h2><p>${escapeHtml(guide.goal || '')}</p></div>
+              <div><h2>检查</h2><p>${escapeHtml(guide.check || '')}</p></div>
+            </div>` : ''}
+            <div class="review-lesson-list">${reviewRows}</div>
+          </section>
+          <section class="review-panel">
+            <h2 class="panel-title">能力检查<span>${tasksDone}/${course.checklist.length}</span></h2>
+            <div class="review-tools">
+              <select id="checkPhase" class="panel-select" aria-label="按阶段筛选能力检查">${checkPhaseOptions}</select>
+              <button class="btn" data-review-action="clear-checks" type="button">清空</button>
+            </div>
+            <div class="review-lesson-list">${checkRows || '<div class="review-empty">没有匹配的能力检查。</div>'}</div>
+          </section>
+          <section class="review-panel wide">
+            <h2 class="panel-title">易错点速查<span>${course.mistakes.length} 条</span></h2>
+            <div class="review-tools">
+              <select id="mistakeGroup" class="panel-select" aria-label="按主题筛选易错点">${mistakeOptions}</select>
+              <button class="btn" data-review-action="random-mistake" type="button">随机复习</button>
+            </div>
+            <div class="mistake-wrap">
+              <table class="mistake-table">
+                <thead><tr><th>易错写法</th><th>正确做法</th><th>对应课程</th></tr></thead>
+                <tbody>${mistakeRows || '<tr><td colspan="3" class="review-empty">没有匹配的易错点。</td></tr>'}</tbody>
+              </table>
+            </div>
+          </section>
+        </div>`;
+    }
+
+    function setView(view) {
+      state.view = view;
+      saveState();
+      render();
+    }
+    function render() {
+      Object.entries(views).forEach(([name, node]) => node.hidden = name !== state.view);
+      document.querySelectorAll('.segmented button').forEach(node => node.classList.toggle('active', node.dataset.view === state.view));
+      $('#viewTitle').textContent = { focus: '当前学习', path: '课程路径', review: '复习室' }[state.view];
+      renderSidebar();
+      renderFocus();
+      renderPath();
+      renderReview();
+    }
+
+    document.addEventListener('click', event => {
+      const copyButton = event.target.closest('[data-copy]');
+      if (copyButton) {
+        copyText(codeCache[Number(copyButton.dataset.copy)] || '', copyButton);
+        return;
+      }
+      const runButton = event.target.closest('[data-run]');
+      if (runButton) {
+        runCode(Number(runButton.dataset.run), runButton);
+        return;
+      }
+      const openButton = event.target.closest('[data-open]');
+      if (openButton) {
+        openInIde(Number(openButton.dataset.open), openButton);
+        return;
+      }
+      const closeRunButton = event.target.closest('[data-close-run]');
+      if (closeRunButton) {
+        closeRunButton.closest('.run-output')?.remove();
+        return;
+      }
+      const exportButton = event.target.closest('#exportLesson');
+      if (exportButton) {
+        window.print();
+        return;
+      }
+      const viewButton = event.target.closest('[data-view]');
+      if (viewButton) {
+        setView(viewButton.dataset.view);
+        closeSidebar();
+        return;
+      }
+      const dockButton = event.target.closest('[data-dock]');
+      if (dockButton) {
+        state.dock = dockButton.dataset.dock;
+        saveState();
+        document.querySelectorAll('.dock-tab').forEach(node => node.classList.toggle('active', node.dataset.dock === state.dock));
+        document.querySelectorAll('[data-dock-page]').forEach(node => node.hidden = node.dataset.dockPage !== state.dock);
+        return;
+      }
+      const expandButton = event.target.closest('[data-expand]');
+      if (expandButton) {
+        const page = Number(expandButton.dataset.expand);
+        const expanded = !state.expanded[page];
+        const row = expandButton.closest('.lesson-row');
+        state.expanded[page] = expanded;
+        saveState();
+        expandButton.setAttribute('aria-expanded', String(expanded));
+        expandButton.textContent = expanded ? '收起' : '重点';
+        row.querySelector(':scope > .row-detail')?.remove();
+        if (expanded) {
+          const detail = document.createElement('template');
+          detail.innerHTML = rowDetailHtml(lesson(page)).trim();
+          row.appendChild(detail.content.firstElementChild);
+        }
+        return;
+      }
+      const pathModeButton = event.target.closest('[data-path-mode]');
+      if (pathModeButton) {
+        state.pathMode = pathModeButton.dataset.pathMode;
+        state.view = 'path';
+        saveState();
+        render();
+        return;
+      }
+      const pathPhaseButton = event.target.closest('[data-path-phase]');
+      if (pathPhaseButton) {
+        state.module = pathPhaseButton.dataset.pathPhase;
+        state.pathMode = 'all';
+        state.view = 'path';
+        saveState();
+        render();
+        return;
+      }
+      const reviewActionButton = event.target.closest('[data-review-action]');
+      if (reviewActionButton) {
+        const action = reviewActionButton.dataset.reviewAction;
+        if (action === 'shuffle') {
+          state.reviewDate = todayKey();
+          state.reviewedPages = [];
+          state.reviewPages = buildReviewPages();
+          ensureReviewPhase(state.reviewPhase);
+          saveState();
+          render();
+          showToast('已换一批今日复习');
+        } else if (action === 'reset') {
+          state.reviewedPages = [];
+          saveState();
+          render();
+          showToast('今日复习已重置');
+        } else if (action === 'clear-checks') {
+          state.tasks = {};
+          saveState();
+          render();
+          showToast('能力检查已清空');
+        } else if (action === 'random-mistake') {
+          const pool = course.mistakes.filter(item =>
+            state.mistakeGroup === 'all' || item.topic === state.mistakeGroup
+          );
+          const pick = pool[Math.floor(Math.random() * pool.length)] || course.mistakes[0];
+          if (pick) openLesson(pick.page, `已打开易错点 P${pick.page}`);
+        }
+        return;
+      }
+      const reviewOpenButton = event.target.closest('[data-review-open]');
+      if (reviewOpenButton) {
+        const page = Number(reviewOpenButton.dataset.reviewOpen);
+        markReviewed(page);
+        openLesson(page, `已开始复习 P${page}`);
+        return;
+      }
+      const checkGoButton = event.target.closest('[data-check-go]');
+      if (checkGoButton) {
+        openLesson(checkGoButton.dataset.checkGo, `已打开能力检查对应课程 P${checkGoButton.dataset.checkGo}`);
+        return;
+      }
+      const mistakeGoButton = event.target.closest('[data-mistake-go]');
+      if (mistakeGoButton) {
+        openLesson(mistakeGoButton.dataset.mistakeGo, `已打开易错点对应课程 P${mistakeGoButton.dataset.mistakeGo}`);
+        return;
+      }
+      const moduleButton = event.target.closest('[data-module]');
+      if (moduleButton) {
+        state.module = moduleButton.dataset.module;
+        state.view = 'path';
+        saveState();
+        render();
+        closeSidebar();
+        return;
+      }
+      const nav = event.target.closest('[data-nav]');
+      if (nav && nav.dataset.nav !== '') {
+        state.current = Number(nav.dataset.nav);
+        state.view = 'focus';
+        saveState();
+        render();
+        closeSidebar();
+        return;
+      }
+      const doneControl = event.target.closest('[data-toggle-done]');
+      if (doneControl) {
+        const page = Number(doneControl.dataset.toggleDone);
+        state.completed[page] = !state.completed[page];
+        if (state.completed[page] && page === state.current) state.current = nextIncomplete(page);
+        saveState();
+        render();
+        closeSidebar();
+      }
+    });
+    document.addEventListener('change', event => {
+      const pathSelect = event.target.closest('#pathPhase');
+      if (pathSelect) {
+        state.module = pathSelect.value;
+        state.pathMode = 'all';
+        saveState();
+        render();
+        return;
+      }
+      const reviewSelect = event.target.closest('#reviewPhase');
+      if (reviewSelect) {
+        state.reviewPhase = reviewSelect.value;
+        ensureReviewPhase(state.reviewPhase);
+        saveState();
+        render();
+        return;
+      }
+      const checkSelect = event.target.closest('#checkPhase');
+      if (checkSelect) {
+        state.checkPhase = checkSelect.value;
+        saveState();
+        render();
+        return;
+      }
+      const mistakeSelect = event.target.closest('#mistakeGroup');
+      if (mistakeSelect) {
+        state.mistakeGroup = mistakeSelect.value;
+        saveState();
+        render();
+        return;
+      }
+      const task = event.target.closest('[data-task]');
+      if (!task) return;
+      const input = task.matches('input') ? task : task.querySelector('input');
+      state.tasks[task.dataset.task] = Boolean(input?.checked);
+      saveState();
+      render();
+    });
+    $('#searchInput').value = state.query;
+    $('#searchInput').addEventListener('input', event => {
+      state.query = event.target.value;
+      saveState();
+      if (state.view !== 'path') setView('path');
+      else renderPath();
+    });
+    $('#continueButton').addEventListener('click', () => {
+      setView('focus');
+      closeSidebar();
+    });
+    $('#menuButton').addEventListener('click', () => setSidebar(true));
+    $('#sidebarClose').addEventListener('click', closeSidebar);
+    $('#sidebarBackdrop').addEventListener('click', closeSidebar);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeSidebar();
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if (state.view !== 'focus') return;
+      if (event.key === 'ArrowLeft') state.current = Math.max(1, state.current - 1);
+      if (event.key === 'ArrowRight') state.current = Math.min(lessons.length, state.current + 1);
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      saveState();
+      render();
+    });
+
+    normalizeStudyState();
+    normalizeReviewState();
+    render();
+    probeHelper();
+    window.addEventListener('focus', probeHelper);
+  </script>
+</body>
+</html>
