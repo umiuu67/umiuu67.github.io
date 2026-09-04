@@ -1,255 +1,610 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>STM32 学习模式</title>
-<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32b.png">
-<link rel="icon" type="image/png" sizes="48x48" href="../assets/favicon-48b.png">
-<link rel="icon" type="image/png" sizes="180x180" href="../assets/favicon-180b.png">
-<link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon-180b.png">
-<style>
-  :root {
-    color-scheme: dark;
-    --bg: #0a0e14;
-    --bg-soft: #0f1520;
-    --panel: #131b28;
-    --panel-2: #182233;
-    --line: rgba(120, 200, 255, .10);
-    --text: #d7e2ee;
-    --text-dim: #8fa1b3;
-    --accent: #4fd1c5;
-    --accent-soft: rgba(79, 209, 197, .14);
-    --warn: #f6ad55;
-    --ok: #68d391;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
-    min-height: 100vh;
-  }
-  header {
-    display: flex; align-items: center; gap: 16px;
-    padding: 14px 22px;
-    background: var(--bg-soft);
-    border-bottom: 1px solid var(--line);
-    position: sticky; top: 0; z-index: 20;
-  }
-  header .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; white-space: nowrap; }
-  header .brand img { width: 30px; height: 30px; border-radius: 7px; }
-  header .progress-wrap { flex: 1; max-width: 520px; }
-  header .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
-  header .progress-bar { height: 7px; border-radius: 4px; background: var(--panel-2); overflow: hidden; }
-  header .progress-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), #63b3ed); transition: width .3s; }
-  header .bili-link {
-    margin-left: auto; text-decoration: none; color: #0a0e14;
-    background: var(--accent); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px;
-    white-space: nowrap;
-  }
-  header .bili-link:hover { filter: brightness(1.1); }
-  .layout { display: grid; grid-template-columns: 300px 1fr; min-height: calc(100vh - 61px); }
-  aside {
-    background: var(--bg-soft); border-right: 1px solid var(--line);
-    overflow-y: auto; padding: 14px 0 40px; position: sticky; top: 61px; height: calc(100vh - 61px);
-  }
-  .phase-title {
-    padding: 14px 18px 6px; font-size: 12px; letter-spacing: .12em;
-    color: var(--accent); text-transform: uppercase; font-weight: 700;
-  }
-  .lesson-item {
-    display: flex; align-items: center; gap: 9px;
-    padding: 9px 18px; cursor: pointer; font-size: 13.5px; color: var(--text-dim);
-    border-left: 3px solid transparent; transition: background .15s, color .15s;
-  }
-  .lesson-item:hover { background: var(--panel); color: var(--text); }
-  .lesson-item.active { background: var(--accent-soft); color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
-  .lesson-item.done { color: var(--ok); }
-  .lesson-item .pnum { font-size: 11px; background: var(--panel-2); border-radius: 5px; padding: 2px 6px; min-width: 34px; text-align: center; }
-  .lesson-item .tick { margin-left: auto; font-size: 12px; }
-  main { padding: 26px 34px 90px; max-width: 980px; }
-  .crumb { font-size: 12.5px; color: var(--text-dim); margin-bottom: 8px; }
-  h1 { font-size: 26px; margin-bottom: 10px; line-height: 1.3; }
-  .meta-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
-  .chip { font-size: 12px; padding: 4px 10px; border-radius: 6px; background: var(--panel-2); color: var(--text-dim); }
-  .btn {
-    border: none; cursor: pointer; font-family: inherit; font-size: 13.5px; font-weight: 600;
-    padding: 8px 15px; border-radius: 8px; background: var(--panel-2); color: var(--text);
-    display: inline-flex; align-items: center; gap: 6px; text-decoration: none; transition: filter .15s;
-  }
-  .btn:hover { filter: brightness(1.15); }
-  .btn.primary { background: var(--accent); color: #08262e; }
-  .btn.ghost { background: transparent; border: 1px solid var(--line); }
-  .section-label { font-size: 13px; font-weight: 700; color: var(--accent); margin: 26px 0 10px; letter-spacing: .05em; }
-  .ts-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-  .ts-grid a {
-    font-size: 12.5px; text-decoration: none; color: var(--text-dim);
-    background: var(--panel); border: 1px solid var(--line); padding: 6px 11px; border-radius: 7px;
-  }
-  .ts-grid a:hover { color: var(--accent); border-color: var(--accent); }
-  .notes { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 24px 26px; line-height: 1.85; font-size: 14.5px; }
-  .notes h2 { font-size: 18px; margin: 22px 0 10px; color: var(--accent); }
-  .notes h2:first-child { margin-top: 0; }
-  .notes h3 { font-size: 15.5px; margin: 18px 0 8px; color: #9ae6e0; }
-  .notes p { margin: 8px 0; }
-  .notes ul, .notes ol { margin: 8px 0 8px 22px; }
-  .notes li { margin: 4px 0; }
-  .notes code {
-    background: #0d1420; border: 1px solid var(--line); border-radius: 5px;
-    padding: 1px 6px; font-family: Consolas, "Courier New", monospace; font-size: 13px; color: #f6c177;
-  }
-  .notes pre {
-    background: #0d1420; border: 1px solid var(--line); border-radius: 9px;
-    padding: 14px 16px; overflow-x: auto; margin: 12px 0;
-  }
-  .notes pre code { background: none; border: none; padding: 0; color: #c9e3ff; line-height: 1.6; }
-  .notes blockquote { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 12px 0; color: var(--text); }
-  .notes strong { color: #ffd79a; }
-  .points { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; }
-  .points li { margin: 7px 0 7px 20px; font-size: 14px; }
-  .pager { display: flex; justify-content: space-between; margin-top: 30px; gap: 12px; }
-  footer { text-align: center; color: var(--text-dim); font-size: 12px; padding: 30px 0 40px; }
-  @media (max-width: 860px) {
-    .layout { grid-template-columns: 1fr; }
-    aside { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--line); max-height: 320px; }
-    main { padding: 20px 16px 60px; }
-    header { flex-wrap: wrap; }
-    header .progress-wrap { order: 3; min-width: 100%; max-width: none; }
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>铁头山羊 STM32 学习模式</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32b.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="../assets/favicon-48b.png">
+  <link rel="icon" type="image/png" sizes="180x180" href="../assets/favicon-180b.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon-180b.png">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f3f5f3;
+      --surface: #ffffff;
+      --surface-2: #e9edeb;
+      --ink: #172026;
+      --muted: #617076;
+      --line: #d7dfdc;
+      --green: #177a58;
+      --green-soft: #dff1e8;
+      --orange: #c2541f;
+      --orange-soft: #fbe8dc;
+      --blue: #2f6fba;
+      --shadow: 0 10px 30px rgba(23, 32, 38, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 15px/1.6 "Microsoft YaHei UI", "PingFang SC", "Segoe UI", sans-serif;
+    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: var(--blue); }
+
+    .app {
+      min-height: 100%;
+      display: grid;
+      grid-template-columns: 292px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #1b262b;
+      color: #fff;
+      padding: 24px 18px;
+      overflow: auto;
+    }
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,.16);
+    }
+    .logo {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 700;
+    }
+    .logo img { width: 25px; height: 25px; display: block; }
+    .sidebar-brand strong { display: block; font-size: 16px; }
+    .sidebar-brand span { font-size: 12px; color: rgba(255,255,255,.62); }
+    .sidebar-close {
+      display: none;
+      min-height: 30px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 6px;
+      background: rgba(255,255,255,.08);
+      color: #fff;
+      padding: 0 9px;
+    }
+
+    .continue {
+      width: 100%;
+      border: 0;
+      border-radius: 7px;
+      padding: 11px 12px;
+      margin: 18px 0 22px;
+      background: #fff;
+      color: #172026;
+      font-weight: 650;
+      text-align: left;
+    }
+    .continue small { display: block; color: var(--muted); font-weight: 400; overflow-wrap: anywhere; }
+
+    .side-heading,
+    .phase-title {
+      margin: 0 0 10px;
+      padding: 0 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,.56);
+    }
+    .phase-title { margin: 14px 0 5px; }
+    .lesson-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: rgba(255,255,255,.82);
+      padding: 9px 10px;
+      margin-bottom: 4px;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+    .lesson-item:hover, .lesson-item.active { background: rgba(255,255,255,.11); color: #fff; }
+    .lesson-item.active { font-weight: 650; }
+    .lesson-item.done .lesson-name { color: #a9e4bb; }
+    .pnum {
+      flex: 0 0 auto;
+      min-width: 34px;
+      border-radius: 5px;
+      padding: 2px 6px;
+      background: rgba(255,255,255,.1);
+      color: rgba(255,255,255,.68);
+      font-size: 12px;
+      text-align: center;
+    }
+    .lesson-item.active .pnum { background: var(--green); color: #fff; }
+    .lesson-name { flex: 1; min-width: 0; }
+    .tick { flex: 0 0 auto; font-size: 12px; color: #57c79c; }
+
+    .side-note {
+      margin-top: auto;
+      padding-top: 20px;
+      color: rgba(255,255,255,.52);
+      font-size: 12px;
+    }
+
+    .main { min-width: 0; display: flex; flex-direction: column; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 68px;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.94);
+      backdrop-filter: blur(12px);
+    }
+    .menu-button {
+      display: none;
+      min-height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 12px;
+    }
+    .page-title { flex: 1; min-width: 0; font-weight: 700; overflow-wrap: anywhere; }
+    .topbar .btn { flex: 0 0 auto; }
+
+    .progress-line { height: 4px; background: var(--surface-2); }
+    .progress-line i { display: block; height: 100%; width: 0; background: var(--green); }
+
+    .content { padding: 24px; min-width: 0; }
+    .lesson-panel {
+      max-width: 1180px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: clip;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .lesson-head {
+      padding: 26px 30px 20px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfb;
+    }
+    .lesson-kicker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 5px;
+      padding: 3px 7px;
+      font-size: 12px;
+      background: var(--surface-2);
+      color: var(--muted);
+    }
+    .tag.time { background: #e8eefb; color: #28598d; }
+    .tag.done { background: var(--green-soft); color: var(--green); }
+    .lesson-head h1 { margin: 0; font-size: 27px; line-height: 1.32; }
+
+    .lesson-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      padding: 16px 30px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 13px;
+      background: #fff;
+      color: var(--ink);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn:hover { border-color: #b5c2bd; background: #f7f9f8; }
+    .btn.primary { background: var(--green); border-color: var(--green); color: #fff; }
+    .btn.primary:hover { background: #12664a; }
+    .btn.good { background: var(--green-soft); border-color: #b9dcc9; color: var(--green); font-weight: 650; }
+    .btn[disabled] { opacity: .4; cursor: not-allowed; }
+
+    .lesson-overview {
+      display: grid;
+      grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr);
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+    .overview-block { padding: 18px 30px; min-width: 0; }
+    .overview-block + .overview-block { border-left: 1px solid var(--line); }
+    .overview-title { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .overview-mark {
+      display: inline-grid;
+      place-items: center;
+      width: 23px;
+      height: 23px;
+      border-radius: 6px;
+      background: var(--green-soft);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .overview-block.practice .overview-mark { background: var(--orange-soft); color: var(--orange); }
+    .overview-title h2 { margin: 0; font-size: 15px; }
+    .overview-block p { margin: 0; color: #35464a; }
+    .overview-block ul { margin: 0; padding-left: 20px; }
+    .overview-block li { margin: 6px 0; color: #35464a; }
+
+    .lesson-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; }
+    .lesson-note {
+      padding: 26px 30px 34px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .note-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 13px;
+      border-bottom: 1px solid var(--line);
+    }
+    .note-toolbar h2 { margin: 0; font-size: 18px; }
+    .note-toolbar span { color: var(--muted); font-size: 12px; text-align: right; }
+    .lesson-note h2 { margin: 27px 0 12px; font-size: 17px; }
+    .lesson-note h3 {
+      margin: 28px 0 11px;
+      padding-top: 16px;
+      border-top: 1px solid #edf1ef;
+      font-size: 16px;
+      color: #21483d;
+    }
+    .lesson-note h2:first-child, .lesson-note h3:first-child { margin-top: 0; }
+    .lesson-note h3:first-child { padding-top: 0; border-top: 0; }
+    .lesson-note p { margin: 0 0 14px; }
+    .lesson-note ul, .lesson-note ol { margin: 0 0 16px; padding-left: 22px; }
+    .lesson-note li + li { margin-top: 5px; }
+    .lesson-note blockquote {
+      margin: 0 0 16px;
+      padding: 10px 14px;
+      border-left: 3px solid var(--green);
+      background: var(--green-soft);
+      color: #225343;
+    }
+    .lesson-note pre {
+      margin: 0 0 18px;
+      padding: 15px;
+      overflow: auto;
+      border-radius: 7px;
+      background: #202a2f;
+      color: #e8efec;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .lesson-note code {
+      border-radius: 4px;
+      background: #e6ebe8;
+      color: #1e3a31;
+      padding: 2px 5px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: .92em;
+    }
+    .lesson-note pre code { background: transparent; color: inherit; padding: 0; }
+    .lesson-note strong { color: #21483d; }
+
+    .study-dock {
+      min-width: 0;
+      position: sticky;
+      top: 84px;
+      align-self: start;
+      max-height: calc(100vh - 100px);
+      border-left: 1px solid var(--line);
+      background: #f8faf9;
+      display: flex;
+      flex-direction: column;
+      padding: 18px;
+    }
+    .dock-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .dock-bar { height: 5px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+    .dock-bar i { display: block; height: 100%; width: 0; background: var(--green); }
+    .dock-hint { margin: 10px 0 18px; color: var(--muted); font-size: 13px; }
+    .dock-metric { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+    .dock-metric > div {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      padding: 10px;
+    }
+    .dock-metric strong { display: block; font-size: 17px; }
+    .dock-metric span { color: var(--muted); font-size: 12px; }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 24px 0 34px;
+    }
+
+    @media (max-width: 1000px) {
+      .app { display: block; }
+      .sidebar {
+        position: fixed;
+        z-index: 45;
+        inset: 0 auto 0 0;
+        width: min(84vw, 320px);
+        height: 100vh;
+        padding: 20px 18px 26px;
+        transform: translateX(-105%);
+        transition: transform .22s ease;
+      }
+      body.sidebar-open .sidebar { transform: translateX(0); }
+      body.sidebar-open { overflow: hidden; }
+      .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 35;
+        background: rgba(20,28,32,.45);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .22s ease;
+      }
+      body.sidebar-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
+      .menu-button { display: inline-flex; }
+      .sidebar-close { display: inline-flex; }
+      .content { padding: 13px; }
+      .lesson-head { padding: 19px 18px 16px; }
+      .lesson-head h1 { font-size: 22px; }
+      .lesson-actions { padding: 13px 18px; gap: 7px; }
+      .lesson-actions .btn { min-height: 36px; padding: 0 10px; }
+      .lesson-overview { grid-template-columns: minmax(0, 1fr); }
+      .overview-block { padding: 15px 18px; }
+      .overview-block + .overview-block { border-left: 0; border-top: 1px solid var(--line); }
+      .lesson-grid { grid-template-columns: minmax(0, 1fr); }
+      .lesson-note { padding: 18px; }
+      .study-dock {
+        position: static;
+        max-height: none;
+        border-left: 0;
+        border-top: 1px solid var(--line);
+      }
+      .topbar { flex-wrap: wrap; }
+      .topbar .btn { margin-left: auto; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <div class="brand"><img src="../assets/favicon-48b.png" alt="">STM32 学习模式</div>
-  <div class="progress-wrap">
-    <div class="progress-label"><span id="prog-text">0 / 54 节</span><span id="prog-pct">0%</span></div>
-    <div class="progress-bar"><i id="prog-fill"></i></div>
-  </div>
-  <a class="bili-link" id="bili-open" target="_blank" rel="noopener">在 B 站打开本节 ↗</a>
-</header>
-<div class="layout">
-  <aside id="sidebar"></aside>
-  <main id="main"></main>
-</div>
-<footer>铁头山羊 STM32 入门教程 · 学习笔记 · Umiuu</footer>
-<script src="./stm32-course-data.js"></script>
-<script>
-const $ = s => document.querySelector(s);
-const KEY_DONE = 'stm32study.done';
-const KEY_CUR = 'stm32study.cur';
-let done = new Set(JSON.parse(localStorage.getItem(KEY_DONE) || '[]'));
-let current = Math.min(parseInt(localStorage.getItem(KEY_CUR) || '1', 10) || 1, COURSE.lessons.length);
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo"><img src="../assets/favicon-48b.png" alt=""></div>
+        <div>
+          <strong>STM32 学习模式</strong>
+          <span>54 节学习系统</span>
+        </div>
+        <button class="sidebar-close" id="sidebarClose" aria-label="关闭目录">关闭</button>
+      </div>
+      <button class="continue" id="continueButton"></button>
+      <p class="side-heading">学习阶段</p>
+      <nav id="sidebar"></nav>
+      <div class="side-note">
+        铁头山羊 STM32 入门教程<br>
+        进度保存在本机浏览器。
+      </div>
+    </aside>
 
-function biliUrl(page, t) {
-  return `https://www.bilibili.com/video/${COURSE.meta.bvid}?p=${page}` + (t ? `&t=${t}` : '');
-}
-function fmt(sec) {
-  const m = Math.floor(sec / 60), s = sec % 60;
-  return (m >= 60 ? Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0') : m) + ':' + String(s).padStart(2, '0');
-}
-function save() {
-  localStorage.setItem(KEY_DONE, JSON.stringify([...done]));
-  localStorage.setItem(KEY_CUR, String(current));
-}
-function renderProgress() {
-  const n = done.size, total = COURSE.lessons.length;
-  $('#prog-text').textContent = `${n} / ${total} 节`;
-  $('#prog-pct').textContent = Math.round(n / total * 100) + '%';
-  $('#prog-fill').style.width = (n / total * 100) + '%';
-}
-function renderSidebar() {
-  let html = '';
-  COURSE.phases.forEach(ph => {
-    html += `<div class="phase-title">${ph.name}</div>`;
-    COURSE.lessons.filter(l => l.phase === ph.id).forEach(l => {
-      html += `<div class="lesson-item${l.page === current ? ' active' : ''}${done.has(l.page) ? ' done' : ''}" data-page="${l.page}">
-        <span class="pnum">P${l.page}</span><span>${l.title}</span>
-        <span class="tick">${done.has(l.page) ? '✓' : ''}</span></div>`;
-    });
-  });
-  $('#sidebar').innerHTML = html;
-  document.querySelectorAll('.lesson-item').forEach(el =>
-    el.addEventListener('click', () => { current = +el.dataset.page; save(); render(); window.scrollTo(0, 0); }));
-}
-function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
-function md(src) {
-  const chunks = src.split(/```|~~~/);
-  let out = '';
-  chunks.forEach((c, i) => {
-    if (i % 2) {
-      out += '<pre><code>' + esc(c.replace(/^\n/, '').replace(/\n$/, '')) + '</code></pre>';
-      return;
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-button" id="menuButton" aria-label="打开目录">目录</button>
+        <div class="page-title" id="viewTitle">当前学习</div>
+        <a class="btn primary" id="bili-open" target="_blank" rel="noopener">打开 B 站本节</a>
+      </header>
+      <div class="progress-line"><i id="prog-fill"></i></div>
+      <section class="content">
+        <article class="lesson-panel" id="main"></article>
+      </section>
+    </main>
+  </div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <footer>铁头山羊 STM32 入门教程 · 学习笔记 · Umiuu</footer>
+
+  <script src="./stm32-course-data.js"></script>
+  <script>
+    const $ = s => document.querySelector(s);
+    const KEY_DONE = 'stm32study.done';
+    const KEY_CUR = 'stm32study.cur';
+    let done = new Set(JSON.parse(localStorage.getItem(KEY_DONE) || '[]'));
+    let current = Math.min(parseInt(localStorage.getItem(KEY_CUR) || '1', 10) || 1, COURSE.lessons.length);
+
+    function biliUrl(page, t) {
+      return `https://www.bilibili.com/video/${COURSE.meta.bvid}?p=${page}` + (t ? `&t=${t}` : '');
     }
-    c.split(/\n\n+/).forEach(block => {
-      const b = block.trim();
-      if (!b) return;
-      if (b.startsWith('### ')) {
-        const nl = b.indexOf('\n');
-        out += `<h3>${inline(nl === -1 ? b.slice(4) : b.slice(4, nl))}</h3>`;
-        if (nl !== -1) out += md(b.slice(nl + 1));
+    function fmt(sec) {
+      const m = Math.floor(sec / 60), s = sec % 60;
+      return (m >= 60 ? Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0') : m) + ':' + String(s).padStart(2, '0');
+    }
+    function save() {
+      localStorage.setItem(KEY_DONE, JSON.stringify([...done]));
+      localStorage.setItem(KEY_CUR, String(current));
+    }
+    function renderProgress() {
+      const n = done.size, total = COURSE.lessons.length, pct = Math.round(n / total * 100);
+      $('#prog-fill').style.width = pct + '%';
+      return { n, total, pct };
+    }
+    function renderSidebar() {
+      let html = '';
+      COURSE.phases.forEach(ph => {
+        const items = COURSE.lessons.filter(l => l.phase === ph.id);
+        const phaseDone = items.filter(l => done.has(l.page)).length;
+        html += `<div class="phase-title">${ph.name} · ${phaseDone}/${items.length}</div>`;
+        items.forEach(l => {
+          html += `<button class="lesson-item${l.page === current ? ' active' : ''}${done.has(l.page) ? ' done' : ''}" data-page="${l.page}">
+            <span class="pnum">P${l.page}</span><span class="lesson-name">${l.title}</span>
+            <span class="tick">${done.has(l.page) ? '✓' : ''}</span></button>`;
+        });
+      });
+      $('#sidebar').innerHTML = html;
+      document.querySelectorAll('.lesson-item').forEach(el =>
+        el.addEventListener('click', () => { current = +el.dataset.page; save(); render(); closeSidebar(); }));
+      const active = document.querySelector('.lesson-item.active');
+      if (active) active.scrollIntoView({ block: 'nearest' });
+    }
+    function renderContinue() {
+      const l = COURSE.lessons[current - 1];
+      $('#continueButton').innerHTML = `继续学习<small>P${l.page} ${l.title}</small>`;
+    }
+    function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+    function md(src) {
+      const chunks = src.split(/```|~~~/);
+      let out = '';
+      chunks.forEach((c, i) => {
+        if (i % 2) {
+          out += '<pre><code>' + esc(c.replace(/^\n/, '').replace(/\n$/, '')) + '</code></pre>';
+          return;
+        }
+        c.split(/\n\n+/).forEach(block => {
+          const b = block.trim();
+          if (!b) return;
+          if (b.startsWith('### ')) {
+            const nl = b.indexOf('\n');
+            out += `<h3>${inline(nl === -1 ? b.slice(4) : b.slice(4, nl))}</h3>`;
+            if (nl !== -1) out += md(b.slice(nl + 1));
+          }
+          else if (b.startsWith('## ')) {
+            const nl = b.indexOf('\n');
+            out += `<h2>${inline(nl === -1 ? b.slice(3) : b.slice(3, nl))}</h2>`;
+            if (nl !== -1) out += md(b.slice(nl + 1));
+          }
+          else if (b.startsWith('> ')) out += `<blockquote>${inline(b.replace(/^> ?/gm, ''))}</blockquote>`;
+          else if (/^[-*] /m.test(b)) out += '<ul>' + b.split('\n').filter(x => /^[-*] /.test(x.trim())).map(x => `<li>${inline(x.trim().slice(2))}</li>`).join('') + '</ul>';
+          else if (/^\d+\. /.test(b)) out += '<ol>' + b.split('\n').filter(x => /^\d+\. /.test(x.trim())).map(x => `<li>${inline(x.trim().replace(/^\d+\. /, ''))}</li>`).join('') + '</ol>';
+          else out += `<p>${inline(b.replace(/\n/g, '<br>'))}</p>`;
+        });
+      });
+      return out;
+      function inline(s) {
+        return esc(s)
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
       }
-      else if (b.startsWith('## ')) {
-        const nl = b.indexOf('\n');
-        out += `<h2>${inline(nl === -1 ? b.slice(3) : b.slice(3, nl))}</h2>`;
-        if (nl !== -1) out += md(b.slice(nl + 1));
-      }
-      else if (b.startsWith('> ')) out += `<blockquote>${inline(b.replace(/^> ?/gm, ''))}</blockquote>`;
-      else if (/^[-*] /m.test(b)) out += '<ul>' + b.split('\n').filter(x => /^[-*] /.test(x.trim())).map(x => `<li>${inline(x.trim().slice(2))}</li>`).join('') + '</ul>';
-      else if (/^\d+\. /.test(b)) out += '<ol>' + b.split('\n').filter(x => /^\d+\. /.test(x.trim())).map(x => `<li>${inline(x.trim().replace(/^\d+\. /, ''))}</li>`).join('') + '</ol>';
-      else out += `<p>${inline(b.replace(/\n/g, '<br>'))}</p>`;
+    }
+    function render() {
+      const l = COURSE.lessons[current - 1];
+      const phase = COURSE.phases.find(p => p.id === l.phase);
+      const prev = COURSE.lessons[current - 2];
+      const next = COURSE.lessons[current];
+      const isDone = done.has(l.page);
+      const progress = renderProgress();
+      document.title = `P${l.page} ${l.title} · STM32 学习模式`;
+      $('#viewTitle').textContent = `P${l.page} ${l.title}`;
+      $('#bili-open').href = biliUrl(l.page);
+      renderContinue();
+
+      let html = `
+        <header class="lesson-head">
+          <div class="lesson-kicker">
+            <span class="tag">P${l.page}</span>
+            <span class="tag">${phase ? phase.name : ''}</span>
+            <span class="tag time">${fmt(l.duration)}</span>
+            ${isDone ? '<span class="tag done">已完成</span>' : ''}
+          </div>
+          <h1>${l.title}</h1>
+        </header>
+        <div class="lesson-actions">
+          <button class="btn" id="prev-btn" ${prev ? '' : 'disabled'}>上一节</button>
+          <button class="btn ${isDone ? '' : 'good'}" id="mark-btn">${isDone ? '标为未完成' : '标记完成'}</button>
+          <a class="btn primary" href="${biliUrl(l.page)}" target="_blank" rel="noopener">打开 B 站本节</a>
+          <button class="btn" id="next-btn" ${next ? '' : 'disabled'}>下一节</button>
+        </div>`;
+
+      const points = l.points && l.points.length ? l.points.map(p => `<li>${p}</li>`).join('') : '<li>回顾本节核心操作。</li>';
+      html += `
+        <div class="lesson-overview">
+          <section class="overview-block">
+            <div class="overview-title"><span class="overview-mark">目</span><h2>本节概览</h2></div>
+            <p>${l.summary || '学习本节讲解的 STM32 关键概念与操作。'}</p>
+          </section>
+          <section class="overview-block practice">
+            <div class="overview-title"><span class="overview-mark">要</span><h2>要点清单</h2></div>
+            <ul>${points}</ul>
+          </section>
+        </div>`;
+
+      html += `
+        <div class="lesson-grid">
+          <div class="lesson-note">
+            <div class="note-toolbar">
+              <h2>完整讲解</h2>
+              <span>共 ${progress.total} 节 · 已完成 ${progress.n} 节</span>
+            </div>
+            ${md(l.notes || '笔记整理中…')}
+          </div>
+          <aside class="study-dock">
+            <div class="dock-label"><span>课程进度</span><span>${progress.n}/${progress.total}</span></div>
+            <div class="dock-bar"><i style="width:${progress.pct}%"></i></div>
+            <p class="dock-hint">${progress.pct}% 已完成，剩余 ${progress.total - progress.n} 节。</p>
+            <div class="dock-metric">
+              <div><strong>${COURSE.phases.length}</strong><span>学习阶段</span></div>
+              <div><strong>P${l.page}</strong><span>当前课程</span></div>
+            </div>
+            <a class="btn primary" href="${biliUrl(l.page)}" target="_blank" rel="noopener">打开 B 站本节</a>
+          </aside>
+        </div>`;
+
+      $('#main').innerHTML = html;
+      $('#mark-btn').addEventListener('click', () => {
+        done.has(l.page) ? done.delete(l.page) : done.add(l.page);
+        save(); render();
+      });
+      const pv = $('#prev-btn'), nx = $('#next-btn');
+      if (pv) pv.addEventListener('click', () => { current--; save(); render(); window.scrollTo(0, 0); });
+      if (nx) nx.addEventListener('click', () => { current++; save(); render(); window.scrollTo(0, 0); });
+      renderSidebar();
+    }
+    function openSidebar() { document.body.classList.add('sidebar-open'); }
+    function closeSidebar() { document.body.classList.remove('sidebar-open'); }
+    $('#menuButton').addEventListener('click', openSidebar);
+    $('#sidebarClose').addEventListener('click', closeSidebar);
+    $('#sidebarBackdrop').addEventListener('click', closeSidebar);
+    $('#continueButton').addEventListener('click', () => { window.scrollTo(0, 0); closeSidebar(); });
+    document.addEventListener('keydown', e => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight' && current < COURSE.lessons.length) { current++; save(); render(); window.scrollTo(0, 0); }
+      if (e.key === 'ArrowLeft' && current > 1) { current--; save(); render(); window.scrollTo(0, 0); }
     });
-  });
-  return out;
-  function inline(s) {
-    return esc(s)
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  }
-}
-function render() {
-  const l = COURSE.lessons[current - 1];
-  document.title = `P${l.page} ${l.title} · STM32 学习模式`;
-  const phase = COURSE.phases.find(p => p.id === l.phase);
-  $('#bili-open').href = biliUrl(l.page);
-  let html = `<div class="crumb">${phase ? phase.name : ''} · 铁头山羊 STM32 入门教程</div>
-    <h1>P${l.page} ${l.title}</h1>
-    <div class="meta-row">
-      <span class="chip">时长 ${fmt(l.duration)}</span>
-      <button class="btn ${done.has(l.page) ? 'ghost' : 'primary'}" id="mark-btn">${done.has(l.page) ? '已完成 ✓' : '标记完成'}</button>
-    </div>`;
-  if (l.ts && l.ts.length) {
-    html += `<div class="section-label">时间戳导航</div><div class="ts-grid">` +
-      l.ts.map(t => `<a href="${biliUrl(l.page, t.t)}" target="_blank" rel="noopener">[${fmt(t.t)}] ${t.label}</a>`).join('') + `</div>`;
-  }
-  html += `<div class="section-label">本节笔记</div><div class="notes">${md(l.notes || '笔记整理中…')}</div>`;
-  if (l.points && l.points.length) {
-    html += `<div class="section-label">要点清单</div><div class="points"><ul>` +
-      l.points.map(p => `<li>${p}</li>`).join('') + `</ul></div>`;
-  }
-  html += `<div class="pager">
-    ${current > 1 ? `<button class="btn ghost" id="prev-btn">← 上一节</button>` : '<span></span>'}
-    ${current < COURSE.lessons.length ? `<button class="btn primary" id="next-btn">下一节 →</button>` : '<span></span>'}
-  </div>`;
-  $('#main').innerHTML = html;
-  $('#mark-btn').addEventListener('click', () => {
-    done.has(l.page) ? done.delete(l.page) : done.add(l.page);
-    save(); renderProgress(); renderSidebar();
-    const b = $('#mark-btn');
-    b.textContent = done.has(l.page) ? '已完成 ✓' : '标记完成';
-    b.className = 'btn ' + (done.has(l.page) ? 'ghost' : 'primary');
-  });
-  const pv = $('#prev-btn'), nx = $('#next-btn');
-  if (pv) pv.addEventListener('click', () => { current--; save(); render(); window.scrollTo(0, 0); });
-  if (nx) nx.addEventListener('click', () => { current++; save(); render(); window.scrollTo(0, 0); });
-  renderProgress(); renderSidebar();
-}
-document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  if (e.key === 'ArrowRight' && current < COURSE.lessons.length) { current++; save(); render(); window.scrollTo(0, 0); }
-  if (e.key === 'ArrowLeft' && current > 1) { current--; save(); render(); window.scrollTo(0, 0); }
-});
-render();
-</script>
+    render();
+  </script>
 </body>
 </html>
