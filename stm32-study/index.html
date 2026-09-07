@@ -589,7 +589,7 @@
       let out = '';
       chunks.forEach((c, i) => {
         if (i % 2) {
-          out += '<pre><code>' + esc(c.replace(/^\n/, '').replace(/\n$/, '')) + '</code></pre>';
+          out += '<pre><code>' + esc(c.replace(/^[a-zA-Z0-9]*\n/, '').replace(/\n$/, '')) + '</code></pre>';
           return;
         }
         c.split(/\n\n+/).forEach(block => {
