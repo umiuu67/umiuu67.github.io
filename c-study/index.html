@@ -170,6 +170,28 @@
       background: #fff;
       color: var(--ink);
     }
+    .helper-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      border-color: var(--line);
+      background: var(--surface);
+      white-space: nowrap;
+      margin-left: 12px;
+    }
+    .helper-status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #c2c8c6;
+      flex: 0 0 auto;
+    }
+    .helper-status.online { color: var(--green); border-color: rgba(23,122,88,.4); background: var(--green-soft); }
+    .helper-status.online::before { background: var(--green); }
+    .helper-status.offline { color: var(--orange); border-color: rgba(194,84,31,.4); background: var(--orange-soft); }
+    .helper-status.offline::before { background: var(--orange); }
     .progress-line { height: 4px; background: var(--surface-2); }
     .progress-line i { display: block; height: 100%; width: 0; background: var(--green); }
 
@@ -329,6 +351,9 @@
       color: #e8efec;
       font-size: 12px;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     .code-actions button:hover { background: rgba(255,255,255,.2); }
     .code-actions button:disabled { opacity: .55; cursor: default; }
@@ -1044,6 +1069,7 @@
         <label class="search">
           <input id="searchInput" type="search" placeholder="搜索标题或笔记内容" autocomplete="off">
         </label>
+        <button class="btn helper-status" id="helperStatus" type="button" title="本地助手用于在网页内编译运行代码并拉起 Red Panda IDE">本地助手 检测中…</button>
       </header>
       <div class="progress-line"><i id="globalProgress"></i></div>
 
@@ -1189,6 +1215,12 @@
         helperReady = false;
       }
       document.body.classList.toggle('helper-online', helperReady);
+      const statusButton = document.getElementById('helperStatus');
+      if (statusButton) {
+        statusButton.classList.toggle('online', helperReady);
+        statusButton.classList.toggle('offline', !helperReady);
+        statusButton.textContent = helperReady ? '本地助手 在线' : '本地助手 离线 · 点击启动';
+      }
     }
     async function helperPost(route, payload) {
       const response = await fetch(`${HELPER_BASE}${route}`, {
@@ -2083,6 +2115,12 @@ ${escapeHtml(item.practice || '')}</p>
     render();
     probeHelper();
     window.addEventListener('focus', probeHelper);
+    document.getElementById('helperStatus')?.addEventListener('click', async () => {
+      const statusButton = document.getElementById('helperStatus');
+      statusButton.textContent = '本地助手 启动中…';
+      statusButton.classList.remove('online', 'offline');
+      await probeHelper();
+    });
   </script>
 </body>
 </html>
