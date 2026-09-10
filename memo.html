@@ -3,37 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Umiuu 备忘录：记录待办与日期，数据保存在当前浏览器。">
     <title>备忘录 · Umiuu</title>
-        <meta name="theme-color" content="#11152b">
+    <meta name="theme-color" content="#11152b">
+    <link rel="canonical" href="https://umiuu67.github.io/memo.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="备忘录 · Umiuu">
+    <meta property="og:description" content="记录待办与日期，支持导出和恢复本地备份。">
+    <meta property="og:url" content="https://umiuu67.github.io/memo.html">
+    <meta property="og:image" content="https://umiuu67.github.io/assets/favicon-512b.png">
+    <meta name="twitter:card" content="summary">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32b.png">
     <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48b.png">
     <link rel="icon" type="image/png" sizes="180x180" href="assets/favicon-180b.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180b.png">
-    <link rel="stylesheet" href="css/style.css?v=21">
+    <link rel="stylesheet" href="css/style.css?v=22">
 </head>
 <body>
     <div id="box"></div>
-    <nav class="nav">
+    <nav class="nav" aria-label="主导航">
         <a class="brand" href="index.html">
             <img class="brand-logo" src="assets/favicon-48b.png" alt="67">
             Umiuu
         </a>
         <div class="links">
             <a href="index.html">首页</a>
-            <a href="memo.html" class="active">备忘录</a>
+            <a href="memo.html" class="active" aria-current="page">备忘录</a>
             <a href="schedule.html">课表</a>
             <a href="calendar.html">日历</a>
             <a href="https://www.ilovepdf.com/zh-cn" target="_blank" rel="noopener">工具箱 ↗</a>
-            <a href="trash.html">垃圾桶</a>
+            <a href="trash.html" title="作品集">垃圾桶</a>
         </div>
     </nav>
 
     <main class="page">
+        <h1 class="sr-only">Umiuu 备忘录</h1>
         <h2>备忘录</h2>
         <p class="tip">数据保存在当前浏览器中，换设备或清缓存后不会同步。</p>
         <form id="memoForm" class="memo-form">
             <input id="memoInput" type="text" placeholder="输入待办事项，回车添加..." autocomplete="off" required>
-            <input id="memoDate" type="date" title="选择日期（可选）">
+            <input id="memoDate" type="date" title="选择日期（可选）" aria-label="截止日期（可选）">
             <button type="submit" class="btn primary">添加</button>
         </form>
         <div class="filters">
@@ -44,20 +53,16 @@
         </div>
         <ul id="memoList" class="memo-list"></ul>
         <div class="toolbar">
+            <button id="exportMemo" class="chip">导出备份</button>
+            <button id="importMemo" class="chip">导入备份</button>
             <button id="clearDone" class="chip danger">清除已完成</button>
+            <input id="memoImportFile" type="file" accept=".json,application/json" hidden>
         </div>
     </main>
 
     <footer><p>© 2026 Umiuu · Powered by GitHub Pages</p></footer>
-    <script src="js/memo.js?v=21"></script>
-<script src="assets/ChaosWavesBg.min.js?v=21"></script>
-<script>
-new Color4Bg.ChaosWavesBg({
-    dom: "box",
-    colors: ["#6d6d6d", "#9b9b9b", "#838383", "#494949", "#1b1b1b", "#010101"],
-    seed: 20030506,
-    loop: true
-});
-</script><script src="js/enhance.js?v=21"></script>
+    <script src="js/memo.js?v=22"></script>
+    <script src="js/background.js?v=22"></script>
+    <script src="js/enhance.js?v=22"></script>
 </body>
 </html>

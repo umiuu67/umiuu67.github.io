@@ -3,17 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Umiuu 日历：把课程与备忘录合并到月历中查看。">
     <title>日历 · Umiuu</title>
-        <meta name="theme-color" content="#11152b">
+    <meta name="theme-color" content="#11152b">
+    <link rel="canonical" href="https://umiuu67.github.io/calendar.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="日历 · Umiuu">
+    <meta property="og:description" content="把课程与备忘录合并到月历中查看。">
+    <meta property="og:url" content="https://umiuu67.github.io/calendar.html">
+    <meta property="og:image" content="https://umiuu67.github.io/assets/favicon-512b.png">
+    <meta name="twitter:card" content="summary">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32b.png">
     <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48b.png">
     <link rel="icon" type="image/png" sizes="180x180" href="assets/favicon-180b.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180b.png">
-    <link rel="stylesheet" href="css/style.css?v=21">
+    <link rel="stylesheet" href="css/style.css?v=22">
 </head>
 <body>
     <div id="box"></div>
-    <nav class="nav">
+    <nav class="nav" aria-label="主导航">
         <a class="brand" href="index.html">
             <img class="brand-logo" src="assets/favicon-48b.png" alt="67">
             Umiuu
@@ -22,19 +30,20 @@
             <a href="index.html">首页</a>
             <a href="memo.html">备忘录</a>
             <a href="schedule.html">课表</a>
-            <a href="calendar.html" class="active">日历</a>
+            <a href="calendar.html" class="active" aria-current="page">日历</a>
             <a href="https://www.ilovepdf.com/zh-cn" target="_blank" rel="noopener">工具箱 ↗</a>
-            <a href="trash.html">垃圾桶</a>
+            <a href="trash.html" title="作品集">垃圾桶</a>
         </div>
     </nav>
 
     <main class="page wide">
+        <h1 class="sr-only">Umiuu 日历</h1>
         <div class="cal-head">
-            <button id="calPrev" class="chip">‹ 上月</button>
+            <button id="calPrev" class="chip" aria-label="上个月">‹ 上月</button>
             <h2 id="calTitle">2026年8月</h2>
             <div class="cal-head-right">
-                <button id="calToday" class="chip">今天</button>
-                <button id="calNext" class="chip">下月 ›</button>
+                <button id="calToday" class="chip" aria-label="回到今天">今天</button>
+                <button id="calNext" class="chip" aria-label="下个月">下月 ›</button>
             </div>
         </div>
 
@@ -61,15 +70,8 @@
     </main>
 
     <footer><p>© 2026 Umiuu · Powered by GitHub Pages</p></footer>
-    <script src="js/calendar.js?v=21"></script>
-<script src="assets/ChaosWavesBg.min.js?v=21"></script>
-<script>
-new Color4Bg.ChaosWavesBg({
-    dom: "box",
-    colors: ["#6d6d6d", "#9b9b9b", "#838383", "#494949", "#1b1b1b", "#010101"],
-    seed: 20030506,
-    loop: true
-});
-</script><script src="js/enhance.js?v=21"></script>
+    <script src="js/calendar.js?v=22"></script>
+    <script src="js/background.js?v=22"></script>
+    <script src="js/enhance.js?v=22"></script>
 </body>
 </html>

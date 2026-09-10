@@ -3,7 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>翁恺 C 语言学习模式</title>
+  <meta name="description" content="翁恺 C 语言 129 节课程学习系统，含进度、笔记、代码运行与本地助手。">
+  <meta name="theme-color" content="#f3f5f3">
+  <link rel="canonical" href="https://umiuu67.github.io/c-study/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="翁恺 C 语言学习模式 · Umiuu">
+  <meta property="og:description" content="129 节课程学习系统，含进度、笔记、代码运行与本地助手。">
+  <meta property="og:url" content="https://umiuu67.github.io/c-study/">
+  <meta property="og:image" content="https://umiuu67.github.io/assets/favicon-512b.png">
+  <meta name="twitter:card" content="summary">
+  <title>翁恺 C 语言学习模式 · Umiuu</title>
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32b.png">
   <link rel="icon" type="image/png" sizes="48x48" href="../assets/favicon-48b.png">
   <link rel="icon" type="image/png" sizes="180x180" href="../assets/favicon-180b.png">
@@ -15,7 +24,7 @@
       --surface: #ffffff;
       --surface-2: #e9edeb;
       --ink: #172026;
-      --muted: #617076;
+      --muted: #56656b;
       --line: #d7dfdc;
       --green: #177a58;
       --green-soft: #dff1e8;
@@ -69,6 +78,7 @@
       font-weight: 700;
       color: #fff;
     }
+    .logo img { width: 100%; height: 100%; display: block; border-radius: inherit; object-fit: cover; }
     .sidebar-brand strong { display: block; font-size: 16px; }
     .sidebar-brand span { font-size: 12px; color: rgba(255,255,255,.62); }
 
@@ -1041,9 +1051,11 @@
   <div class="app">
     <aside class="sidebar">
       <div class="sidebar-brand">
-        <div class="logo">C</div>
+        <a class="logo" href="../trash.html" aria-label="返回 Umiuu 作品集">
+          <img src="../assets/favicon-48b.png" alt="">
+        </a>
         <div>
-          <strong>翁恺 C 语言</strong>
+          <strong>Umiuu · C 语言</strong>
           <span>129 节学习系统</span>
         </div>
         <button class="sidebar-close" id="sidebarClose" aria-label="关闭目录">关闭</button>
@@ -1061,7 +1073,7 @@
       <header class="topbar">
         <button class="menu-button" id="menuButton" aria-label="打开目录" aria-expanded="false">目录</button>
         <div class="page-title" id="viewTitle">当前学习</div>
-        <div class="segmented" role="tablist">
+        <div class="segmented" role="group" aria-label="学习视图">
           <button data-view="focus">当前学习</button>
           <button data-view="path">课程路径</button>
           <button data-view="review">复习室</button>
@@ -1085,8 +1097,24 @@
   <script>
     const course = window.COURSE;
     const lessons = course.lessons;
-    const STORAGE_KEY = `wengkai-c-study-${course.totalSeconds}`;
-    const savedState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    const STORAGE_KEY = 'wengkai-c-study-v1';
+    const LEGACY_KEY = Object.keys(localStorage)
+      .find(key => key.startsWith('wengkai-c-study-') && key !== STORAGE_KEY);
+    const savedRaw = localStorage.getItem(STORAGE_KEY)
+      || (LEGACY_KEY ? localStorage.getItem(LEGACY_KEY) : null)
+      || '{}';
+    let savedState = {};
+    try {
+      savedState = JSON.parse(savedRaw);
+    } catch (error) {
+      savedState = {};
+    }
+    if (!savedState || typeof savedState !== 'object' || Array.isArray(savedState)) {
+      savedState = {};
+    }
+    if (LEGACY_KEY && !localStorage.getItem(STORAGE_KEY)) {
+      localStorage.setItem(STORAGE_KEY, savedRaw);
+    }
     const state = Object.assign({
       view: ['#focus', '#path', '#review'].includes(location.hash) ? location.hash.slice(1) : 'focus',
       current: lessons.find(item => !savedState.completed?.[item.page])?.page || lessons[0].page,
@@ -1277,7 +1305,10 @@
       shell.insertAdjacentHTML('afterend', html);
     }
     async function openInIde(index, button) {
-      const meta = codeMetaCache[index] || {};
+      const meta = {
+        page: button?.dataset.page,
+        title: button?.dataset.title
+      };
       const original = button.textContent;
       button.disabled = true;
       try {
@@ -1424,7 +1455,7 @@
           const code = raw.replace(/^(?:c|bash|text|in|out|sh)\n/, '');
           codeCache.push(code);
           codeMetaCache.push({ page: meta?.page, title: meta?.title });
-          html += `<div class="code-shell"><div class="code-actions"><button class="copy-code" type="button" data-copy="${codeCache.length - 1}">复制</button><button class="run-code" type="button" data-run="${codeCache.length - 1}">运行</button><button class="open-code" type="button" data-open="${codeCache.length - 1}">打开</button></div><pre><code>${escapeHtml(code)}</code></pre></div>`;
+          html += `<div class="code-shell"><div class="code-actions"><button class="copy-code" type="button" data-copy="${codeCache.length - 1}">复制</button><button class="run-code" type="button" data-run="${codeCache.length - 1}">运行</button><button class="open-code" type="button" data-open="${codeCache.length - 1}" data-page="${meta?.page ?? ''}" data-title="${escapeHtml(meta?.title ?? '')}">打开</button></div><pre><code>${escapeHtml(code)}</code></pre></div>`;
           return;
         }
         const blocks = [];
@@ -1596,7 +1627,7 @@
               ${renderMarkdown(item.body || '', { page: item.page, title: item.title })}
             </div>
             <aside class="study-dock">
-              <div class="dock-tabs" role="tablist">
+              <div class="dock-tabs" role="group" aria-label="学习面板">
                 ${dockTabs}
               </div>
               <div class="dock-panel">

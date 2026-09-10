@@ -3,7 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Airfoil Flow Lab · 翼型流体仿真</title>
+<meta name="description" content="浏览器中的 D2Q9 格子玻尔兹曼翼型绕流模拟，支持攻角、流速与场视图调节。">
+<meta name="theme-color" content="#04070b">
+<link rel="canonical" href="https://umiuu67.github.io/airfoil-fluid-sim/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Airfoil Flow Lab · Umiuu">
+<meta property="og:description" content="浏览器中的 D2Q9 格子玻尔兹曼翼型绕流模拟。">
+<meta property="og:url" content="https://umiuu67.github.io/airfoil-fluid-sim/">
+<meta property="og:image" content="https://umiuu67.github.io/assets/favicon-512b.png">
+<meta name="twitter:card" content="summary">
+<title>Airfoil Flow Lab · 翼型流体仿真 · Umiuu</title>
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32b.png">
 <link rel="icon" type="image/png" sizes="48x48" href="../assets/favicon-48b.png">
 <link rel="icon" type="image/png" sizes="180x180" href="../assets/favicon-180b.png">
@@ -60,7 +69,7 @@
     left: 0; right: 0; bottom: -1px; height: 1px;
     background: linear-gradient(90deg, transparent, rgba(62,243,205,.58), rgba(108,168,255,.22), rgba(255,201,92,.24), transparent);
   }
-  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; color: inherit; text-decoration: none; }
   .brand-mark {
     width: 34px; height: 34px; flex: none;
     display: grid; place-items: center;
@@ -70,6 +79,7 @@
     box-shadow: 0 0 22px rgba(62,243,205,.25), inset 0 0 12px rgba(255,255,255,.18);
   }
   .brand-mark svg { width: 17px; height: 17px; }
+  .brand-mark img { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: 7px; }
   h1 {
     font-size: 16px;
     margin: 0;
@@ -598,17 +608,15 @@
 <body>
 <div id="app">
   <header>
-    <div class="brand">
+    <a class="brand" href="../trash.html" aria-label="返回 Umiuu 作品集">
       <div class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M3 12h10l6-5v4l-4 3 4 3v4l-6-5H3l-1.5-2z"></path>
-        </svg>
+        <img src="../assets/favicon-48b.png" alt="">
       </div>
       <div>
         <h1>Airfoil Flow Lab</h1>
-        <p class="sub">D2Q9 格子玻尔兹曼 · WebGL2</p>
+        <p class="sub">Umiuu · D2Q9 格子玻尔兹曼 · WebGL2</p>
       </div>
-    </div>
+    </a>
     <div class="status">
       <div id="resolutionChip" class="status-chip">--</div>
       <div id="reChip" class="status-chip">Re --</div>

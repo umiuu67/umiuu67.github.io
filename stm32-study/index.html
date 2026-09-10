@@ -3,7 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>铁头山羊 STM32 学习模式</title>
+  <meta name="description" content="铁头山羊 STM32 入门教程 54 节学习系统，含进度、笔记、代码与视频跳转。">
+  <meta name="theme-color" content="#f3f5f3">
+  <link rel="canonical" href="https://umiuu67.github.io/stm32-study/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="铁头山羊 STM32 学习模式 · Umiuu">
+  <meta property="og:description" content="54 节学习系统，含进度、笔记、代码与视频跳转。">
+  <meta property="og:url" content="https://umiuu67.github.io/stm32-study/">
+  <meta property="og:image" content="https://umiuu67.github.io/assets/favicon-512b.png">
+  <meta name="twitter:card" content="summary">
+  <title>铁头山羊 STM32 学习模式 · Umiuu</title>
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32b.png">
   <link rel="icon" type="image/png" sizes="48x48" href="../assets/favicon-48b.png">
   <link rel="icon" type="image/png" sizes="180x180" href="../assets/favicon-180b.png">
@@ -15,7 +24,7 @@
       --surface: #ffffff;
       --surface-2: #e9edeb;
       --ink: #172026;
-      --muted: #617076;
+      --muted: #56656b;
       --line: #d7dfdc;
       --green: #177a58;
       --green-soft: #dff1e8;
@@ -495,9 +504,9 @@
   <div class="app">
     <aside class="sidebar">
       <div class="sidebar-brand">
-        <div class="logo"><img src="../assets/favicon-48b.png" alt=""></div>
+        <a class="logo" href="../trash.html" aria-label="返回 Umiuu 作品集"><img src="../assets/favicon-48b.png" alt=""></a>
         <div>
-          <strong>STM32 学习模式</strong>
+          <strong>Umiuu · STM32</strong>
           <span>54 节学习系统</span>
         </div>
         <button class="sidebar-close" id="sidebarClose" aria-label="关闭目录">关闭</button>
@@ -637,7 +646,7 @@
       const timelineOptions = ['<option value="all">全部阶段</option>']
         .concat(COURSE.phases.map(phase => `<option value="${phase.id}" ${timelinePhase === phase.id ? 'selected' : ''}>${esc(phase.name)}</option>`))
         .join('');
-      document.title = `P${l.page} ${l.title} · STM32 学习模式`;
+      document.title = `P${l.page} ${l.title} · STM32 学习模式 · Umiuu`;
       $('#viewTitle').textContent = `P${l.page} ${l.title}`;
       $('#bili-open').href = biliUrl(l.page);
       renderContinue();
@@ -682,7 +691,7 @@
             ${md(l.notes || '笔记整理中…')}
           </div>
           <aside class="study-dock">
-            <div class="dock-tabs" role="tablist">${dockTabs}</div>
+            <div class="dock-tabs" role="group" aria-label="学习面板">${dockTabs}</div>
             <div class="dock-panel">
               <div class="dock-page" data-dock-page="progress" ${dock === 'progress' ? '' : 'hidden'}>
                 <div class="dock-label"><span>课程进度</span><span>${progress.n}/${progress.total}</span></div>
