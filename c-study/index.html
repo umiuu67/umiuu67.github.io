@@ -277,6 +277,11 @@
       min-width: 0;
       overflow-wrap: anywhere;
     }
+    .lesson-loading {
+      padding: 36px 0;
+      color: var(--muted);
+      text-align: center;
+    }
     .note-toolbar {
       display: flex;
       align-items: center;
@@ -1097,6 +1102,58 @@
   <script>
     const course = window.COURSE;
     const lessons = course.lessons;
+    const CHUNK_BASE = './c-course-lessons/phase-';
+    const lessonChunkPromises = {};
+    let allLessonChunksPromise = null;
+
+    function mergeLessonChunk(phase) {
+      const chunk = (window.COURSE_CHUNKS && window.COURSE_CHUNKS[phase]) || [];
+      const byPage = new Map(lessons.map(item => [item.page, item]));
+      chunk.forEach(entry => {
+        const item = byPage.get(entry.page);
+        if (item && typeof entry.body === 'string') item.body = entry.body;
+      });
+    }
+
+    function loadLessonChunk(phase) {
+      if (!phase) return Promise.resolve();
+      if (lessonChunkPromises[phase]) return lessonChunkPromises[phase];
+      if (window.COURSE_CHUNKS && window.COURSE_CHUNKS[phase]) {
+        mergeLessonChunk(phase);
+        return Promise.resolve();
+      }
+      const phaseIndex = phaseList().indexOf(phase);
+      if (phaseIndex < 0) return Promise.resolve();
+      lessonChunkPromises[phase] = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = `${CHUNK_BASE}${String(phaseIndex + 1).padStart(2, '0')}.js`;
+        script.async = true;
+        script.onload = () => {
+          mergeLessonChunk(phase);
+          resolve();
+        };
+        script.onerror = () => {
+          delete lessonChunkPromises[phase];
+          reject(new Error(`课程正文加载失败：${phase}`));
+        };
+        document.head.appendChild(script);
+      });
+      return lessonChunkPromises[phase];
+    }
+
+    function ensureLessonBody(page) {
+      const item = lesson(page);
+      if (typeof item.body === 'string') return Promise.resolve();
+      return loadLessonChunk(item.phase);
+    }
+
+    function ensureAllLessonBodies() {
+      if (!allLessonChunksPromise) {
+        allLessonChunksPromise = Promise.all(phaseList().map(loadLessonChunk));
+      }
+      return allLessonChunksPromise;
+    }
+
     const STORAGE_KEY = 'wengkai-c-study-v1';
     const LEGACY_KEY = Object.keys(localStorage)
       .find(key => key.startsWith('wengkai-c-study-') && key !== STORAGE_KEY);
@@ -1387,10 +1444,15 @@
         saveState();
       }
     }
-    function openLesson(page, message) {
+    async function openLesson(page, message) {
       state.current = Number(page);
       state.view = 'focus';
       saveState();
+      try {
+        await ensureLessonBody(state.current);
+      } catch (error) {
+        showToast(error.message || '课程正文加载失败，请刷新重试', true);
+      }
       render();
       if (message) showToast(message);
     }
@@ -1583,6 +1645,7 @@
       const phasePercent = Math.round(phaseDone / phaseItems.length * 100);
       const chapterPercent = Math.round(chapterDone / chapterItems.length * 100);
       const noteHtml = escapeHtml(state.notes[item.page] || '');
+      const bodyReady = typeof item.body === 'string';
       const timelinePages = lessons.filter(item2 => state.timelinePhase === 'all' || item2.phase === state.timelinePhase);
       const timelineOptions = ['<option value="all">全部阶段</option>']
         .concat(phaseList().map(name => `<option value="${escapeHtml(name)}" ${state.timelinePhase === name ? 'selected' : ''}>${escapeHtml(name)}</option>`))
@@ -1621,10 +1684,12 @@
             <div class="lesson-note">
               <div class="note-toolbar">
                 <h2>完整讲解</h2>
-                <span>${item.focus?.length || 0} 个目标 · ${Math.round((item.body || '').length / 100) / 10} 千字</span>
-                <button class="btn" id="copyLessonBody" type="button">复制本节</button>
+                <span>${bodyReady ? `${item.focus?.length || 0} 个目标 · ${Math.round(item.body.length / 100) / 10} 千字` : '正在加载正文…'}</span>
+                <button class="btn" id="copyLessonBody" type="button" ${bodyReady ? '' : 'disabled'}>复制本节</button>
               </div>
-              ${renderMarkdown(item.body || '', { page: item.page, title: item.title })}
+              ${bodyReady
+                ? renderMarkdown(item.body, { page: item.page, title: item.title })
+                : '<div class="lesson-loading">正在加载本节完整讲解…</div>'}
             </div>
             <aside class="study-dock">
               <div class="dock-tabs" role="group" aria-label="学习面板">
@@ -1687,10 +1752,7 @@
       $('#timelineGo').addEventListener('click', () => {
         const value = Number($('#timelineJump').value);
         if (value >= 1 && value <= lessons.length) {
-          state.current = value;
-          state.view = 'focus';
-          saveState();
-          render();
+          openLesson(value);
         }
       });
       $('#timelineJump').addEventListener('keydown', event => {
@@ -1924,9 +1986,9 @@ ${escapeHtml(item.practice || '')}</p>
       document.querySelectorAll('.segmented button').forEach(node => node.classList.toggle('active', node.dataset.view === state.view));
       $('#viewTitle').textContent = { focus: '当前学习', path: '课程路径', review: '复习室' }[state.view];
       renderSidebar();
-      renderFocus();
-      renderPath();
-      renderReview();
+      if (state.view === 'path') renderPath();
+      else if (state.view === 'review') renderReview();
+      else renderFocus();
     }
 
     document.addEventListener('click', event => {
@@ -2061,10 +2123,7 @@ ${escapeHtml(item.practice || '')}</p>
       }
       const nav = event.target.closest('[data-nav]');
       if (nav && nav.dataset.nav !== '') {
-        state.current = Number(nav.dataset.nav);
-        state.view = 'focus';
-        saveState();
-        render();
+        openLesson(nav.dataset.nav);
         closeSidebar();
         return;
       }
@@ -2072,9 +2131,9 @@ ${escapeHtml(item.practice || '')}</p>
       if (doneControl) {
         const page = Number(doneControl.dataset.toggleDone);
         state.completed[page] = !state.completed[page];
-        if (state.completed[page] && page === state.current) state.current = nextIncomplete(page);
         saveState();
-        render();
+        if (state.completed[page] && page === state.current) openLesson(nextIncomplete(page));
+        else render();
         closeSidebar();
       }
     });
@@ -2122,6 +2181,13 @@ ${escapeHtml(item.practice || '')}</p>
       saveState();
       if (state.view !== 'path') setView('path');
       else renderPath();
+      if (state.query.trim().length >= 2) {
+        ensureAllLessonBodies()
+          .then(() => {
+            if (state.view === 'path') renderPath();
+          })
+          .catch(() => showToast('全文搜索数据加载失败，请检查网络后重试', true));
+      }
     });
     $('#continueButton').addEventListener('click', () => {
       setView('focus');
@@ -2134,16 +2200,21 @@ ${escapeHtml(item.practice || '')}</p>
       if (event.key === 'Escape') closeSidebar();
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
       if (state.view !== 'focus') return;
-      if (event.key === 'ArrowLeft') state.current = Math.max(1, state.current - 1);
-      if (event.key === 'ArrowRight') state.current = Math.min(lessons.length, state.current + 1);
       if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
-      saveState();
-      render();
+      const nextPage = event.key === 'ArrowLeft'
+        ? Math.max(1, state.current - 1)
+        : Math.min(lessons.length, state.current + 1);
+      if (nextPage !== state.current) openLesson(nextPage);
     });
 
     normalizeStudyState();
     normalizeReviewState();
     render();
+    if (state.view === 'focus') {
+      ensureLessonBody(state.current)
+        .then(render)
+        .catch(() => showToast('课程正文加载失败，请刷新重试', true));
+    }
     probeHelper();
     window.addEventListener('focus', probeHelper);
     document.getElementById('helperStatus')?.addEventListener('click', async () => {
