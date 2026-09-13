@@ -8,7 +8,7 @@
     --border: #2b2d33;
     --text: #e3e7f5;
     --muted: #9aa3c7;
-    --faint: #7c86b0;
+    --faint: #6b7399;
     --accent: #eef1ff;
     --accent-deep: #b9bdd0;
 }
@@ -17,7 +17,6 @@ html { color-scheme: dark; background: #0d0e12; }
 
 #box { position: fixed; inset: 0; z-index: -1; will-change: transform; }
 #box canvas { width: 100% !important; height: 100% !important; display: block; }
-html.background-static #box { display: none; }
 #box::after {
     content: "";
     position: absolute;
@@ -34,18 +33,6 @@ body {
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     background: transparent;
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
 }
 
 .nav {
@@ -155,8 +142,8 @@ body {
 .slant-inner { transform: skewY(4deg); }
 .slant-card:nth-child(even) .slant-inner { transform: skewY(-4deg); }
 
-.slant-card h2 { font-size: 1.35rem; margin: 16px 0 8px; }
-.slant-card h2 small {
+.slant-card h3 { font-size: 1.35rem; margin: 16px 0 8px; }
+.slant-card h3 small {
     font-size: .7rem;
     background: rgba(255,255,255,.22);
     padding: 2px 8px;
@@ -445,15 +432,6 @@ body::after {
 @keyframes rise {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: none; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
-        scroll-behavior: auto !important;
-    }
 }
 
 /* ---- calendar ---- */

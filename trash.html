@@ -3,24 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Umiuu 作品集：浏览器实验、学习模式和交互项目。">
+    <meta name="description" content="Umiuu 的作品集：散落各处的网页实验。">
     <title>垃圾桶 · Umiuu</title>
-    <link rel="canonical" href="https://umiuu67.github.io/trash.html">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="作品集 · Umiuu">
-    <meta property="og:description" content="浏览器实验、学习模式和交互项目。">
-    <meta property="og:url" content="https://umiuu67.github.io/trash.html">
-    <meta property="og:image" content="https://umiuu67.github.io/assets/favicon-512b.png">
-    <meta name="twitter:card" content="summary">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32b.png?v=22">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32b.png?v=21">
     <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48b.png">
     <link rel="icon" type="image/png" sizes="180x180" href="assets/favicon-180b.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180b.png">
-    <link rel="stylesheet" href="css/style.css?v=22">
+    <link rel="stylesheet" href="css/style.css?v=21">
 </head>
 <body>
     <div id="box"></div>
-    <nav class="nav" aria-label="主导航">
+    <nav class="nav">
         <a class="brand" href="index.html">
             <img class="brand-logo" src="assets/favicon-48b.png" alt="67">
             Umiuu
@@ -31,24 +24,23 @@
             <a href="schedule.html">课表</a>
             <a href="calendar.html">日历</a>
             <a href="https://www.ilovepdf.com/zh-cn" target="_blank" rel="noopener">工具箱 ↗</a>
-            <a href="trash.html" class="active" aria-current="page" title="作品集">垃圾桶</a>
+            <a href="trash.html" class="active">垃圾桶</a>
         </div>
     </nav>
 
     <main class="page wide">
-        <h1 class="sr-only">Umiuu 作品集</h1>
-        <h2>垃圾桶 · 作品集</h2>
+        <h2>垃圾桶</h2>
         <p class="tip">作品集 — 陈列那些散落在网络角落里的网页实验。</p>
         <div class="works-grid">
 
-            <a class="work-card" href="aeon/" target="_blank" rel="noopener">
+            <a class="work-card" href="https://umiuu67.github.io/aeon/" target="_blank" rel="noopener">
                 <div class="work-tag">NO.01 · 实时演算</div>
                 <h3>ÆON · 奇点 SINGULARITY</h3>
                 <p>一颗在浏览器里实时演算的黑洞：引力透镜、吸积盘、时空涟漪。</p>
                 <span class="go">前往观察 ↗</span>
             </a>
 
-            <a class="work-card" href="gravity/" target="_blank" rel="noopener">
+            <a class="work-card" href="https://umiuu67.github.io/gravity/" target="_blank" rel="noopener">
                 <div class="work-tag">NO.02 · 物理模拟</div>
                 <h3>重力实验室 · Gravity Lab</h3>
                 <p>二维引力实时模拟：投放星体，观察轨道、弹弓效应与引力舞蹈。</p>
@@ -81,7 +73,15 @@
     </main>
 
     <footer><p>© 2026 Umiuu · Powered by GitHub Pages</p></footer>
-    <script src="js/background.js?v=22"></script>
-    <script src="js/enhance.js?v=22"></script>
+    <script src="assets/ChaosWavesBg.min.js?v=21"></script>
+    <script>
+        new Color4Bg.ChaosWavesBg({
+            dom: "box",
+            colors: ["#6d6d6d", "#9b9b9b", "#838383", "#494949", "#1b1b1b", "#010101"],
+            seed: 20030506,
+            loop: true
+        });
+    </script>
+    <script src="js/enhance.js?v=21"></script>
 </body>
 </html>

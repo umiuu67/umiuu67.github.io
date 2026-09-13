@@ -1,5 +1,5 @@
 (function () {
-    if (!window.matchMedia || !matchMedia('(pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!window.matchMedia || !matchMedia('(pointer: fine)').matches) return;
 
     var box = document.getElementById('box');
     var tx = 0, ty = 0, cx = 0, cy = 0, raf = null;

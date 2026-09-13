@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://umiuu67.github.io/sitemap.xml
