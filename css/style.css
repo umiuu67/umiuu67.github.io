@@ -227,6 +227,8 @@ body {
     font-size: .85rem;
 }
 .chip:hover { background: #2e3038; }
+.chip:disabled { opacity: .45; cursor: not-allowed; }
+.chip:disabled:hover { background: #24262c; }
 .chip.active { background: #eef1ff; color: #16171d; }
 .count { margin-left: auto; color: var(--faint); font-size: .85rem; }
 

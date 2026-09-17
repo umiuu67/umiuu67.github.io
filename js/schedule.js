@@ -7,6 +7,8 @@ let weekIdx = 1;
 const table = document.getElementById('scheduleTable');
 const termSel = document.getElementById('termSel');
 const weekSel = document.getElementById('weekSel');
+const prevWeekBtn = document.getElementById('prevWeekBtn');
+const nextWeekBtn = document.getElementById('nextWeekBtn');
 const panel = document.getElementById('importPanel');
 const importText = document.getElementById('importText');
 const importMsg = document.getElementById('importMsg');
@@ -90,6 +92,21 @@ function fillWeeks(keep) {
     for (let w = 1; w <= (t.weeks || 16); w++) weekSel.add(new Option('第' + w + '周', w));
     weekIdx = keep !== undefined ? keep : defaultWeek();
     weekSel.value = weekIdx;
+    syncWeekButtons();
+}
+
+function syncWeekButtons() {
+    const maxWeek = term() ? (term().weeks || 16) : 1;
+    prevWeekBtn.disabled = weekIdx <= 1;
+    nextWeekBtn.disabled = weekIdx >= maxWeek;
+}
+
+function changeWeek(delta) {
+    const maxWeek = term().weeks || 16;
+    weekIdx = Math.min(maxWeek, Math.max(1, weekIdx + delta));
+    weekSel.value = weekIdx;
+    syncWeekButtons();
+    build();
 }
 
 function defaultTerm() {
@@ -151,8 +168,11 @@ termSel.addEventListener('change', () => {
 });
 weekSel.addEventListener('change', () => {
     weekIdx = +weekSel.value;
+    syncWeekButtons();
     build();
 });
+prevWeekBtn.addEventListener('click', () => changeWeek(-1));
+nextWeekBtn.addEventListener('click', () => changeWeek(1));
 
 document.getElementById('exportBtn').addEventListener('click', async () => {
     const json = JSON.stringify(data);

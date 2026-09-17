@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48b.png">
     <link rel="icon" type="image/png" sizes="180x180" href="assets/favicon-180b.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180b.png">
-    <link rel="stylesheet" href="css/style.css?v=21">
+    <link rel="stylesheet" href="css/style.css?v=22">
 </head>
 <body>
     <div id="box"></div>
@@ -34,6 +34,8 @@
         <div class="toolbar" style="justify-content:flex-start">
             <select id="termSel" style="width:auto; min-width:150px"></select>
             <select id="weekSel" style="width:auto; min-width:110px"></select>
+            <button id="prevWeekBtn" class="chip" type="button" aria-label="切换到上一周">上一周</button>
+            <button id="nextWeekBtn" class="chip" type="button" aria-label="切换到下一周">下一周</button>
             <button id="exportBtn" class="chip">导出备份</button>
             <button id="importBtn" class="chip">预览导入</button>
         </div>
@@ -52,7 +54,7 @@
     </main>
 
     <footer><p>© 2026 Umiuu · Powered by GitHub Pages</p></footer>
-    <script src="js/schedule.js?v=21"></script>
+    <script src="js/schedule.js?v=22"></script>
 <script src="assets/ChaosWavesBg.min.js?v=21"></script>
 <script>
 new Color4Bg.ChaosWavesBg({
