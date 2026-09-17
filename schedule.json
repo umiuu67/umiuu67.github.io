@@ -33,6 +33,22 @@
         { "name": "纳米科学与技术（双语）", "room": "计C311", "day": 3, "start": 10, "end": 11, "weeks": [[9, 16]] },
         { "name": "现代控制理论", "room": "广B213", "day": 3, "start": 10, "end": 11, "weeks": [[1, 8]] }
       ]
+    },
+    {
+      "name": "2026年秋季学期",
+      "start": "2026-09-07",
+      "weeks": 16,
+      "courses": [
+        { "name": "系统仿真", "room": "计D313", "day": 2, "start": 3, "end": 4, "weeks": [[9, 16]] },
+        { "name": "流体控制元件优化设计", "room": "计D305", "day": 4, "start": 3, "end": 4, "weeks": [[1, 8]] },
+        { "name": "高等工程数学（Ⅱ）", "room": "广A215（录播）", "day": 5, "start": 3, "end": 4, "weeks": [[1, 16]] },
+        { "name": "论文写作指导", "room": "广B101", "day": 1, "start": 6, "end": 7, "weeks": [[1, 4]] },
+        { "name": "论文写作指导", "room": "广B101", "day": 2, "start": 6, "end": 7, "weeks": [[1, 4]] },
+        { "name": "系统仿真", "room": "计D313", "day": 2, "start": 6, "end": 7, "weeks": [[9, 16]] },
+        { "name": "精益生产", "room": "计D405", "day": 3, "start": 3, "end": 4, "weeks": [[1, 16]] },
+        { "name": "知识产权", "room": "广A101", "day": 3, "start": 6, "end": 7, "weeks": [[1, 8]] },
+        { "name": "流体控制元件优化设计", "room": "计C318", "day": 5, "start": 6, "end": 7, "weeks": [[1, 8]] }
+      ]
     }
   ]
 }
