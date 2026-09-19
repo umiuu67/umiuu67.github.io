@@ -1,11 +1,36 @@
 const KEY = 'my_memo_items';
-let items = JSON.parse(localStorage.getItem(KEY) || '[]');
-let filter = 'all';
+let items = [];
+let filter = { status: 'all', kind: 'all' };
 
 const list = document.getElementById('memoList');
 const form = document.getElementById('memoForm');
 const input = document.getElementById('memoInput');
+const dateInput = document.getElementById('memoDate');
+const timeInput = document.getElementById('memoTime');
 const countEl = document.getElementById('memoCount');
+
+function loadItems() {
+    let raw = [];
+    try {
+        raw = JSON.parse(localStorage.getItem(KEY) || '[]');
+    } catch {
+        raw = [];
+    }
+    return raw.map(it => {
+        const kind = it.kind === 'event' || it.kind === 'goal'
+            ? it.kind
+            : (it.date ? 'event' : 'goal');
+        return {
+            ...it,
+            id: it.id ?? Date.now(),
+            text: String(it.text || ''),
+            done: !!it.done,
+            kind,
+            date: kind === 'event' ? (it.date || '') : '',
+            time: kind === 'event' ? (it.time || '') : ''
+        };
+    });
+}
 
 function save() {
     localStorage.setItem(KEY, JSON.stringify(items));
@@ -14,7 +39,8 @@ function save() {
 function render() {
     list.innerHTML = '';
     const shown = items.filter(it =>
-        filter === 'all' ? true : filter === 'done' ? it.done : !it.done
+        (filter.status === 'all' || (filter.status === 'done' ? it.done : !it.done)) &&
+        (filter.kind === 'all' || it.kind === filter.kind)
     );
     for (const it of shown) {
         const li = document.createElement('li');
@@ -35,11 +61,15 @@ function render() {
         span.textContent = it.text;
 
         let dBadge = null;
-        if (it.date) {
+        if (it.kind === 'event' && it.date) {
             dBadge = document.createElement('span');
             const todayStr = new Date().toLocaleDateString('sv-SE');
             dBadge.className = 'date-badge' + (!it.done && it.date < todayStr ? ' overdue' : '');
-            dBadge.textContent = it.date.slice(5);
+            dBadge.textContent = it.time ? `${it.date.slice(5)} ${it.time}` : it.date.slice(5);
+        } else if (it.kind === 'goal') {
+            dBadge = document.createElement('span');
+            dBadge.className = 'date-badge goal-badge';
+            dBadge.textContent = '长期目标';
         }
         span.addEventListener('dblclick', () => {
             const t = prompt('修改内容：', it.text);
@@ -72,19 +102,43 @@ form.addEventListener('submit', e => {
     e.preventDefault();
     const text = input.value.trim();
     if (!text) return;
-    const dateVal = document.getElementById('memoDate').value || '';
-    items.unshift({ id: Date.now(), text, done: false, date: dateVal });
+    const kind = form.classList.contains('mode-goal') ? 'goal' : 'event';
+    const dateVal = kind === 'event' ? dateInput.value : '';
+    if (kind === 'event' && !dateVal) {
+        dateInput.reportValidity();
+        return;
+    }
+    const timeVal = kind === 'event' ? timeInput.value : '';
+    items.unshift({ id: Date.now(), text, done: false, kind, date: dateVal, time: timeVal });
     input.value = '';
-    document.getElementById('memoDate').value = '';
+    dateInput.value = '';
+    timeInput.value = '';
     save();
     render();
 });
 
+document.querySelectorAll('.type-switch button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelector('.type-switch .active').classList.remove('active');
+        btn.classList.add('active');
+        form.classList.toggle('mode-goal', btn.dataset.kind === 'goal');
+        dateInput.disabled = btn.dataset.kind === 'goal';
+        timeInput.disabled = btn.dataset.kind === 'goal';
+        if (btn.dataset.kind === 'goal') {
+            dateInput.value = '';
+            timeInput.value = '';
+        }
+    });
+});
+
 document.querySelectorAll('.filters .chip').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelector('.filters .active').classList.remove('active');
+        const group = btn.dataset.filter;
+        filter[group] = btn.dataset.value;
+        document.querySelectorAll(`.filters .chip[data-filter="${group}"]`).forEach(item => {
+            item.classList.remove('active');
+        });
         btn.classList.add('active');
-        filter = btn.dataset.f;
         render();
     });
 });

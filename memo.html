@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon-48b.png">
     <link rel="icon" type="image/png" sizes="180x180" href="assets/favicon-180b.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180b.png">
-    <link rel="stylesheet" href="css/style.css?v=21">
+    <link rel="stylesheet" href="css/style.css?v=22">
 </head>
 <body>
     <div id="box"></div>
@@ -33,13 +33,21 @@
         <p class="tip">数据保存在当前浏览器中，换设备或清缓存后不会同步。</p>
         <form id="memoForm" class="memo-form">
             <input id="memoInput" type="text" placeholder="输入待办事项，回车添加..." autocomplete="off" required>
-            <input id="memoDate" type="date" title="选择日期（可选）">
+            <div class="type-switch" role="group" aria-label="备忘录类型">
+                <button type="button" class="active" data-kind="event">日程提醒</button>
+                <button type="button" data-kind="goal">长期目标</button>
+            </div>
+            <input id="memoDate" type="date" title="选择日期" required>
+            <input id="memoTime" type="time" title="选择时间（可选）">
             <button type="submit" class="btn primary">添加</button>
         </form>
         <div class="filters">
-            <button class="chip active" data-f="all">全部</button>
-            <button class="chip" data-f="active">未完成</button>
-            <button class="chip" data-f="done">已完成</button>
+            <button class="chip active" data-filter="status" data-value="all">全部</button>
+            <button class="chip" data-filter="status" data-value="active">未完成</button>
+            <button class="chip" data-filter="status" data-value="done">已完成</button>
+            <button class="chip active" data-filter="kind" data-value="all">全部类型</button>
+            <button class="chip" data-filter="kind" data-value="event">日程</button>
+            <button class="chip" data-filter="kind" data-value="goal">目标</button>
             <span id="memoCount" class="count"></span>
         </div>
         <ul id="memoList" class="memo-list"></ul>
@@ -49,7 +57,7 @@
     </main>
 
     <footer><p>© 2026 Umiuu · Powered by GitHub Pages</p></footer>
-    <script src="js/memo.js?v=21"></script>
+    <script src="js/memo.js?v=22"></script>
 <script src="assets/ChaosWavesBg.min.js?v=21"></script>
 <script>
 new Color4Bg.ChaosWavesBg({

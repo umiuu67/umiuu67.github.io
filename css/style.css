@@ -202,7 +202,7 @@ body {
 .tip { color: var(--faint); font-size: .88rem; margin-bottom: 20px; }
 
 /* ---- memo ---- */
-.memo-form { display: flex; gap: 10px; margin-bottom: 16px; }
+.memo-form { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
 .memo-form input {
     flex: 1;
     padding: 11px 14px;
@@ -214,7 +214,29 @@ body {
     color: var(--text);
 }
 .memo-form input:focus { border-color: var(--accent); }
-.memo-form input[type=date] { flex: 0 0 150px; color-scheme: dark; }
+.memo-form input[type=date],
+.memo-form input[type=time] { flex: 0 1 150px; color-scheme: dark; }
+.memo-form.mode-goal input[type=date],
+.memo-form.mode-goal input[type=time] { display: none; }
+
+.type-switch {
+    display: flex;
+    flex: 1 1 220px;
+    overflow: hidden;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+}
+.type-switch button {
+    flex: 1;
+    border: none;
+    padding: 11px 14px;
+    background: none;
+    color: #aab2d8;
+    font-size: .95rem;
+    cursor: pointer;
+}
+.type-switch button.active { background: #eef1ff; color: #16171d; }
 
 .filters { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .chip {
@@ -273,6 +295,7 @@ body {
     white-space: nowrap;
 }
 .date-badge.overdue { background: rgba(255,107,107,.14); color: #ff8f8f; }
+.date-badge.goal-badge { background: rgba(102,204,153,.14); color: #94e2b8; }
 
 /* ---- schedule ---- */
 .table-wrap { overflow-x: auto; border-radius: 10px; box-shadow: 0 4px 18px rgba(0,0,0,.4); }
