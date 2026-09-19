@@ -214,6 +214,7 @@ body {
     color: var(--text);
 }
 .memo-form input:focus { border-color: var(--accent); }
+#memoInput { flex: 3 1 320px; }
 .memo-form input[type=date],
 .memo-form input[type=time] { flex: 0 1 150px; color-scheme: dark; }
 .memo-form.mode-goal input[type=date],

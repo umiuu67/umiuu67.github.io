@@ -65,7 +65,7 @@ function render() {
             dBadge = document.createElement('span');
             const todayStr = new Date().toLocaleDateString('sv-SE');
             dBadge.className = 'date-badge' + (!it.done && it.date < todayStr ? ' overdue' : '');
-            dBadge.textContent = it.time ? `${it.date.slice(5)} ${it.time}` : it.date.slice(5);
+            dBadge.textContent = it.date.slice(5);
         } else if (it.kind === 'goal') {
             dBadge = document.createElement('span');
             dBadge.className = 'date-badge goal-badge';
