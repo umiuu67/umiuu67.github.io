@@ -144,4 +144,5 @@ document.getElementById('clearDone').addEventListener('click', () => {
     render();
 });
 
+items = loadItems();
 render();
