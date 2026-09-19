@@ -202,7 +202,7 @@ body {
 .tip { color: var(--faint); font-size: .88rem; margin-bottom: 20px; }
 
 /* ---- memo ---- */
-.memo-form { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.memo-form { display: flex; flex-wrap: nowrap; align-items: center; gap: 10px; margin-bottom: 16px; }
 .memo-form input {
     flex: 1;
     padding: 11px 14px;
@@ -214,15 +214,15 @@ body {
     color: var(--text);
 }
 .memo-form input:focus { border-color: var(--accent); }
-#memoInput { flex: 3 1 320px; }
+#memoInput { flex: 1 1 240px; min-width: 0; }
 .memo-form input[type=date],
-.memo-form input[type=time] { flex: 0 1 150px; color-scheme: dark; }
+.memo-form input[type=date] { flex: 0 0 150px; color-scheme: dark; }
 .memo-form.mode-goal input[type=date],
-.memo-form.mode-goal input[type=time] { display: none; }
+.memo-form.mode-goal input[type=date] { display: none; }
 
 .type-switch {
     display: flex;
-    flex: 1 1 220px;
+    flex: 0 0 230px;
     overflow: hidden;
     border: 2px solid var(--border);
     border-radius: 10px;
@@ -238,6 +238,7 @@ body {
     cursor: pointer;
 }
 .type-switch button.active { background: #eef1ff; color: #16171d; }
+.memo-form .btn { flex: 0 0 auto; }
 
 .filters { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
 .chip {

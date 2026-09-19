@@ -6,7 +6,6 @@ const list = document.getElementById('memoList');
 const form = document.getElementById('memoForm');
 const input = document.getElementById('memoInput');
 const dateInput = document.getElementById('memoDate');
-const timeInput = document.getElementById('memoTime');
 const countEl = document.getElementById('memoCount');
 
 function loadItems() {
@@ -27,7 +26,7 @@ function loadItems() {
             done: !!it.done,
             kind,
             date: kind === 'event' ? (it.date || '') : '',
-            time: kind === 'event' ? (it.time || '') : ''
+            time: ''
         };
     });
 }
@@ -108,11 +107,9 @@ form.addEventListener('submit', e => {
         dateInput.reportValidity();
         return;
     }
-    const timeVal = kind === 'event' ? timeInput.value : '';
-    items.unshift({ id: Date.now(), text, done: false, kind, date: dateVal, time: timeVal });
+    items.unshift({ id: Date.now(), text, done: false, kind, date: dateVal, time: '' });
     input.value = '';
     dateInput.value = '';
-    timeInput.value = '';
     save();
     render();
 });
@@ -123,10 +120,8 @@ document.querySelectorAll('.type-switch button').forEach(btn => {
         btn.classList.add('active');
         form.classList.toggle('mode-goal', btn.dataset.kind === 'goal');
         dateInput.disabled = btn.dataset.kind === 'goal';
-        timeInput.disabled = btn.dataset.kind === 'goal';
         if (btn.dataset.kind === 'goal') {
             dateInput.value = '';
-            timeInput.value = '';
         }
     });
 });
