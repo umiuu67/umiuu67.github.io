@@ -41,7 +41,7 @@
       "courses": [
         { "name": "系统仿真", "room": "计D313", "day": 2, "start": 3, "end": 4, "weeks": [[9, 16]] },
         { "name": "流体控制元件优化设计", "room": "计D305", "day": 4, "start": 3, "end": 4, "weeks": [[1, 8]] },
-        { "name": "高等工程数学（Ⅱ）", "room": "广A215（录播）", "day": 5, "start": 3, "end": 4, "weeks": [[1, 16]] },
+        { "name": "高等工程数学（Ⅱ）", "room": "广A215（录播）", "day": 5, "start": 3, "end": 5, "weeks": [[1, 16]] },
         { "name": "论文写作指导", "room": "广B101", "day": 1, "start": 6, "end": 7, "weeks": [[1, 4]] },
         { "name": "论文写作指导", "room": "广B101", "day": 2, "start": 6, "end": 7, "weeks": [[1, 4]] },
         { "name": "系统仿真", "room": "计D313", "day": 2, "start": 6, "end": 7, "weeks": [[9, 16]] },
