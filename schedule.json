@@ -45,7 +45,6 @@
         { "name": "系统仿真", "room": "计D313", "day": 2, "start": 6, "end": 7, "weeks": [[9, 16]] },
         { "name": "材料分析与测试", "room": "广B113", "day": 2, "start": 8, "end": 9, "weeks": [[9, 16]] },
         { "name": "材料分析与测试", "room": "广B113", "day": 4, "start": 8, "end": 9, "weeks": [[9, 16]] },
-        { "name": "英文科技论文写作与投稿", "room": "广B312", "day": 4, "start": 8, "end": 11, "weeks": [[1, 8]] },
         { "name": "新能源与电力变换（双语）", "room": "广B201", "day": 2, "start": 6, "end": 7, "weeks": [[1, 8]] },
         { "name": "新能源与电力变换（双语）", "room": "广B201", "day": 5, "start": 6, "end": 7, "weeks": [[1, 8]] }
       ]
