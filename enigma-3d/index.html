@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#10191b" />
+    <meta name="description" content="恩尼格玛 I 号机三维交互教学演示" />
+    <link rel="stylesheet" href="src/styles.css" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%2310191b'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23d8b978' stroke-width='2'/%3E%3Cpath d='M16 8v16M8 16h16' stroke='%237cd2c8' stroke-width='2'/%3E%3C/svg%3E" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/": "https://cdn.jsdelivr.net/npm/three@0.160.0/"
+        }
+      }
+    </script>
+    <title>恩尼格玛 I 号机 / 三维交互实验台</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">⟡</div>
+          <div>
+            <h1>恩尼格玛 I 号机</h1>
+            <p>三维交互实验台 · 教学演示</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <span class="status"><i></i><span id="statusText">系统就绪</span></span>
+          <button class="tool-btn" id="presetBtn" type="button">载入示例日钥</button>
+          <button class="tool-btn" id="randomBtn" type="button">随机密钥</button>
+          <button class="tool-btn accent" id="resetBtn" type="button">↺ 重置</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="stage-panel" aria-label="三维恩尼格玛模型">
+          <div class="stage-toolbar">
+            <div class="mode-switch" role="tablist" aria-label="模型模式">
+              <button class="mode-btn active" data-mode="outer" role="tab" aria-selected="true" type="button">外观模式</button>
+              <button class="mode-btn" data-mode="inner" role="tab" aria-selected="false" type="button">内部模式</button>
+            </div>
+            <span class="drag-hint">拖动旋转 · 滚轮缩放</span>
+          </div>
+          <canvas id="scene" aria-label="Three.js 三维模型"></canvas>
+          <div class="stage-caption">
+            <div><span class="eyebrow" id="modeCaption">外观视图 / MACHINE VIEW</span><strong>ENIGMA I</strong></div>
+            <div class="scene-readout">木箱 · 胶木 · 黄铜<br /><span id="pathCaption">等待按键</span></div>
+          </div>
+        </section>
+
+        <aside class="control-panel">
+          <section class="control-section">
+            <div class="section-title"><h2>转子与设置</h2><span>Rotor assembly</span></div>
+            <div class="rotor-head"><span>位置</span><span>转子</span><span>环设置</span><span>窗口</span><span>调节</span></div>
+            <div id="rotorRows" class="rotor-rows"></div>
+            <div class="reflector-row">
+              <label for="reflectorSelect">反射器 <small>Reflector</small></label>
+              <select id="reflectorSelect" aria-label="反射器">
+                <option value="B">UKW-B</option>
+                <option value="C">UKW-C</option>
+              </select>
+            </div>
+            <div class="config-note">转子顺序为左 → 右；窗口位置为 Grundstellung。修改设置会清空当前输入。</div>
+          </section>
+
+          <section class="control-section">
+            <div class="section-title"><h2>插线板</h2><span>Steckerbrett</span></div>
+            <div class="plug-form">
+              <input id="plugboardInput" type="text" value="" placeholder="例如：AB CD EF" aria-label="插线板配对" />
+              <button id="plugboardApply" class="small-btn" type="button">应用</button>
+            </div>
+            <div id="plugboardError" class="field-error" role="status"></div>
+            <div id="plugboardChips" class="plug-chips"><span class="empty-chip">未连接</span></div>
+          </section>
+
+          <section class="signal-section">
+            <div class="section-title"><h2>操作模式</h2><span id="signalCount">00 个字符</span></div>
+            <div class="operation-switch" role="tablist" aria-label="编码或解码">
+              <button class="operation-btn active" id="encodeModeBtn" data-operation="encode" role="tab" aria-selected="true" type="button">编码</button>
+              <button class="operation-btn" id="decodeModeBtn" data-operation="decode" role="tab" aria-selected="false" type="button">解码</button>
+            </div>
+            <div class="operation-note" id="operationNote">编码：输入明文，输出密文</div>
+            <div class="text-entry">
+              <label for="textInput" id="textInputLabel">输入明文</label>
+              <div class="text-entry-line">
+                <input id="textInput" type="text" autocomplete="off" spellcheck="false" placeholder="输入英文字母 A–Z" aria-label="输入明文" />
+                <button id="processTextBtn" class="small-btn process-btn" type="button">开始</button>
+                <button id="clearTextBtn" class="small-btn" type="button">清空</button>
+              </div>
+            </div>
+            <div class="section-title path-title"><h2>信号路径</h2><span id="pathDirection">正向 / 反射 / 逆向</span></div>
+            <div id="pathNodes" class="path-nodes">
+              <div class="path-node active"><b>键</b><span>输入</span></div>
+              <div class="path-node"><b>电</b><span>电池</span></div>
+              <div class="path-node"><b>PB</b><span>插线板</span></div>
+              <div class="path-node"><b>ETW</b><span>进位轮</span></div>
+              <div class="path-node"><b>R</b><span>转子组</span></div>
+              <div class="path-node"><b>UKW</b><span>反射器</span></div>
+              <div class="path-node"><b>灯</b><span>输出</span></div>
+            </div>
+            <div class="readout-grid">
+              <div class="readout"><span id="inputReadoutLabel">明文</span><strong id="inputReadout">—</strong></div>
+              <div class="readout"><span id="outputReadoutLabel">密文</span><strong id="outputReadout">—</strong></div>
+            </div>
+          </section>
+
+          <section class="lamp-section">
+            <div class="section-title"><h2>灯板</h2><span>按住点亮</span></div>
+            <div id="lamps" class="lamps"></div>
+          </section>
+
+          <section class="keyboard-section" aria-label="QWERTZ 键盘">
+            <div class="section-title"><h2>键盘</h2><span>QWERTZ</span></div>
+            <div id="keyboard" class="keyboard"></div>
+          </section>
+
+          <section class="log-section">
+            <div class="section-title"><h2>加密日志</h2><label class="toggle"><input id="logToggle" type="checkbox" checked /><span></span>显示</label></div>
+            <div id="logPanel" class="log-panel"><div class="log-empty">输入字母后显示逐键记录</div></div>
+          </section>
+        </aside>
+      </main>
+
+      <footer class="verification-bar">
+        <div><span class="verify-kicker">M1 CORE CHECK</span><strong>密码核心验收</strong></div>
+        <div id="testSummary" class="test-summary"></div>
+        <p id="specNote" class="spec-note">标准双跳步：III 号转子缺口为 V。</p>
+      </footer>
+    </div>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
