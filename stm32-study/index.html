@@ -491,11 +491,15 @@
     }
 
     .video-evidence { margin: 0 0 24px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 8px; background: #f3f8f5; }
-    .video-evidence strong { display: block; margin-bottom: 6px; }
+    .video-evidence summary { cursor: pointer; font-weight: 650; color: #21483d; }
+    .video-evidence[open] summary { margin-bottom: 12px; }
     .video-evidence p { margin: 0 0 10px; color: var(--muted); font-size: 13px; }
     .video-evidence-links { display: grid; gap: 8px; }
     .video-evidence-links a { font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; text-decoration: none; }
     .video-evidence-links a:hover { text-decoration: underline; }
+    .learning-note-intro { font-size: 13px; color: var(--muted); }
+    .learning-references { padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+    .learning-references a { margin-right: 12px; }
   </style>
 </head>
 <body>
@@ -533,7 +537,7 @@
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
   <footer>铁头山羊 STM32 入门教程 · 学习笔记 · Umiuu</footer>
 
-  <script src="./stm32-course-data.js?v=video-frames-20261028"></script>
+  <script src="./stm32-course-data.js?v=learning-notes-243d98348b00"></script>
   <script>
     const $ = s => document.querySelector(s);
     const KEY_DONE = 'stm32study.done';
@@ -618,27 +622,29 @@
           else if (b.startsWith('> ')) out += `<blockquote>${inline(b.replace(/^> ?/gm, ''))}</blockquote>`;
           else if (/^[-*] /m.test(b)) out += '<ul>' + b.split('\n').filter(x => /^[-*] /.test(x.trim())).map(x => `<li>${inline(x.trim().slice(2))}</li>`).join('') + '</ul>';
           else if (/^\d+\. /.test(b)) out += '<ol>' + b.split('\n').filter(x => /^\d+\. /.test(x.trim())).map(x => `<li>${inline(x.trim().replace(/^\d+\. /, ''))}</li>`).join('') + '</ol>';
-          else out += `<p>${inline(b.replace(/\n/g, '<br>'))}</p>`;
+          else out += `<p>${inline(b).replace(/\n/g, '<br>')}</p>`;
         });
       });
       return out;
       function inline(s) {
         return esc(s)
           .replace(/`([^`]+)`/g, '<code>$1</code>')
-          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)"<>]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
       }
     }
     function renderVideoEvidence(l) {
       const v = l.verification;
       if (!v || v.status !== 'video-keyframes-checked') return '';
       const anchors = v.anchors.filter(a => Number.isInteger(a.seconds) && a.seconds >= 0 && a.seconds < l.duration);
-      return '<section class="video-evidence" aria-label="视频核对时间点">' +
-        '<strong>视频核对时间点</strong>' +
-        '<p>按以下原视频关键画面核对；本节为内容提要，非逐字稿。核对日期：' + esc(v.checkedAt) + '。</p>' +
+      return '<details class="video-evidence" aria-label="视频核对与内容提要">' +
+        '<summary>视频核对与内容提要 · ' + anchors.length + ' 个时间点</summary>' +
+        '<p>以下提要依据所列关键画面整理，非逐字稿；下方学习笔记为本站补充讲解。核对日期：' + esc(v.checkedAt) + '。</p>' +
+        md(l.notes || '') +
         '<div class="video-evidence-links">' + anchors.map(a =>
           '<a href="' + biliUrl(l.page, a.seconds) + '" target="_blank" rel="noopener">' +
           fmt(a.seconds) + ' · ' + esc(a.observation) + '</a>'
-        ).join('') + '</div></section>';
+        ).join('') + '</div></details>';
     }
     function render() {
       const currentUrl = new URL(location.href);
@@ -703,11 +709,13 @@
         <div class="lesson-grid">
           <div class="lesson-note">
             <div class="note-toolbar">
-              <h2>视频内容提要</h2>
+              <h2>学习笔记</h2>
               <span>共 ${progress.total} 节 · 已完成 ${progress.n} 节</span>
             </div>
             ${renderVideoEvidence(l)}
-            ${md(l.notes || '笔记整理中…')}
+            <p class="learning-note-intro">围绕本节视频主题补充原理、实验步骤、排错与练习。代码片段为教学示例，使用前须完成文中说明的配置。</p>
+            <div class="learning-notes">${md(l.learningNotes || l.notes || '笔记整理中…')}</div>
+            <p class="learning-references">查阅原厂资料：<a href="https://www.st.com/resource/en/datasheet/stm32f103c8.pdf" target="_blank" rel="noopener">STM32F103x8/B 数据手册</a><a href="https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf" target="_blank" rel="noopener">RM0008 外设参考手册</a></p>
           </div>
           <aside class="study-dock">
             <div class="dock-tabs" role="tablist">${dockTabs}</div>
