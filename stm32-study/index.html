@@ -489,6 +489,13 @@
       .topbar { flex-wrap: wrap; }
       .topbar .btn { margin-left: auto; }
     }
+
+    .video-evidence { margin: 0 0 24px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 8px; background: #f3f8f5; }
+    .video-evidence strong { display: block; margin-bottom: 6px; }
+    .video-evidence p { margin: 0 0 10px; color: var(--muted); font-size: 13px; }
+    .video-evidence-links { display: grid; gap: 8px; }
+    .video-evidence-links a { font-size: 13px; line-height: 1.6; overflow-wrap: anywhere; text-decoration: none; }
+    .video-evidence-links a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -526,7 +533,7 @@
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
   <footer>铁头山羊 STM32 入门教程 · 学习笔记 · Umiuu</footer>
 
-  <script src="./stm32-course-data.js"></script>
+  <script src="./stm32-course-data.js?v=video-frames-20261028"></script>
   <script>
     const $ = s => document.querySelector(s);
     const KEY_DONE = 'stm32study.done';
@@ -535,7 +542,10 @@
     const KEY_NOTES = 'stm32study.notes';
     const KEY_TIMELINE = 'stm32study.timelinePhase';
     let done = new Set(JSON.parse(localStorage.getItem(KEY_DONE) || '[]'));
-    let current = Math.min(parseInt(localStorage.getItem(KEY_CUR) || '1', 10) || 1, COURSE.lessons.length);
+    const requestedPage = Number(new URLSearchParams(location.search).get('p'));
+    const savedPage = parseInt(localStorage.getItem(KEY_CUR) || '1', 10) || 1;
+    let current = Number.isInteger(requestedPage) && requestedPage >= 1 && requestedPage <= COURSE.lessons.length
+      ? requestedPage : Math.max(1, Math.min(savedPage, COURSE.lessons.length));
     let dock = localStorage.getItem(KEY_DOCK) || 'progress';
     let notes = JSON.parse(localStorage.getItem(KEY_NOTES) || '{}');
     let timelinePhase = localStorage.getItem(KEY_TIMELINE) || 'all';
@@ -618,7 +628,24 @@
           .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
       }
     }
+    function renderVideoEvidence(l) {
+      const v = l.verification;
+      if (!v || v.status !== 'video-keyframes-checked') return '';
+      const anchors = v.anchors.filter(a => Number.isInteger(a.seconds) && a.seconds >= 0 && a.seconds < l.duration);
+      return '<section class="video-evidence" aria-label="视频核对时间点">' +
+        '<strong>视频核对时间点</strong>' +
+        '<p>按以下原视频关键画面核对；本节为内容提要，非逐字稿。核对日期：' + esc(v.checkedAt) + '。</p>' +
+        '<div class="video-evidence-links">' + anchors.map(a =>
+          '<a href="' + biliUrl(l.page, a.seconds) + '" target="_blank" rel="noopener">' +
+          fmt(a.seconds) + ' · ' + esc(a.observation) + '</a>'
+        ).join('') + '</div></section>';
+    }
     function render() {
+      const currentUrl = new URL(location.href);
+      if (currentUrl.searchParams.get('p') !== String(current)) {
+        currentUrl.searchParams.set('p', String(current));
+        history.replaceState(null, '', currentUrl);
+      }
       const l = COURSE.lessons[current - 1];
       const phase = COURSE.phases.find(p => p.id === l.phase);
       const prev = COURSE.lessons[current - 2];
@@ -676,9 +703,10 @@
         <div class="lesson-grid">
           <div class="lesson-note">
             <div class="note-toolbar">
-              <h2>完整讲解</h2>
+              <h2>视频内容提要</h2>
               <span>共 ${progress.total} 节 · 已完成 ${progress.n} 节</span>
             </div>
+            ${renderVideoEvidence(l)}
             ${md(l.notes || '笔记整理中…')}
           </div>
           <aside class="study-dock">

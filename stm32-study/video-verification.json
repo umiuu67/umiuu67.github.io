@@ -1,0 +1,1964 @@
+{
+  "bvid": "BV11X4y1j7si",
+  "checkedAt": "2026-10-28",
+  "reviewMethod": "公开视频原始画面核验；未获得完整字幕，也未逐秒听读25小时视频。",
+  "pages": [
+    {
+      "page": 1,
+      "title": "课程介绍",
+      "cid": 1219312317,
+      "duration": 456,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=1",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 45,
+          "observation": "课程介绍页展示版本时间线及八项教学特点",
+          "frameSha256": "2d677559898c2baa231542805f799e465516257a4db1c82e08f69b2ddbe828f0"
+        },
+        {
+          "seconds": 136,
+          "observation": "实物图展示面包板、最小系统板、按钮和显示模块",
+          "frameSha256": "33ca66329f1670bd22b9acdb78e8119d81b07922c84e0ebc65aefec3f6c0df6a"
+        },
+        {
+          "seconds": 228,
+          "observation": "课程目录以章、节、小节、知识点的层次展开",
+          "frameSha256": "d9a387cba5ad145b22eae281a2dc7eb6bdd390925bb679cee7880e79c1a72870"
+        },
+        {
+          "seconds": 319,
+          "observation": "展示装有HC-SR04超声波模块和OLED的小车作品",
+          "frameSha256": "604713d24035ba49555d3f1ead4c834290fdabe26ad6de784b68f907dff7a58a"
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "title": "1.1 [准备] 安装开发环境",
+      "cid": 26461668950,
+      "duration": 1289,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=2",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 128,
+          "observation": "Keil打开工程模板，工程树含user、startup、std_periph_driver、my_lib",
+          "frameSha256": "e5a85ec0a2b907da1da0cea0c167c985f1a649dfd18f877b34f667361ebd7eee"
+        },
+        {
+          "seconds": 902,
+          "observation": "实物展示ST-Link通过导线连接最小系统板",
+          "frameSha256": "c58d2a70c8f3047df61f5c8ef5a0186a90c3cb8b61a09613f67b057330739aa3"
+        },
+        {
+          "seconds": 1160,
+          "observation": "main.c可见PC13开漏输出2MHz配置与循环写电平，编译结果0错误0警告",
+          "frameSha256": "9323e3d4c19c0744025687b21b703932e5840b8a4b05258aeda8d72f78ae9b86"
+        },
+        {
+          "seconds": 1259,
+          "observation": "Keil下载输出显示Flash Load finished并展示开发板",
+          "frameSha256": "4ff75efcbf1c82dd2ea02d498712052bfa89211fb2cc59db42addb6b682c5255"
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "title": "1.1 [准备] STM32 的基本信息",
+      "cid": 26054889101,
+      "duration": 864,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=3",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 86,
+          "observation": "STM32名称页分别标注STMicroelectronics、Micro Controller、32位",
+          "frameSha256": "0e58e953787541cee8d41e3cf84910246f27669ac4e09d3f5635857ce31195f6"
+        },
+        {
+          "seconds": 432,
+          "observation": "STM32产品系列树展示F系列及其他系列",
+          "frameSha256": "27aa639ae226566084d25da458cd8e4519e0ab7eaf8904eec6470d4f9c6b72fe"
+        },
+        {
+          "seconds": 604,
+          "observation": "C8T6字段图标出48引脚、64Kbytes Flash、LQFP和温度范围",
+          "frameSha256": "c436903163708b73a6c88b1d9a71e03be7a8f6f9dcbb1d88787ec0bee348fb26"
+        },
+        {
+          "seconds": 777,
+          "observation": "对比DS5319数据手册与RM0008参考手册的用途",
+          "frameSha256": "c031f922231cf1a90c077cab643de3a2d70af5256ca73cd18b30f475de25701e"
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "title": "1.2 [准备] STM32 的引脚分布",
+      "cid": 26054951039,
+      "duration": 614,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=4",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 184,
+          "observation": "封装示意图写明圆点附近为1脚、编号逆时针递增",
+          "frameSha256": "e0e4225dd49771b78a3aa6cd679f50305b7e8f7ad3b344cb3819881948cbd63d"
+        },
+        {
+          "seconds": 307,
+          "observation": "NMOS示意图标注Gate、Drain、Source及Vdd/Vss名称",
+          "frameSha256": "fe1fd377bdaf78b5dd8e825fe3185f9612a522babd3c3fc69ab9d2b6ebd9aa49"
+        },
+        {
+          "seconds": 552,
+          "observation": "LQFP48引脚图旁列GPIOA、GPIOB、GPIOC、GPIOD分组",
+          "frameSha256": "c06f8da05979d3b6823571bfe7ba391c15e113ab946dac9b3c9331a613a84d56"
+        },
+        {
+          "seconds": 584,
+          "observation": "对GPIOA的PA0至PA15命名作标记",
+          "frameSha256": "6e239165a611c0fe975e81c6b0c1cf396d9d1494172fbc9166bb2a55ccc2b127"
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "title": "2.1 [GPIO] 4 种输出模式",
+      "cid": 26335970481,
+      "duration": 1973,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=5",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 591,
+          "observation": "输出/输入示意图分别连接输出数据寄存器和输入数据寄存器",
+          "frameSha256": "58652d0ae596bb47c861ef61bc7c8b5e7b8853b0f2e28e93d86b3735ccd71e2d"
+        },
+        {
+          "seconds": 986,
+          "observation": "浏览RM0008的GPIO与AFIO章节及GPIO功能描述",
+          "frameSha256": "2b1d717ff39e248567fa13a9d0e1a5d98e9132c58fe9754dd58c3524b893b68d"
+        },
+        {
+          "seconds": 1381,
+          "observation": "推挽图以P-MOS/N-MOS显示写0输出低、写1输出高",
+          "frameSha256": "a96897ebda8ee024cdeab29df1ff3a4b1b08c2235c5cdb430cb9c801e7797c73"
+        },
+        {
+          "seconds": 1530,
+          "observation": "开漏示意图写明写0为低、写1为高阻，P-MOS不参与主动拉高",
+          "frameSha256": "9b7119e6ecadc680f48057b51021a08396654aaef5afe178f53408b37a6676be"
+        },
+        {
+          "seconds": 1775,
+          "observation": "并列通用模式CPU驱动LED与复用模式串口驱动引脚的例子",
+          "frameSha256": "dd7d165f95e71cf9ed6ebae4257064a3428eef2648afb2438c83c0f3deda7a82"
+        }
+      ]
+    },
+    {
+      "page": 6,
+      "title": "2.2 [GPIO] IO 的最大输出速度",
+      "cid": 26054951429,
+      "duration": 625,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=6",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 62,
+          "observation": "画面定义IO最大输出速度，并画出推挽电路和交替0/1方波",
+          "frameSha256": "b3b2120cc9c33c6493140f924751e65d2d4fe5a5caa131a32ef105bc58667a62"
+        },
+        {
+          "seconds": 187,
+          "observation": "并列理想与实际波形，实际波形标出上升、保持、下降时间",
+          "frameSha256": "793e7c1391698499ed9ded9aeaf25c80d22b6cbd71aab3f7e9533a9a03e60e98"
+        },
+        {
+          "seconds": 437,
+          "observation": "分别展示2MHz、10MHz、50MHz的输出速度波形",
+          "frameSha256": "d1bc4dafa2ea321e17b56d397ceba9cf9b159692e241ddc52f31df696c25328d"
+        },
+        {
+          "seconds": 595,
+          "observation": "开发板USB 2.0 FS 12Mbps例子旁标注高速50MHz",
+          "frameSha256": "4abb1fb4b3e335800811e2c74873f4e9e1d22e9de108604929f2890dc2f6c4fb"
+        }
+      ]
+    },
+    {
+      "page": 7,
+      "title": "2.3 [GPIO] LED 闪灯实验",
+      "cid": 26351173764,
+      "duration": 2554,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=7",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 255,
+          "observation": "LED串联限流电阻示意图标注电流和二极管压降",
+          "frameSha256": "b0d22bbf23c866dbf8cc2223169efa571d0420c29d0b03b771fef3d901592e77"
+        },
+        {
+          "seconds": 766,
+          "observation": "板载LED原理图标注VCC3V3、D2、R5和PC13，并比较推挽/开漏连接",
+          "frameSha256": "efd1f6b79863b3e35ca18d0750ed787cd80df8adcb9db37f6ab31bf150a2469c"
+        },
+        {
+          "seconds": 1277,
+          "observation": "GPIO编程接口表列GPIO_Init、GPIO_WriteBit及两个读取接口",
+          "frameSha256": "01652aa4f290bbdf28c3787a88dfbda9559e2e6b1bdfa6e9ed48f1111002f8d6"
+        },
+        {
+          "seconds": 2298,
+          "observation": "程序写PC13低点亮、高熄灭，每段Delay(100)",
+          "frameSha256": "defc6579dcd95e2ef60ad872a42d10ea273c7b886aed0c1a5597973f3beed0f3"
+        }
+      ]
+    },
+    {
+      "page": 8,
+      "title": "2.4 [GPIO] 4 种输入模式",
+      "cid": 26360349837,
+      "duration": 937,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=8",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 93,
+          "observation": "章节标题明确为GPIO的4种输入模式",
+          "frameSha256": "52df67dab8c84abfec7e1d371c86a255fd2bde16959f723de7b9d986a6d4824d"
+        },
+        {
+          "seconds": 468,
+          "observation": "输入结构图列出上拉、下拉、浮空、模拟模式，并标注默认电压与防静电",
+          "frameSha256": "951150064a83d1b792c153a68fb13b8979762d6e22621b415903e365d44ce442"
+        },
+        {
+          "seconds": 655,
+          "observation": "输入结构图显示上下拉电阻、保护二极管与施密特触发器",
+          "frameSha256": "4ef4f7f4d1ac661d482a5b838f1f2e563fa3fdc6e8fbf9947c013436e9802a13"
+        },
+        {
+          "seconds": 907,
+          "observation": "同一结构图对数字通路和上下拉状态作划线标记",
+          "frameSha256": "9eeecb3c2a5865fd9fefb5f8746678f8f2f6559662ef789e08dc866f5e35fff0"
+        }
+      ]
+    },
+    {
+      "page": 9,
+      "title": "2.5 [GPIO] 按钮实验",
+      "cid": 26054951605,
+      "duration": 1233,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=9",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 123,
+          "observation": "并列PA0外接LED推挽接法和PC13板载LED开漏接法",
+          "frameSha256": "95d01f4e4445eaeddcef4f3d833e9594f3f8b873a0549f13927896317f37c2f1"
+        },
+        {
+          "seconds": 616,
+          "observation": "Keil配置PA0为GPIO_Mode_Out_PP，准备GPIO_WriteBit",
+          "frameSha256": "fb3c6b2f35a75310d73e64541538e58462f16e4a70ee5a9d72ca6f35235b36ea"
+        },
+        {
+          "seconds": 863,
+          "observation": "按钮示意图为PA1接地，代码配置PA1输入上拉",
+          "frameSha256": "bc779576365df592cbca10229e0b1078c11c8851bdee70ff1ff497bb96a1b9f4"
+        },
+        {
+          "seconds": 1109,
+          "observation": "while循环读取PA1，按下写PA0高电平、松开写低电平",
+          "frameSha256": "174306c73391fe8d0431da4571ab10de2f637762adcde72659284419df6c1f1d"
+        }
+      ]
+    },
+    {
+      "page": 10,
+      "title": "3.1 [串口] 通信协议",
+      "cid": 26377979181,
+      "duration": 1270,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=10",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 127,
+          "observation": "两设备Tx/Rx交叉连接图并解释Transmit与Receive",
+          "frameSha256": "1a470c1fe4aa6c8e943038db44812c39100644e1846d2a3abbf33f72847def19"
+        },
+        {
+          "seconds": 381,
+          "observation": "串口帧上标空闲、起始、D0至D7、停止，并列27及Hello例子",
+          "frameSha256": "70410ccefc3d0fc77be3484477e10b8a1b0d3c940876de5d25f5f1dd0c06a453"
+        },
+        {
+          "seconds": 635,
+          "observation": "数字27和Hello的二进制数据依次填写到帧波形",
+          "frameSha256": "dfccf2e96d8f9e343d7555883efef2bc088245c4540803b8cabf9e8f74aca63c"
+        },
+        {
+          "seconds": 889,
+          "observation": "列出数据位长度、校验位与停止位可选长度",
+          "frameSha256": "789d3612f5e2bdad84c499068b19cfb63cfa555084906e3eeed37ee8970342ee"
+        },
+        {
+          "seconds": 1240,
+          "observation": "85的奇校验波形上标出接收数据某位由1变0",
+          "frameSha256": "36c56e7a0ff7f0cb6f114ed8c0b40591de3f5daed43450d821e1f8140928042e"
+        }
+      ]
+    },
+    {
+      "page": 11,
+      "title": "3.2 [串口] UART 模块的使用方法",
+      "cid": 26054951803,
+      "duration": 1344,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=11",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 134,
+          "observation": "USART框图显示时钟分频、发送/接收寄存器、控制电路、Tx/Rx与状态标志",
+          "frameSha256": "ce55af2fbed22486a89bb482ec178edfad63409e392f552a7b59c1647b97db68"
+        },
+        {
+          "seconds": 403,
+          "observation": "发送数据100的寄存器示意图逐位连接至Tx波形",
+          "frameSha256": "fb6c5abc06a1d989701100e87953efb81f98352c8377babfb78a2d6ba6363cc8"
+        },
+        {
+          "seconds": 940,
+          "observation": "USART_Init及初始化结构体字段说明页",
+          "frameSha256": "4dacb227c6d326fb9ff528573bc2ace575cff3ce7660dea1e58be647d7955858"
+        },
+        {
+          "seconds": 1209,
+          "observation": "USART1例子设置115200、8数据位、1停止位、无校验并调用USART_Init",
+          "frameSha256": "b5753acb1d6f1c9f750ed3a5da6996e54fde80d939ca53cace09693769cc5204"
+        }
+      ]
+    },
+    {
+      "page": 12,
+      "title": "3.3 [串口] 为串口初始化 IO 引脚",
+      "cid": 26054951882,
+      "duration": 1521,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=12",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 152,
+          "observation": "USART外部引脚图列Tx、Rx、CTS、RTS及同步时钟CK",
+          "frameSha256": "fcf229c3d3deed9e724ebd98990c0dcd31fc9922b886f434a8b7a165f1c4154d"
+        },
+        {
+          "seconds": 760,
+          "observation": "引脚映射表列出USART1 PA9/PA10与PB6/PB7两种映射",
+          "frameSha256": "f991c8f91d9bb835c2c209b8e31d68f71991b7598c24d93e9637f7729d27f061"
+        },
+        {
+          "seconds": 1064,
+          "observation": "代码页将PA9配复用推挽10MHz，PA10配输入上拉",
+          "frameSha256": "b5904504fb037189d47ee8fbb92cc25d78d9e7c7b82b27df5831d7b8321a5523"
+        },
+        {
+          "seconds": 1368,
+          "observation": "Keil中开始添加AFIO时钟与USART1重映射配置",
+          "frameSha256": "2855e7592fe6e3e4ec6e1295220a47e720d50921b50d111783d616316c7712c5"
+        },
+        {
+          "seconds": 1491,
+          "observation": "重映射代码可见GPIOB的Pin6和AF_PP配置",
+          "frameSha256": "1932827a675a90fd633854d5f4511e947774ee4eee738b32f73fd9e559cd3541"
+        }
+      ]
+    },
+    {
+      "page": 13,
+      "title": "3.4 [串口] 发送数据",
+      "cid": 26054951912,
+      "duration": 1939,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=13",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 193,
+          "observation": "USART框图上用多个绿色字节条演示寄存器间发送流程",
+          "frameSha256": "b6a108dc74cfefde7185595d8084494ab1055151bca465f49416a89c43f30445"
+        },
+        {
+          "seconds": 581,
+          "observation": "USART_Cmd函数页展示USART1 ENABLE和DISABLE两种调用",
+          "frameSha256": "76190cb961c07c01474f60736d844d07ac875d7b713a338d3d2acdf3f218f472"
+        },
+        {
+          "seconds": 969,
+          "observation": "USART_SendData接口说明把数据写入发送数据寄存器",
+          "frameSha256": "f8283053ade66a589b1a99dec8088e4235d23a595137413b574ac4c2c4bd0ce1"
+        },
+        {
+          "seconds": 1357,
+          "observation": "My_USART_SendBytes循环等待TXE、调用SendData，最后等待TC",
+          "frameSha256": "12d36a25bb54eb564b4ca2d9aceee28a3a5043ab5821074c2a94e81a85ebc46c"
+        },
+        {
+          "seconds": 1909,
+          "observation": "串口助手接收框显示FF 01 02 03 04 05，并展示接线后的开发板",
+          "frameSha256": "f01bfc88fc1e6ab9dafb7d9d4dcaa181d22dee14606d52a4439903e6b29200d7"
+        }
+      ]
+    },
+    {
+      "page": 14,
+      "title": "3.5 [串口] 格式化打印字符串",
+      "cid": 26054951959,
+      "duration": 1939,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=14",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 193,
+          "observation": "提纲列工程重命名、整理代码、添加注释、格式化字符串、重写fputc、格式化时间",
+          "frameSha256": "7a6b0fcc401ae5d35ab1909ab6d9a27f14e097d0a14fba4aa95ae2eb4622bd57"
+        },
+        {
+          "seconds": 581,
+          "observation": "printf姓名字符串例子与fputc重定向原理并列",
+          "frameSha256": "5d2e4fdf27b121f7c285e0f1dd92fdbd9e5c873e7f13a872fbcedc42dbdfda02"
+        },
+        {
+          "seconds": 969,
+          "observation": "GetTick计时值按取余/整除拆为时分秒毫秒，printf带前导零",
+          "frameSha256": "7043bfee615f0f7b39ea82cae48e511108b0b2af667b514d00edda833b1d867c"
+        },
+        {
+          "seconds": 1357,
+          "observation": "Keil中编写GetTick拆分和printf格式化时间代码",
+          "frameSha256": "e7844636a14c620bb90a926b61acc8d29da3af4bbef3205fd4a4c729806eba61"
+        }
+      ]
+    },
+    {
+      "page": 15,
+      "title": "3.6 [串口] 接收数据",
+      "cid": 26054952041,
+      "duration": 1300,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=15",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 130,
+          "observation": "USART框图展示外部字节沿Rx进入接收寄存器",
+          "frameSha256": "799cd305b2eced5ae356abb6cf6c6fc1eb5c6a3c8b71327f27fcc9f115b02a4d"
+        },
+        {
+          "seconds": 390,
+          "observation": "轮询RXNE、USART_ReceiveData、处理数据的三步代码",
+          "frameSha256": "a502e3b489e8cd5cac1ed5de3196d43ed79177c8ff7f0f40824f0af2a260707f"
+        },
+        {
+          "seconds": 909,
+          "observation": "Keil代码以字符'0'分支写PC13 Bit_SET、字符'1'分支写Bit_RESET，旁边亮灭注释存在矛盾",
+          "frameSha256": "66136f76b3ff1cb2a7db498cbcad05654cf3f4889b40796c709868a9c79b274d"
+        },
+        {
+          "seconds": 1170,
+          "observation": "NE Noise Error页用波形说明接收噪声",
+          "frameSha256": "c161de6eee4e05f0e797cbd40ac9b6e49e52e207b4435fc3ff6496324872e422"
+        },
+        {
+          "seconds": 1270,
+          "observation": "ORE Overrun Error页说明过载导致数据丢失",
+          "frameSha256": "bb9fd0d4474e6f4a0eab9ec25ce1779e65648bf8510e80fc6fcb64ea48638df4"
+        }
+      ]
+    },
+    {
+      "page": 16,
+      "title": "3.7 [串口] 封装常用功能",
+      "cid": 26054952078,
+      "duration": 1386,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=16",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 415,
+          "observation": "发送接口页明确列SendByte、SendBytes、SendChar、SendString、Printf",
+          "frameSha256": "03c6b846adfbc1c18e89987c1960c52296d81d8861b40cf774f688c2d06b0c14"
+        },
+        {
+          "seconds": 693,
+          "observation": "Keil中打开usart.h/usart.c/main.c并调用My_USART_SendByte及SendBytes",
+          "frameSha256": "a9624b36bedc239663f3904d5675d5aed67ba709962a6f63e6fb2b6f7d08b938"
+        },
+        {
+          "seconds": 970,
+          "observation": "usart.h可见CR/LF/CRLF定义和ReceiveByte/ReceiveBytes/ReceiveLine声明",
+          "frameSha256": "b943d42b6fa2dd9d1eeb04e562a16d0a702cd26cff9bad0fe2ecd584e568a9a7"
+        },
+        {
+          "seconds": 1356,
+          "observation": "串口助手与开发板实物并排展示，输入框可见测试字符串",
+          "frameSha256": "17eae9ae6b4d2ef37762b0ef5846b960e487ef6fbdc99cf20dc0f6fe045530a1"
+        }
+      ]
+    },
+    {
+      "page": 17,
+      "title": "4.1 [I2C] 基本电路结构",
+      "cid": 26054952169,
+      "duration": 1300,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=17",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 130,
+          "observation": "最小系统板连接USART1/2/3三个串口设备的示意图",
+          "frameSha256": "d354cfbe488a54e252c99817fe75127553d52e462453bc229cc3ef92bd45d087"
+        },
+        {
+          "seconds": 390,
+          "observation": "I2C主机与多个从机共享SCL/SDA，配上拉，标注7位地址及开漏输出",
+          "frameSha256": "2bdd6b5c82f01e828cb10b9ed6211bbd887336c5d4a21e532a24314c9ddf45a6"
+        },
+        {
+          "seconds": 650,
+          "observation": "SCL总线高亮，配时钟波形和Y=主&1&1…逻辑式",
+          "frameSha256": "0580a8d8d3e1d0c3d52aea7cb07e6fb8de9c3374a1c406b75d5cec3515b6015f"
+        }
+      ]
+    },
+    {
+      "page": 18,
+      "title": "4.2 [I2C] 通信协议",
+      "cid": 26054952392,
+      "duration": 919,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=18",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 91,
+          "observation": "流程图依次列起始、地址加读写位、主向从或从向主、停止",
+          "frameSha256": "517223778fbdc9df0210b6571249936ca3238a1c8ef34ae7992271952fad256d"
+        },
+        {
+          "seconds": 275,
+          "observation": "完整帧图下给出SCL高时SDA下降起始、上升停止的波形",
+          "frameSha256": "5aaf8087cda3f987890303804011e8bec031607e507128832d92f7d81839d0a9"
+        },
+        {
+          "seconds": 459,
+          "observation": "寻址0x78读例子标R/W和ACK，并画出主机释放SDA、从机拉低",
+          "frameSha256": "5a323a0486e0be40e4023e54b590f441e00090b1264092c3b17aaf62eca2d444"
+        },
+        {
+          "seconds": 643,
+          "observation": "练习题为向0x78写0x5A/0x33，向0x20读一字节假设0x64",
+          "frameSha256": "6870ff9620acc1f163391efc3d595944f15f600fdcbe5b3666ab8250e15ff5b8"
+        },
+        {
+          "seconds": 889,
+          "observation": "读取练习的波形写出0x64对应数据位并标出末尾应答",
+          "frameSha256": "0c35d8a032aaaf33c6995ee838a73b75bbaa781dfd92e62979bc8e139c77b853"
+        }
+      ]
+    },
+    {
+      "page": 19,
+      "title": "4.3 [I2C] I2C 模块的使用方法",
+      "cid": 26054952246,
+      "duration": 1545,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=19",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 463,
+          "observation": "My_I2C_Init 中配置 AFIO 时钟与 I2C1 重映射。",
+          "frameSha256": "77d0a983b730b4c9ef24aa86dcb7ae28b8861d855902018976ca7146c7a6e4e1"
+        },
+        {
+          "seconds": 772,
+          "observation": "OLED 接线与 SCL/SDA 各 4.7k 上拉示意图。",
+          "frameSha256": "da23a5728cbe35204196ca24db360851ea5abea3a86f4acc2bb0b93242cfcc20"
+        },
+        {
+          "seconds": 1081,
+          "observation": "I2C_InitTypeDef 成员解释。",
+          "frameSha256": "e76b293bf87632d8775cfa6974e003756867d16d1a1ab53b8bc07b3be00ae58d"
+        },
+        {
+          "seconds": 1390,
+          "observation": "I2C1 时钟、复位、400000 时钟参数与模块使能代码。",
+          "frameSha256": "ea011bd46558f71d232e8f67363450a90642a9f99d2f7f2de0f22f5e8cfb0481"
+        }
+      ]
+    },
+    {
+      "page": 20,
+      "title": "4.4 [I2C] 写数据",
+      "cid": 26054952533,
+      "duration": 1853,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=20",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 185,
+          "observation": "I2C 内部结构框图，标注发送、接收和时钟部分。",
+          "frameSha256": "4c29894c66c3a63a1b5287c58439201efed0cd0f75a8d79ec4bf48ccebb5854d"
+        },
+        {
+          "seconds": 555,
+          "observation": "Keil 中编写 My_I2C_SendBytes 函数接口。",
+          "frameSha256": "040b1290cd35719c508861d279bc3ca877e7866cb3c72849e62279aa31e92281"
+        },
+        {
+          "seconds": 1297,
+          "observation": "课件列出等待空闲至发送停止位的完整发送顺序。",
+          "frameSha256": "32d2b2b1af2a81d466cd4f7299dd5714f2c614468cd3bec7c6b224538613f719"
+        },
+        {
+          "seconds": 1667,
+          "observation": "I2C_GenerateSTOP 与总线停止位对应。",
+          "frameSha256": "3288ed7d2d7bf348628a216d4bded7f98dda074c30d311ed24c24ae05cf346b3"
+        }
+      ]
+    },
+    {
+      "page": 21,
+      "title": "4.5 [I2C] 读数据",
+      "cid": 26054888134,
+      "duration": 2165,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=21",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 216,
+          "observation": "发送与 My_I2C_ReceiveBytes 接收接口并列声明。",
+          "frameSha256": "e733d073a43ad723480b5873088d8ca269e3553c065457d69c2544331519f0fb"
+        },
+        {
+          "seconds": 649,
+          "observation": "接收函数中产生起始位并等待状态标志。",
+          "frameSha256": "995332e5727ae4b918245b51c24c5551b5b0659ad3a95bf42f2f55626c347b5e"
+        },
+        {
+          "seconds": 1082,
+          "observation": "单字节接收清 ADDR、ACK=0、STOP、RXNE 和读取数据流程。",
+          "frameSha256": "d1307ceeb51648ec90e5fa8e3649c51e07ce002c1be94bc1c925d77cba549a5d"
+        },
+        {
+          "seconds": 1515,
+          "observation": "Keil 中编写接收结束阶段的 ACK、STOP 与读取代码。",
+          "frameSha256": "61f5d71206e5d8f85937b291948786ae32a1508ad6bcbabb06efc79995483d8e"
+        }
+      ]
+    },
+    {
+      "page": 22,
+      "title": "4.6 [I2C] 软 I2C",
+      "cid": 27827769119,
+      "duration": 2721,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=22",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 816,
+          "observation": "起始位与停止位波形及 sda_write/scl_write 延时代码。",
+          "frameSha256": "6ec2948735cb34ab9fe8d922b1de679b1e6308cf1021feffc252f3981370ba94"
+        },
+        {
+          "seconds": 1360,
+          "observation": "Keil 中编写 SendByte 的逐位发送循环。",
+          "frameSha256": "0db1802f92d232d85ccf6120c4caa1a14f2675fc66e31788795c532c742b8410"
+        },
+        {
+          "seconds": 1904,
+          "observation": "读取 ACK/NACK 的代码与 ReceiveByte 函数。",
+          "frameSha256": "b6a26953ff58607fe3e84098b849c0daab6c8e1092c674efc3f476d17981ed56"
+        },
+        {
+          "seconds": 2448,
+          "observation": "My_SI2C_ReceiveBytes 接口和错误时发送停止位。",
+          "frameSha256": "4d7d88d3c74c1a107d02bf8637248d4984d28d4247fe4e3ca5b145e29ddebd78"
+        },
+        {
+          "seconds": 2691,
+          "observation": "软件 I2C GPIO 开漏输出初始化。",
+          "frameSha256": "05e8b208ac73b7092bc5d3b6796ac00beb14aea7e30b5784d022daa548bc589b"
+        }
+      ]
+    },
+    {
+      "page": 23,
+      "title": "4.7 [I2C] 封装常用功能",
+      "cid": 26054952730,
+      "duration": 1050,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=23",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 105,
+          "observation": "工程树中整理 i2c/si2c 源文件和头文件。",
+          "frameSha256": "4fe0d71d5f060110f96eeac235edb0ab9aec7d3c92bebc20200f9afbbf3b09ae"
+        },
+        {
+          "seconds": 315,
+          "observation": "PB6/PB7 复用开漏及硬件 I2C 初始化参数。",
+          "frameSha256": "c861bebe7f2f32a5b0c1ee026fa7b612eaaf7e23a10cd9d773f6eec2be233b5d"
+        },
+        {
+          "seconds": 735,
+          "observation": "主程序调用硬件接收函数并判断收到的字节位。",
+          "frameSha256": "5b0e65c1e467f648871d5b745b638214439043d09e84f2e7a612cbbaba550016"
+        },
+        {
+          "seconds": 1020,
+          "observation": "使用 si2c 结构体填写引脚并调用软件 I2C 初始化、发送和接收。",
+          "frameSha256": "814cf2b83dc9e14d426f04fc1ba0da398f73015ccb1648d1504d50749ed5590d"
+        }
+      ]
+    },
+    {
+      "page": 24,
+      "title": "4.8 [I2C] OLED 显示器",
+      "cid": 26054952902,
+      "duration": 3846,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=24",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 384,
+          "observation": "OLEDTest 工程使用 SI2C 结构体与软件 I2C 初始化。",
+          "frameSha256": "f4cf233fe1f8e6822f746f3806d7947e57b795417a3a653e6c77a6fdba5c371a"
+        },
+        {
+          "seconds": 1153,
+          "observation": "OLED 中英文显示与点阵数字示意图。",
+          "frameSha256": "9a52649fc599804e2ecaa9c041cb4baa4179954421c2e7ac6b22babf4a7400bf"
+        },
+        {
+          "seconds": 2692,
+          "observation": "文本区域、DrawString、SendBuffer 与对应多行英文显示。",
+          "frameSha256": "4d349013d2af8d7d96d8b93596f6ec6d7427a92fabb2b6d65a23ace332a78c2a"
+        },
+        {
+          "seconds": 3461,
+          "observation": "画线、LineTo、设置颜色与 DrawCircle 的调用示例。",
+          "frameSha256": "bcfafba059dd895b426fe0117dfb4c17f2282c9620c76e6fd91423f19d2f02e9"
+        }
+      ]
+    },
+    {
+      "page": 25,
+      "title": "5.1 [SPI] 电路结构和通信协议",
+      "cid": 26054952913,
+      "duration": 853,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=25",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 85,
+          "observation": "主机连接三个从机，标注 MOSI/MISO/SCK/NSS。",
+          "frameSha256": "faf7d49087796e005ae9dc71fe0a66835d04092ad77f8cc06816c22ead7561cd"
+        },
+        {
+          "seconds": 255,
+          "observation": "NSS 低电平有效的注释。",
+          "frameSha256": "55c8279568d78f52fb1a13640f77d2a9e18acda384315c0e4de632a94287ff59"
+        },
+        {
+          "seconds": 597,
+          "observation": "时钟极性及第一/第二边沿采样的相位比较。",
+          "frameSha256": "0caf535c79fa22ec79b681f27df259f89247be032199f1a31e1ec3752afbc2dc"
+        },
+        {
+          "seconds": 767,
+          "observation": "LSB First 与 MSB First 波形。",
+          "frameSha256": "feda728e91fecce06c04dee21acb00b56ee531fc7b6626eafde9da1b24202cdc"
+        },
+        {
+          "seconds": 823,
+          "observation": "8 bit 和 16 bit 数据宽度比较。",
+          "frameSha256": "e64c5d5bb950a1ba63dc6238e79eb349c79d6622eb68f4c14121fc52b82b8341"
+        }
+      ]
+    },
+    {
+      "page": 26,
+      "title": "5.2 [番外] 按钮驱动程序编写",
+      "cid": 26054953107,
+      "duration": 1295,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=26",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 129,
+          "observation": "PA0 上拉按键和 PC13 板载 LED 电路与有效电平。",
+          "frameSha256": "78b6a4b03f004fbfb2c20419bd1013a8262066f86d7bc1c0871e2f8b0aaac223"
+        },
+        {
+          "seconds": 388,
+          "observation": "按键 GPIO 输入上拉初始化。",
+          "frameSha256": "f6521375e2e3980119128661f13df647ca7e2242bd38a0896a326ebae7e8e0af"
+        },
+        {
+          "seconds": 647,
+          "observation": "previous/current 状态比较识别按下或松开。",
+          "frameSha256": "93ed5979733e5cd7fe10ad5268d203af172bbb84bb3ad6fcba4c0c91ab3332a6"
+        },
+        {
+          "seconds": 906,
+          "observation": "读取输出位并翻转 LED 输出。",
+          "frameSha256": "54026eb3597bd167629afa8b10249ba6efd5770d7b55064309d3b5839b2214de"
+        },
+        {
+          "seconds": 1165,
+          "observation": "按键机械接触与抖动波形。",
+          "frameSha256": "8244bceeebbe5b40171ebb4c1640e5e946a5ea7009d13115b065908e92fe0bc6"
+        }
+      ]
+    },
+    {
+      "page": 27,
+      "title": "5.3 [番外] 按钮代码的封装",
+      "cid": 26054953051,
+      "duration": 1809,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=27",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 542,
+          "observation": "串口调试助手和实物按键并列演示。",
+          "frameSha256": "79aa84c527878fc0f428d53811d6798d2da946db3a244448d219fbae707d679c"
+        },
+        {
+          "seconds": 1266,
+          "observation": "搭电路、串口、按钮、进程函数、回调函数的课程步骤。",
+          "frameSha256": "10cd668b933a025d9fa301281749e5385869fedd8e238cc01d095485f9ce0347"
+        },
+        {
+          "seconds": 1628,
+          "observation": "Button_InitTypeDef 字段与 Button_Init、button_clicked_cb。",
+          "frameSha256": "793cb51f0518ddd3158758f37ab154eafe7072da02c1130cf058c649d47f1231"
+        },
+        {
+          "seconds": 1779,
+          "observation": "串口接收区显示连续计数输出。",
+          "frameSha256": "e8cd1d6cf3c2f2630f65597b64c578d4d98eaa8d15978970b97e52fd879c07ae"
+        }
+      ]
+    },
+    {
+      "page": 28,
+      "title": "5.4 [SPI] IO 引脚初始化",
+      "cid": 26054953171,
+      "duration": 1266,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=28",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 126,
+          "observation": "W25Q64 模块实物与引脚标识。",
+          "frameSha256": "bd953c092cba8f4c88a366adb9f2d5a0ec22ef2d84e2b73c795f112f590c18ad"
+        },
+        {
+          "seconds": 379,
+          "observation": "SPI 内部框图中的发送、接收、时钟与 NSS。",
+          "frameSha256": "0adc2a9bf3c7f1ce93dc117133e1199fa5f9612d062308394a87e19c7736c11b"
+        },
+        {
+          "seconds": 633,
+          "observation": "参考手册 SPI 引脚 GPIO 配置表。",
+          "frameSha256": "24042447259d7853cd423c98c7514237a225e7c704725a4e6dbf7f90670617be"
+        },
+        {
+          "seconds": 1139,
+          "observation": "PB3/PB4/PB5 与 PA15 的角色、模式和 2MHz 速度配置。",
+          "frameSha256": "5cbb7217572e6c54b866a78f4f5bc0a9823dffdce819b2137f309cd5519c6ee5"
+        }
+      ]
+    },
+    {
+      "page": 29,
+      "title": "5.5 [SPI] SPI 模块的初始化",
+      "cid": 26054953302,
+      "duration": 2537,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=29",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 253,
+          "observation": "SPI 内部时钟与分频路径。",
+          "frameSha256": "e97c1f2f19e1cd20e56d98c2db58331e1f0250dc71fb0146486cf95e1ac5cccf"
+        },
+        {
+          "seconds": 761,
+          "observation": "SPI_Init 与 SPI_InitTypeDef 各成员。",
+          "frameSha256": "4ac4a23ceaa9261fce30e1ce7afbfc589c9985518699d689c80a3db4c104fee5"
+        },
+        {
+          "seconds": 1268,
+          "observation": "8 位、16 位数据宽度波形。",
+          "frameSha256": "94ad5b5bf9d7a73e8aaaffa7b3f437fa75741812b66c7eb8d32622a399b08dfd"
+        },
+        {
+          "seconds": 1775,
+          "observation": "W25Q64 0x04 指令波形与 SPI 数据格式参数选择。",
+          "frameSha256": "e7b209083b6c2c97acaa5746a7862a80c4fc7aff6a191e846b019f9f126149ab"
+        },
+        {
+          "seconds": 2283,
+          "observation": "片选输入和多主机 NSS 行为示意。",
+          "frameSha256": "75067ca455c146364bcfac261fef29a6684175c32ebb39f718767efd29a63093"
+        }
+      ]
+    },
+    {
+      "page": 30,
+      "title": "5.6 [SPI] 数据收发",
+      "cid": 26054953382,
+      "duration": 1330,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=30",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 133,
+          "observation": "文字与波形说明 SPI 每发一位同时收一位。",
+          "frameSha256": "f69f7e4db708d3b0d53fb7f3dd9a7eaed1cc2cffd6f754276149010b5266e974"
+        },
+        {
+          "seconds": 399,
+          "observation": "寄存器框图及首字节、TXE/RXNE、最后字节的收发顺序。",
+          "frameSha256": "7407169474a78635123961e903272bf33c82c07f90cbfcaecc5590ca9a3e9f79"
+        },
+        {
+          "seconds": 930,
+          "observation": "App_SPI_MasterTransmitReceive 完整示例。",
+          "frameSha256": "0636a8dbc0a2467de3758f8c268cfb3f30af97d2a98fcbc79f0ecb07fa07546d"
+        },
+        {
+          "seconds": 1197,
+          "observation": "Keil 中录入收发循环与等待状态标志。",
+          "frameSha256": "cc94cc7fc4342a4fef22ac33d5e90d20e8c17c20f268284a5f5097cf7ca69755"
+        }
+      ]
+    },
+    {
+      "page": 31,
+      "title": "5.7 [SPI] W25Q64 实验（上）",
+      "cid": 26054953378,
+      "duration": 2512,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=31",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 120,
+          "observation": "SPI1 重映射表及 PB3/PB4/PB5、PA15 的 W25QXX 接线。",
+          "frameSha256": "376046b453cb7b87f0e1fc8cebf7e3bfd20b8e4dcc05e099012c965f6f3bcadd"
+        },
+        {
+          "seconds": 643,
+          "observation": "本节列出存储结构、存储数据、读取数据。",
+          "frameSha256": "b4390b3afe7b2005b5e28cebed65ba70b51b6efa120272cad27dc852fcfe365f"
+        },
+        {
+          "seconds": 1080,
+          "observation": "0x06 写使能及擦除、页编程、等待空闲顺序。",
+          "frameSha256": "2b0f953b8fddb83eb1b0b63886344b99c43105b6331121421abfc529d3e01798"
+        },
+        {
+          "seconds": 1620,
+          "observation": "0x05 读取状态寄存器并轮询忙状态。",
+          "frameSha256": "a828422ba8381586e8b1cd382e95ea9adb030c1cf8fdcd0e0e062efb9f4f06d3"
+        },
+        {
+          "seconds": 2340,
+          "observation": "App_W25Q64_SaveByte(0x12) 与 LoadByte 单字节存取示例。",
+          "frameSha256": "db533a0bd46d093a689814e1e91284de3f1c2a9a5d50e2a95a6ceeed69a9507c"
+        }
+      ]
+    },
+    {
+      "page": 32,
+      "title": "5.8 [SPI] W25Q64 实验（下）",
+      "cid": 26054953613,
+      "duration": 959,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=32",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 157,
+          "observation": "PC13 板载 LED 的供电、LED 与串联电阻原理图。",
+          "frameSha256": "d78021e598572d8d0d54096b1c986a8d5d0bfef89b7e9886f8c37402c725bfb1"
+        },
+        {
+          "seconds": 281,
+          "observation": "初始化 LED、按钮、切换、保存和恢复的五步任务列表。",
+          "frameSha256": "64072c39c2cee30ac7deb9084af2af43e5a3e5b21e7720653d759cb1dd2c264b"
+        },
+        {
+          "seconds": 694,
+          "observation": "课程标记到保存 LED 当前状态。",
+          "frameSha256": "f413a2c313af2295b72cb657426a576884814204fe8542106a346f8fe5934174"
+        },
+        {
+          "seconds": 807,
+          "observation": "课程标记到恢复 LED 状态。",
+          "frameSha256": "f5745889f8832d1aec917f6afd438ac02e1345016ded0d8529da2ac80ffb7958"
+        },
+        {
+          "seconds": 900,
+          "observation": "初始化后先 LoadByte，再按读回值设置 PC13。",
+          "frameSha256": "260ca0a34a9e063041729284aefdd8de1c8a7b8b1e9bf9e6904e4c365cec697a"
+        }
+      ]
+    },
+    {
+      "page": 33,
+      "title": "6.1 [中断] 中断的概念",
+      "cid": 26054953556,
+      "duration": 919,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=33",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 91,
+          "observation": "日常事件打断任务再返回的三组时间线。",
+          "frameSha256": "bcde04551c938ef947865bf9a5005c35ba4bc46fe3c0da8bb33c1f4416510178"
+        },
+        {
+          "seconds": 275,
+          "observation": "main 常规程序与 xxx_IRQHandler 的对应关系。",
+          "frameSha256": "6c3f2b094560e7e8c63d81fe39534dc641982bb1aaafc69e2b65300b70422577"
+        },
+        {
+          "seconds": 459,
+          "observation": "USART 收发内部结构图。",
+          "frameSha256": "d030f3e8d3f8787bf50d283e7515ecfb8969e566e96674aa25d7c32a3b1fdd02"
+        },
+        {
+          "seconds": 827,
+          "observation": "闪灯主循环与 USART1_IRQHandler 中接收数据示例。",
+          "frameSha256": "54f1a5a0d0bdbe9bf7e92d8f5e8d19a2c4f179865a317f72fc7864fd6304822e"
+        }
+      ]
+    },
+    {
+      "page": 34,
+      "title": "6.2 [中断] 中断优先级",
+      "cid": 26163347874,
+      "duration": 1226,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=34",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 122,
+          "observation": "就诊排队和急诊插入的优先级类比。",
+          "frameSha256": "d8d5e36af7bc250a5885c2e5f44540e5a08f8f9f38e4907b3ace325308478a4c"
+        },
+        {
+          "seconds": 367,
+          "observation": "外设中断、NVIC、中断时序与向量表关系。",
+          "frameSha256": "cb8118e3cc8018d2685d5aef7ded989fa74ad1e0e4b0e4609ee82d2770445f78"
+        },
+        {
+          "seconds": 613,
+          "observation": "四位优先级在分组 0 至 4 的分配。",
+          "frameSha256": "249474823a82699072c5c5df941f5a8b9e44f5525f38c712b83dc7eddbedd93e"
+        },
+        {
+          "seconds": 858,
+          "observation": "新中断抢占优先级更高才发生嵌套的条件与例子。",
+          "frameSha256": "3faf7a6810b2f36eb84406aa85f3f751d5d5a369f97347246d2e163443b192cf"
+        },
+        {
+          "seconds": 1103,
+          "observation": "分组 2、相同抢占等级下的时间线练习。",
+          "frameSha256": "0be785d42a6732003be0cbb53a68869e23ac21f72d3452a915af1d633de571b1"
+        }
+      ]
+    },
+    {
+      "page": 35,
+      "title": "6.3 [中断] 串口中断编程实验",
+      "cid": 26162955859,
+      "duration": 2281,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=35",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 684,
+          "observation": "主循环以 blinkInterval 延时闪烁 PC13，并准备 USART1 初始化。",
+          "frameSha256": "8fed4141e88a6234f71861f5521165872b556869ad42ed07b1d585431f01f466"
+        },
+        {
+          "seconds": 1596,
+          "observation": "NVIC_PriorityGroupConfig 与抢占/子优先级位分配。",
+          "frameSha256": "5ae39adbedbc63109c3476d2fc535884b88864d3a42e348020ba6468f81fb7e4"
+        },
+        {
+          "seconds": 2052,
+          "observation": "USART1 115200 接收初始化、USART_IT_RXNE 使能和 NVIC 配置入口。",
+          "frameSha256": "bd394138e36a053ab161bd99cc75bf42387439c78b775a7b5f9efaa38a2e535d"
+        },
+        {
+          "seconds": 2100,
+          "observation": "USART1_IRQHandler 中读取数据并修改 blinkInterval。",
+          "frameSha256": "9f9f28208876d31c8e82d690be64cc19a369e3c3b0555e2896272568a38cfdfe"
+        },
+        {
+          "seconds": 2160,
+          "observation": "RXNE 判断后读取数据，字符 0/1/2 对应间隔 1000/200/50。",
+          "frameSha256": "c313404c12cb50e79930c8f763f45731a9fc0ad83c536d57c220bdb0e558784d"
+        }
+      ]
+    },
+    {
+      "page": 36,
+      "title": "7.1 [EXTI] 工作原理",
+      "cid": 26163347929,
+      "duration": 1030,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=36",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 103,
+          "observation": "EXTI 简介、应用、线概念和内部结构的课程目录。",
+          "frameSha256": "75abeb1d777c9050550715e7145522473904e6f30a6f35bc2b6604b9605c04a8"
+        },
+        {
+          "seconds": 515,
+          "observation": "GPIO 各端口与 EXTI 线的选择关系。",
+          "frameSha256": "17e1b6b27cd1ba91a38e8b8060f9c484a67e253c22defb89e22eefb7625e2360"
+        },
+        {
+          "seconds": 721,
+          "observation": "AFIO、EXTI0—15 及独立/分组中断入口。",
+          "frameSha256": "1ab4d120fc6e52486cdfcf1be07b45c321282325b3bf19d2e4e681308bc4c1c7"
+        },
+        {
+          "seconds": 1000,
+          "observation": "PA0、边沿检测路径、按下与松开波形上的触发标记。",
+          "frameSha256": "577a824fdfe5b4d8df47f8c30626b7bdcedf775e8c9a77190ce247a7d001a307"
+        }
+      ]
+    },
+    {
+      "page": 37,
+      "title": "7.2 [EXTI] 按钮实验",
+      "cid": 26163743004,
+      "duration": 1655,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=37",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 496,
+          "observation": "PPT 展示 GPIO_EXTILineConfig，并把 GPIOA 引脚 5、6 分配给 EXTI 线。",
+          "frameSha256": "3430ca9559aa16a9c5ce30fdfa1b864056295c34e975f1f796956a7ad0ed53a9"
+        },
+        {
+          "seconds": 827,
+          "observation": "PPT 展示 EXTI_InitTypeDef 的线号、模式、触发边沿和线使能字段。",
+          "frameSha256": "7bf899fe71469f6537f926137f3683e1eb1495e83cc8e1a45e75791b9a943b8c"
+        },
+        {
+          "seconds": 1158,
+          "observation": "Keil 中分别配置 EXTI_Line5、EXTI_Line6，触发条件均为 Rising。",
+          "frameSha256": "12d2e2a3cbd7b1ba3922114c81a1024a32dd3b7e3c7300bdaa26441b66af8ede"
+        },
+        {
+          "seconds": 1489,
+          "observation": "Keil 中出现 EXTI9_5_IRQn、共用 IRQHandler，以及读取线标志后操作 PC13 的分支。",
+          "frameSha256": "0621a3f4df10334c1103285cb487d8b1144fe1610c6c7d8cfb29012abeb8dc11"
+        }
+      ]
+    },
+    {
+      "page": 38,
+      "title": "8.1 [时钟] 时钟树",
+      "cid": 26163742877,
+      "duration": 1726,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=38",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 172,
+          "observation": "PPT 为带时钟输入、分频器和 BRR 的串口内部结构图。",
+          "frameSha256": "1e60b963be3866357b9f0894690998ea6a1eb65b24bc4edbbda583b3fc072653"
+        },
+        {
+          "seconds": 517,
+          "observation": "PPT 明列分频器对频率做除法、PLL 做乘法、复用器做选择。",
+          "frameSha256": "72b45203d7888a2976464ac1b21c645ca0a828ed47dad24d788e5eabfeddf2b8"
+        },
+        {
+          "seconds": 863,
+          "observation": "目录页列时钟概念、分频/PLL/复用器、树根、树干、树枝，并手写四种时钟源。",
+          "frameSha256": "020d9d5094612742fa98cfdac3b320e743251fbb67fe79d6968d03b77b5c2076"
+        },
+        {
+          "seconds": 1208,
+          "observation": "PPT 比较 SYSCLK 来自 HSI、PLL、HSE 的三条路径。",
+          "frameSha256": "9632c6f1fddc18065ec310ee5f035b2c943ccca193bd61f8bb23dea14f8780e3"
+        },
+        {
+          "seconds": 1553,
+          "observation": "PPT 给出 SYSCLK=8 MHz、72 MHz 等多组 HCLK/PCLK 分频练习。",
+          "frameSha256": "a049624cb785206ff917db350d668d43a264f34454d21cb3a6753649205182c4"
+        }
+      ]
+    },
+    {
+      "page": 39,
+      "title": "8.2 [时钟] 时钟树编程",
+      "cid": 26164136889,
+      "duration": 2354,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=39",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 235,
+          "observation": "PPT 标出 HSI/SYSCLK 等初始 8 MHz 路径，并给出 PC13 循环延时闪灯片段。",
+          "frameSha256": "831c9263f3444a7be29c53bfcdbf26b55f6756c3dddb1658198072f7e566abbc"
+        },
+        {
+          "seconds": 1177,
+          "observation": "PPT 罗列 RCC_HSEConfig、RCC_PLLConfig、RCC_SYSCLKConfig、RCC_HCLKConfig 等接口。",
+          "frameSha256": "b59f68d2de5a1a38e5da16939052f0906278dfe14e634823fe5418de23b93ab4"
+        },
+        {
+          "seconds": 1647,
+          "observation": "Keil 中的 App_SystemClock_Init 已开启 HSE，并等待 RCC_FLAG_HSERDY。",
+          "frameSha256": "15c3a9ea51d97e8a24f27790b6aede7b63f4d47a6052f91587addf8ba32f7910"
+        },
+        {
+          "seconds": 1905,
+          "observation": "PPT 展示指令预取、不同频率的访问等待，以及 FLASH_PrefetchBufferCmd/FLASH_SetLatency。",
+          "frameSha256": "f7b905ef7ce21209258bcba0d4122a853e0c1bf7c0746c83772fccddbdc34d0d"
+        },
+        {
+          "seconds": 2324,
+          "observation": "Keil 中演示外设时钟接口和 I2C1 复位接口。",
+          "frameSha256": "55256e947c4f7c37707ff2754f9e1495bcd0eacb4a73d712c5e83de1b461e02d"
+        }
+      ]
+    },
+    {
+      "page": 40,
+      "title": "9.1 [定时器] 时基单元",
+      "cid": 26164461584,
+      "duration": 1702,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=40",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 170,
+          "observation": "单片机结构图中圈出 TIM1 和 TIM2/TIM3/TIM4 的位置。",
+          "frameSha256": "5718e9d41ff0064d52e67af50bfbe648fea22f82301b07ff35affce5baed7a04"
+        },
+        {
+          "seconds": 510,
+          "observation": "PPT 拆解时钟、PSC、CNT、ARR、RCR 和 update 事件的信号路径。",
+          "frameSha256": "3620a090ae684987e0b5742f3c8aa93e94cd347e5e8b4c08303a062f54c78a48"
+        },
+        {
+          "seconds": 851,
+          "observation": "PPT 并排展示上计数、下计数和中心对齐波形。",
+          "frameSha256": "a8921cbcf13f29e98a67441970858edbe7e753b7f2d4c57a551fa070893886a9"
+        },
+        {
+          "seconds": 1191,
+          "observation": "时钟树上标出 APB2 72 MHz、APB1 36 MHz 与定时器倍频关系。",
+          "frameSha256": "cf69421c554e74b0da29d72d057e761f4ff5007110835d1970fc45971b5816bc"
+        },
+        {
+          "seconds": 1672,
+          "observation": "PPT 展示启用 ARR 预加载后影子寄存器到活动寄存器的更新过程。",
+          "frameSha256": "e25249b24aae4675a6c3f140298a83e985c42a4ca0c6d228be7b79428c6422bb"
+        }
+      ]
+    },
+    {
+      "page": 41,
+      "title": "9.2 [定时器] 自制延迟函数",
+      "cid": 26164658846,
+      "duration": 1443,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=41",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 144,
+          "observation": "PPT 明确标出 72 MHz、PSC=71、ARR=999、RCR=0、1 ms 和 currentTick++。",
+          "frameSha256": "159b69b73c7a315d1e330ff8c3caef9a9f2551f8e9484d6258cee6e4805815a6"
+        },
+        {
+          "seconds": 721,
+          "observation": "Keil 中出现 App_Delay、expireTime=currentTick+ms，并开始初始化 TIM3 时基。",
+          "frameSha256": "7c7174ed834e9052e3c58c95a5678387736d8738d420da197c7c4a2a835401ea"
+        },
+        {
+          "seconds": 1010,
+          "observation": "Keil 中配置 TIM3 时基、TIM_IT_Update 和 NVIC。",
+          "frameSha256": "84bf74f76d3f27e4e33927906e551b0ceaaf2544218c42da3d8df4e97f32ef62"
+        },
+        {
+          "seconds": 1298,
+          "observation": "TIM3_IRQHandler 检测并清除 TIM_FLAG_Update，然后 currentTick++。",
+          "frameSha256": "8e15c867e14758b9b840d287f8ab5756abaa5125c01fa9c4d04125830694b6fe"
+        },
+        {
+          "seconds": 1413,
+          "observation": "主循环使用 App_Delay(500) 配合 PC13 电平切换进行闪灯。",
+          "frameSha256": "9374843bdd61997b8b24d2857f966eca349b8d271deeeff18810cf4afcb02d09"
+        }
+      ]
+    },
+    {
+      "page": 42,
+      "title": "9.3 [定时器] 输出比较",
+      "cid": 26714769572,
+      "duration": 1277,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=42",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 127,
+          "observation": "定时器总体图标出 CCR、输入捕获和输出比较的关系。",
+          "frameSha256": "d2665a89ffe57432c507e990cf442268615295062c91bd8206df973c7c6b3ffe"
+        },
+        {
+          "seconds": 383,
+          "observation": "PPT 用 ARR=9、CCR1=3 的计数波形画出 30% PWM。",
+          "frameSha256": "905ab4d3076431d7644b9cbb2f63924b9c9731d3361932e29507b45fdf436ea6"
+        },
+        {
+          "seconds": 638,
+          "observation": "PPT 用一张波形表对照八种输出比较模式。",
+          "frameSha256": "ee6d7950b5dddd0029a2ce6db6a12e22419d14529562b593fc0d86225de162b6"
+        },
+        {
+          "seconds": 1247,
+          "observation": "PPT 将 CHx、CHxN、极性选择和 MOE 放在同一输出路径中。",
+          "frameSha256": "4050fc5a6d634c45cb9142f5253c61a6db7775a0a0e46c36735474844b0c97de"
+        }
+      ]
+    },
+    {
+      "page": 43,
+      "title": "9.4 [定时器] 呼吸灯实验",
+      "cid": 26755662507,
+      "duration": 2150,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=43",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 30,
+          "observation": "实物画面可见面包板上的红色、蓝色两只 LED。",
+          "frameSha256": "95f270b634e1d69f4b327e22df2d2c43504fc802745139726efe7341acecc7b8"
+        },
+        {
+          "seconds": 215,
+          "observation": "PPT 画出正弦曲线和占空比=0.5(sin(2πt)+1)、周期 1 ms 的 PWM。",
+          "frameSha256": "8188306c99f71c300cb661565c1deea6d027950a49d957a2a0d87d5b1f20adbe"
+        },
+        {
+          "seconds": 360,
+          "observation": "引脚表中 TIM1_CH1 为 PA8、TIM1_CH1N 为 PB13。",
+          "frameSha256": "ce6bba1598513b11a6c288b0924e8b7c0656d284186901194d606e16efb7c127"
+        },
+        {
+          "seconds": 645,
+          "observation": "PPT 手写 PA8、PB13，并标出正常与互补输出均使用 AF_PP。",
+          "frameSha256": "1a1734a86edbc653d8e6b4a179f3c8b0246c3c61f580ca840bd3013a318d2618"
+        },
+        {
+          "seconds": 1075,
+          "observation": "PPT 标注 TIM1、APB2、PSC=71、ARR=999、RCR=0。",
+          "frameSha256": "3a336ff24c3bd326fb385242def56a54857ee55e1955cd6996729a0a42f21224"
+        },
+        {
+          "seconds": 1505,
+          "observation": "PPT 展示 PWM1、正常/互补输出开关和 TIM_CtrlPWMOutputs 对应的 MOE。",
+          "frameSha256": "073296d2cc841265b4d2bbea2a270a10c8faeb4f704cd8439628fb450a63fbd6"
+        },
+        {
+          "seconds": 2120,
+          "observation": "主循环用 GetTick、sin、CCR1 和 TIM_SetCompare1(TIM1,ccr1) 更新占空比。",
+          "frameSha256": "4ad9dee2efcd40eead124b9bf68324dea4f88de19ba7e74826cf7db07165e03c"
+        }
+      ]
+    },
+    {
+      "page": 44,
+      "title": "9.5 [定时器] 输入捕获",
+      "cid": 26758545421,
+      "duration": 1006,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=44",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 100,
+          "observation": "定时器总体图从外部脉冲指向输入捕获和 CCR。",
+          "frameSha256": "6cc96d5f0677605911309c253f38807995b666962a5d69a553f5fa47d224812d"
+        },
+        {
+          "seconds": 301,
+          "observation": "PPT 用 CNT 递增波形、CCR1/CCR2 标记两个边沿时刻来表达脉宽。",
+          "frameSha256": "8f88b80d547f8ef399b08e99958f0ba2e64f3b386ef969c0823f52b824b7c35d"
+        },
+        {
+          "seconds": 503,
+          "observation": "PPT 展开通道 1、2 的输入捕获内部链路。",
+          "frameSha256": "f6e7b7f3ea7df2f168a1c63ef169e56c6e21be177211e0703f2ccb20596cf1f9"
+        },
+        {
+          "seconds": 704,
+          "observation": "PPT 分框标出输入滤波、边沿检测、信号选择和分频。",
+          "frameSha256": "11bfc03929cf380e981812a3039c44050aa721495e5172892ef19883cd371307"
+        },
+        {
+          "seconds": 905,
+          "observation": "目录页列出输入捕获原理、内部结构及四个组成部分。",
+          "frameSha256": "7aead86196ceae74ffd3656e4d82120a17e10ea5e5baf1611fcbf726d10f0205"
+        }
+      ]
+    },
+    {
+      "page": 45,
+      "title": "9.6 [定时器] 超声波测距实验",
+      "cid": 26758285375,
+      "duration": 2976,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=45",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 297,
+          "observation": "PPT 展示 HC-SR04 的 Trig、Echo 波形与距离=脉宽×340 m/s÷2。",
+          "frameSha256": "fa92ec3d2bcf8a968dd9a3c631c3a8c11252192ca532ea94914d2d89d3fc1dfd"
+        },
+        {
+          "seconds": 450,
+          "observation": "接线图明确标出 Echo→PA8(TIM1_CH1)、Trig→PA0 及 USART1 接线。",
+          "frameSha256": "e76f9456e6852d9af716b017aa66ba4db39bcf92652b5fdb54c5e482b23c4583"
+        },
+        {
+          "seconds": 2083,
+          "observation": "Keil 中 TIM1 时基参数为 Period=65535、Prescaler=71、RCR=0，并准备初始化 PA8 IPD。",
+          "frameSha256": "f3ee22870b839a70e4f561b78dbe89d35d86225a2b921e51d2661bd7900fa459"
+        },
+        {
+          "seconds": 2260,
+          "observation": "PPT 绿色路径明确 CH1 直接上升沿与 CH2 间接下降沿捕获，分频为 1。",
+          "frameSha256": "0e1528352faa644e241884d0ab0237fcce84f7792e759d4129031d90fe531975"
+        },
+        {
+          "seconds": 2678,
+          "observation": "主循环先清 CNT 和 CC1/CC2 标志，再开启 TIM1 并向 PA0 发送 Trig 脉冲。",
+          "frameSha256": "1be24c04ee37daac957dabc0fbe693abf20866cdbf62e7e6cc43d5e7811f6b92"
+        }
+      ]
+    },
+    {
+      "page": 46,
+      "title": "9.7 [定时器] 从模式控制器",
+      "cid": 26757173218,
+      "duration": 1291,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=46",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 129,
+          "observation": "总体图中圈出 TRGI、TRGO 以及从模式控制器与时基单元的连接。",
+          "frameSha256": "db6c60711838e89e078e0ba6a8ca08d6593b5197194c042e0211bfebcf623295"
+        },
+        {
+          "seconds": 645,
+          "observation": "PPT 列八种从模式，包含复位、门、触发与外部时钟模式。",
+          "frameSha256": "db883b99509401f5a7d086bc65a1b56796964bf0aaa0eb750cdc4d18eb01c96e"
+        },
+        {
+          "seconds": 903,
+          "observation": "PPT 展示 TIM1 Enable 模式的 TRGO 同时连接 TIM2、TIM3 的 Gated 模式。",
+          "frameSha256": "22078d026a70d343bb58b8213046920629a9853ad81ff8c218a55590950fe42d"
+        },
+        {
+          "seconds": 1161,
+          "observation": "PPT 以 TIM1/TIM2/TIM3 模拟秒针、分针、时针，标注 Update 与外部时钟模式级联。",
+          "frameSha256": "f0f09df63f1b4f4d5ed60076cedaee4df5e3b2e526b8828f8b4e2379ae68e89c"
+        }
+      ]
+    },
+    {
+      "page": 47,
+      "title": "9.8 [定时器] PWM 参数测量原理",
+      "cid": 26757562526,
+      "duration": 1649,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=47",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 164,
+          "observation": "目录明确包含参考手册结构图、输入捕获节点名称、TRGI 来源和 PWM 参数测量原理。",
+          "frameSha256": "9de059e91a1f3f5ba4010614e1eab61ec6173b8986854343a168cee9a0d526b1"
+        },
+        {
+          "seconds": 494,
+          "observation": "PPT 展示参考手册中的高级定时器完整结构框图。",
+          "frameSha256": "144c357752cd676973e78c2ee9dd5d72c4c5da4beba36efb596ef9476f707d67"
+        },
+        {
+          "seconds": 824,
+          "observation": "PPT 解释 TI=Timer Input、F=Filtered、P=Polarized，并在通道链路中标节点。",
+          "frameSha256": "0c7871c8e66fa9d75217707dade078b031b67898b0e2b375b7eb122e8d1314c1"
+        },
+        {
+          "seconds": 1154,
+          "observation": "PPT 展示 TRGI 输入选择和 TIMx 内部触发连接表。",
+          "frameSha256": "5e2a9ca0a6e13b2713b89bdd8fe8bb8396fb16acbf15618d8d9b7337e9328591"
+        },
+        {
+          "seconds": 1484,
+          "observation": "PPT 连接 TI1FP1 到复位模式，并将通道 1 上升沿、通道 2 下降沿分成捕获路径。",
+          "frameSha256": "280b10f15bf3f46bd10638a6fddda50568cad1fc0eff93e711af0df000ba56fc"
+        },
+        {
+          "seconds": 1619,
+          "observation": "时序图标明上升沿清 CNT、CCR1 记录周期、CCR2 记录高电平宽度。",
+          "frameSha256": "ac2428781bbee2be1f8c7df1d68bb0a1bc9ff7373eacd6af18b37e47f970cce0"
+        }
+      ]
+    },
+    {
+      "page": 48,
+      "title": "9.9 [定时器] PWM 参数测量实验",
+      "cid": 26757957690,
+      "duration": 2865,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=48",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 859,
+          "observation": "Keil 中初始化 USART1 的 PA9 为 AF_PP。",
+          "frameSha256": "ed6023061825ad7ea6c34ccf298485f490f69ba0f6ae6bf375b23117ffc44f92"
+        },
+        {
+          "seconds": 1432,
+          "observation": "主循环调用 App_TIM3_Init，计算正弦 duty，并准备使用 TIM_SetCompare1 更新测试信号。",
+          "frameSha256": "cfccf64a07a214f85fd0749bc3a727b8a217f97572fa8ed7ea5b91771ca201b6"
+        },
+        {
+          "seconds": 2005,
+          "observation": "Keil 中初始化 TIM1 时基和输入捕获，引脚为 GPIOA Pin8，注释为 IPD。",
+          "frameSha256": "c645727ff16107bd6f698cf3d26df40985470076e7fbdcb8e00efb17cdd774ac"
+        },
+        {
+          "seconds": 2578,
+          "observation": "PPT 时序图标出 Trigger、CC1、CC2，以及上升沿复位和捕获的关系。",
+          "frameSha256": "9592d4788c4cb0fdd7a05fa99a77167e316844f42c5746e36b203cbfdb15795f"
+        },
+        {
+          "seconds": 2835,
+          "observation": "目录回顾产生 PWM、初始化时基/输入捕获/从模式控制器和测量 PWM 参数。",
+          "frameSha256": "6652237865ac9a13adc48f91c21e1989e672f37bf52722b05b672ec8b74d51e8"
+        }
+      ]
+    },
+    {
+      "page": 49,
+      "title": "10.1 [ADC] 逐次逼近型 ADC",
+      "cid": 26547585091,
+      "duration": 1744,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=49",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 174,
+          "observation": "PPT 对照一天气温连续曲线和分时数字记录，区分模拟与数字信号。",
+          "frameSha256": "dabbb7199f7a0d6f6d56bf3e78855825b4cbf77be721b51aa5e4d88528069fad"
+        },
+        {
+          "seconds": 523,
+          "observation": "目录列 ADC、单片机 ADC、采样深度、SAR、采样保持和例子，并手写 12 位。",
+          "frameSha256": "aaa3531903d2e0861e99bb9a291f08fc6e7251fe5a43e6274a73284e17e0c3e3"
+        },
+        {
+          "seconds": 872,
+          "observation": "PPT 对照 SAR、Flash、Integrating、Sigma-Delta 等 ADC 类型。",
+          "frameSha256": "e96530868185d8f00cc85dcd9ab27227ca0d93ddadc4a104973551f710f12fba"
+        },
+        {
+          "seconds": 1220,
+          "observation": "PPT 展示结果寄存器、电压发生器、比较器及采样保持电路。",
+          "frameSha256": "fbc05378cb08e4712555a8d8e3dbcdba1aeea0fee7a566f8028f677243b55574"
+        },
+        {
+          "seconds": 1569,
+          "observation": "简化四位示例显示 3.3 V 参考、0.22 V 位权及 2.21 V 输入。",
+          "frameSha256": "c556484688736facec9a630723a21e371363ef5f350ae1fc553d29e7255bf68f"
+        },
+        {
+          "seconds": 1714,
+          "observation": "四位示例继续演示从高位到低位的电压比较。",
+          "frameSha256": "c305dcd729d7e0b25275cdc82169873cbf74f28213ff900c0c833a53078581a7"
+        }
+      ]
+    },
+    {
+      "page": 50,
+      "title": "10.2 [ADC] ADC 模块的结构框图",
+      "cid": 26148276533,
+      "duration": 1545,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=50",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 154,
+          "observation": "PPT 仍使用采样保持、比较器、电压发生器和结果寄存器解释转换核心。",
+          "frameSha256": "2ba901e60067c476d0cd90788ed3864380fe369ee46362fbba254ae392bcc668"
+        },
+        {
+          "seconds": 463,
+          "observation": "ADC 总体图显示输入通道、规则序列 16、DR、注入序列 4 和 JDR1—JDR4。",
+          "frameSha256": "b7b0ea4b761ed664f28f6eb93e01131a379284ad8cebf616e2bd389df40d7f2a"
+        },
+        {
+          "seconds": 1081,
+          "observation": "PPT 用 PSC=71、ARR=999 的定时器 Update/TRGO 画出 1 ms 触发间隔。",
+          "frameSha256": "38b37b7a43dd80aa50ee0cd8dc8f65e91b6cc882e4eef677496b6c7d5b228088"
+        },
+        {
+          "seconds": 1390,
+          "observation": "PPT 将规则序列通道 0/1/2 与注入序列通道 3/4 放在同一执行时序中。",
+          "frameSha256": "ec515179f61ca978367be355b8e49205ce6b0acd73c2d1a59f287a25cf6e25d0"
+        },
+        {
+          "seconds": 1515,
+          "observation": "执行时序示意注入序列插入后再继续规则序列转换。",
+          "frameSha256": "32f97414b10bc06f1149ba21f414b28f5f630ea52e96c58066819732aa7126f2"
+        }
+      ]
+    },
+    {
+      "page": 51,
+      "title": "10.3 [ADC] 采样时间和转换时间",
+      "cid": 26536248591,
+      "duration": 1691,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=51",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 169,
+          "observation": "时钟树标出 ADC 12 MHz、fADC≤14 MHz，以及 72 MHz 的 PCLK2。",
+          "frameSha256": "86ed787ce77ce878ccf8186fc1c5f5124f3e25176b8ad2c687ec631b5b9cd28c"
+        },
+        {
+          "seconds": 507,
+          "observation": "PPT 写出转换时间=12 cycle+0.5 cycle=12.5 cycle≈1.04 μs。",
+          "frameSha256": "3952285a0a34ea30e2850b9988da1d2373d197044537408537702d8ef9eb550c"
+        },
+        {
+          "seconds": 845,
+          "observation": "采样保持图加入信号源内阻，并连到 ADC 采样电阻与电容。",
+          "frameSha256": "553b059a86a5d62c4c168ca98285381e4297cfebec30722da4bfe0f08d0cd97d"
+        },
+        {
+          "seconds": 1183,
+          "observation": "光敏分压电路经戴维南等效，等效内阻为 R1//R2≤10 kΩ。",
+          "frameSha256": "b38ab003acf5c81377e89bbd30b97ac82fe676a1fa3c7dedd39d661f77cfa988"
+        },
+        {
+          "seconds": 1521,
+          "observation": "PPT 的采样时间关系式逐项标出信号源内阻、RADC、CADC、N 和 fADC。",
+          "frameSha256": "ce9b48cc0738051ff2e21ad9aaef69fb1127bf1ed51fcd442851f460e2689861"
+        }
+      ]
+    },
+    {
+      "page": 52,
+      "title": "10.4 [ADC] 常规单通道转换",
+      "cid": 26538477378,
+      "duration": 3101,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=52",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 310,
+          "observation": "PPT 绿色路径明确光敏 AO→PA0/通道 0→规则序列→DR，并选择软件启动。",
+          "frameSha256": "49de9a859c7439c347a5ed5ba5906a37037c182f897e6afe6cf09efd7f901c38"
+        },
+        {
+          "seconds": 930,
+          "observation": "PPT 展示 RCC_ADCCLKConfig(RCC_PCLK2_Div6) 与 ADC1 时钟使能。",
+          "frameSha256": "4860393cc3a5bb1c01f745680b4f4dae2760cbd61e91d1e324ecdf5d2212bdd5"
+        },
+        {
+          "seconds": 1550,
+          "observation": "Keil 中为 ADC1 建立 ADC_InitTypeDef 并填写基本参数。",
+          "frameSha256": "2db1da6c7cbc11efd5d8141fd09b9612e0d979f6587187a9e131fb55cd31f7bc"
+        },
+        {
+          "seconds": 2170,
+          "observation": "PPT 接口表区分规则通道配置、软件启动、取结果以及校准函数。",
+          "frameSha256": "69ec9f108cd4091d42b35c2d65a8bf69582e66129b95a067b8b4078077d2440d"
+        },
+        {
+          "seconds": 2790,
+          "observation": "PPT 展示左右对齐图和电压=dr×(3.3÷4095)。",
+          "frameSha256": "9323ffa7faa43e320e19421e3ba1826f0d75258120cd8cef5cc95f92b02e5e15"
+        },
+        {
+          "seconds": 3071,
+          "observation": "原片回到最小系统板和光敏模块的硬件演示。",
+          "frameSha256": "4bec43d9e06d5647fcb4b0b4e2e191023a30d9b5be773b3335ce6d8318a6a78d"
+        }
+      ]
+    },
+    {
+      "page": 53,
+      "title": "10.5 [ADC] 定时器触发",
+      "cid": 26389449160,
+      "duration": 2776,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=53",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 277,
+          "observation": "PPT 画出 Update→TRGO→ADC 的定周期触发与模拟信号采样点。",
+          "frameSha256": "81d1d5a018dc7c150e26a67b6b898d627cab8875d44ec16649dbd2cd2b034322"
+        },
+        {
+          "seconds": 1388,
+          "observation": "ADC 框图高亮 TIM1_TRGO→注入序列长度 1→JDR1，同时选中 PA0/通道 0。",
+          "frameSha256": "c4e2f3bfd88f6d3a3226d1805a0e0794d21fbdab0324144d6e30dafa7a288ccb"
+        },
+        {
+          "seconds": 1943,
+          "observation": "Keil 配置 ADC1 基本参数，时钟为 PCLK2 六分频。",
+          "frameSha256": "00281fd52e962a0d643ac60fd947e51bb0440be76aff95c98b640e6e5298ada8"
+        },
+        {
+          "seconds": 2205,
+          "observation": "Keil 中注入序列长度为 1，ADC_InjectedChannelConfig 使用 ADC_Channel_0、rank 1。",
+          "frameSha256": "79cf47384d7f2941f79cc8c20f57dc4b6867c82ad310efc9781810bc3a010db7"
+        },
+        {
+          "seconds": 2498,
+          "observation": "主循环等待 ADC_FLAG_JEOC，调用 ADC_GetInjectedConversionValue(...ADC_InjectedChannel_1)。",
+          "frameSha256": "7c5e07c5eeb0943eb7a2d23fe5a1c41759c7ded04cccbfb0e6626e692e972cef"
+        },
+        {
+          "seconds": 2746,
+          "observation": "VOFA 显示采样电压曲线，并有操作硬件的画中画。",
+          "frameSha256": "ef64822f1fd48529fc543bc1d24e33ef50995bcf0e9a9a4a006c668902737e5c"
+        }
+      ]
+    },
+    {
+      "page": 54,
+      "title": "10.6 [ADC] 扫描模式",
+      "cid": 26454986609,
+      "duration": 2768,
+      "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=54",
+      "status": "video-keyframes-checked",
+      "method": "公开视频关键画面核验",
+      "checkedAt": "2026-10-28",
+      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "anchors": [
+        {
+          "seconds": 276,
+          "observation": "PPT 展示电位器的三个端子、分压关系及等效内阻。",
+          "frameSha256": "efac231b7cbf8c6af14e023c32043eb057f7d33dc4550cddd7a39b714a8c1eaf"
+        },
+        {
+          "seconds": 1384,
+          "observation": "PPT 展示 Update/TRGO，时基图标注 PSC=71、ARR=999、RCR=0。",
+          "frameSha256": "4cb0b0b3d60dd8924147cb4056b94945a92947c6fd976dcb70ad45a70374f218"
+        },
+        {
+          "seconds": 1850,
+          "observation": "PPT 放大后清楚标出 TIM1_TRGO、注入 L=2、CH0/CH1、JDR1/JDR2 和扫描模式打勾。",
+          "frameSha256": "775cfbfb5c958f9fc635f935802b71e01b304df593a86a0f77bde86f8cac75cd"
+        },
+        {
+          "seconds": 2280,
+          "observation": "Keil 明确 ScanConvMode=ENABLE、注入长度 2、通道 0/1 及 ADC_ExternalTrigInjecConv_T1_TRGO。",
+          "frameSha256": "e804aaade80beecaf86863e4a3a95c10963f2ec14210e859ee3e89566fd3b0f8"
+        },
+        {
+          "seconds": 2491,
+          "observation": "主循环等待 JEOC，分别读取 jdr1/jdr2，换算 v1/v2 后调用 USART 打印。",
+          "frameSha256": "59b099a10138f47158c2b32c43f66b59494a44cf78f983f89faafda6e01c6ee6"
+        },
+        {
+          "seconds": 2738,
+          "observation": "VOFA 显示两个量，画中画中可见两只电位器与最小系统板。",
+          "frameSha256": "057b1e285bc2373eaee19bd2c6e9fc37bd40d562dc85950c97c9692cfc310b8e"
+        }
+      ]
+    }
+  ]
+}

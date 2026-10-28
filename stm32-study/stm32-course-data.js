@@ -1,6071 +1,2492 @@
 const COURSE = {
-  meta: {
+  "meta": {
     "bvid": "BV11X4y1j7si",
     "title": "铁头山羊 STM32 入门教程",
     "author": "铁头山羊",
     "chip": "STM32F103 · 标准库 · LQFP48"
   },
-  phases: [
-    {"id":"prep","name":"准备阶段"},
-    {"id":"gpio","name":"GPIO"},
-    {"id":"uart","name":"串口"},
-    {"id":"i2c","name":"I2C"},
-    {"id":"spi","name":"SPI"},
-    {"id":"int","name":"中断与 EXTI"},
-    {"id":"clk","name":"时钟"},
-    {"id":"tim","name":"定时器"},
-    {"id":"adc","name":"ADC"},
+  "phases": [
+    {
+      "id": "prep",
+      "name": "准备阶段"
+    },
+    {
+      "id": "gpio",
+      "name": "GPIO"
+    },
+    {
+      "id": "uart",
+      "name": "串口"
+    },
+    {
+      "id": "i2c",
+      "name": "I2C"
+    },
+    {
+      "id": "spi",
+      "name": "SPI"
+    },
+    {
+      "id": "int",
+      "name": "中断与 EXTI"
+    },
+    {
+      "id": "clk",
+      "name": "时钟"
+    },
+    {
+      "id": "tim",
+      "name": "定时器"
+    },
+    {
+      "id": "adc",
+      "name": "ADC"
+    }
   ],
-  lessons: [
+  "lessons": [
     {
-      page: 1, phase: "prep", title: "课程介绍", duration: 456,
-      summary: "课程定位、学习路线与所需硬件软件总览。",
-      notes: `\n## 课程主线
-这套 STM32 标准库课程按“最小系统 -> GPIO -> 通信外设 -> 中断与定时 -> 模拟与数据 -> 项目整合”推进。它的重点不是背 API，而是理解 STM32 外设的共同规律。
-
-每章基本都回答四个问题：
-
-1. 这个外设解决什么问题。
-2. 硬件上需要哪些引脚、电源、时钟。
-3. 寄存器/库函数如何配置。
-4. 数据如何流动，出问题时如何定位。
-
-## 前置准备
-开始前建议准备好：
-
-1. C51/STM32F103C8T6 最小系统板或课程配套板。
-2. ST-Link 或串口下载工具。
-3. Keil5 + STM32F1 器件包。
-4. 串口助手、逻辑分析仪或示波器更佳。
-5. 面包板、杜邦线、LED、按键、OLED、传感器模块。
-
-软件环境要点：Keil 安装器件包、选择正确芯片、配置 ST-Link/串口下载。时钟树中 HSE、SYSCLK、总线频率必须与实际硬件一致。
-
-## 学习方法
-1. 每个外设先跑最小例程，不要一开始叠加功能。
-2. 每次只改一个变量：引脚、波特率、极性、频率或逻辑。
-3. 用串口打印状态，用 LED 表示模式，形成观察手段。
-4. 失败时先分层检查：电源、接线、时钟、配置、协议、应用。
-5. 把能跑的工程保存为模板，后续项目复用驱动和主循环结构。
-
-## 核心心智模型
-STM32 可以看成许多独立外设挂在总线上：
-
-~~~text
-CPU
- |-- RCC：给所有外设分配时钟
- |-- GPIO：输出、输入、复用、模拟
- |-- USART/I2C/SPI：与外部设备交换字节
- |-- TIM：计时、PWM、捕获、编码器
- |-- ADC/DAC：连续电压与数字值互转
- |-- EXTI/NVIC：事件响应和优先级
- |-- DMA：自动搬运数据
- |-- Flash/RTC：保存参数与时间
-~~~
-
-多数外设初始化都遵循同一流程：
-
-~~~text
-开时钟 -> 配置引脚 -> 配置外设 -> 使能外设 -> 启动收发/计数/中断
-~~~
-
-## 硬件安全习惯
-1. 接线前断电，确认 VCC/GND 不接反。
-2. 3.3V 与 5V 电平不能混接，注意模块手册。
-3. 所有通信模块必须共地。
-4. 电机、继电器、舵机用独立电源，并与 MCU 共地。
-5. 长线、感性负载要考虑去耦和保护。
-
-## 排错总纲
-1. 程序不跑：电源、BOOT、晶振、下载配置。
-2. 外设无反应：时钟、引脚模式、使能顺序。
-3. 波形错：频率公式、极性、模式。
-4. 数据乱：协议、地址、校验、共地。
-5. 偶发异常：干扰、缓冲区越界、中断优先级、栈溢出。
-
-## 课程收尾能力
-完成全部章节后，你应该能独立完成：按键菜单 + OLED 显示 + 传感器采集 + PWM 控制 + RTC 时间 + Flash 参数保存 + 串口上报的项目原型，并知道如何逐步调试和加固。
-
-\n      `,
-      points: [
-        "STM32F103 + 标准库 + Keil 的组合贯穿全课程",
-        "路线：GPIO → UART → I2C/SPI → 中断 → 时钟 → 定时器 → ADC",
-        "建议每节配一块 F103C8T6 最小系统板边看边练"
-      ]
+      "page": 1,
+      "phase": "prep",
+      "title": "课程介绍",
+      "duration": 456,
+      "summary": "认识课程的教学方式、实验硬件、课程目录与项目展示。",
+      "notes": "画面先介绍课程及其历次版本，随后展示“零基础入门、面包板教学、程序纯手打、讲解很细致”等教学安排。实验硬件使用面包板与最小系统板，旁边连接按钮、LED和显示模块。\n\n课程目录画面按章、节、小节与知识点组织内容，并展示带OLED、HC-SR04模块的小车作品。结尾以书籍和芯片官方文档列表说明配套参考资料。本节是学习方式与课程范围的介绍，尚未展开GPIO或串口的具体编程。",
+      "points": [
+        "面包板与最小系统板搭建实验",
+        "课程目录按章、节、小节、知识点展开",
+        "展示带OLED和超声波模块的小车作品"
+      ],
+      "cid": 1219312317,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 45,
+            "observation": "课程介绍页展示版本时间线及八项教学特点",
+            "frameSha256": "2d677559898c2baa231542805f799e465516257a4db1c82e08f69b2ddbe828f0"
+          },
+          {
+            "seconds": 136,
+            "observation": "实物图展示面包板、最小系统板、按钮和显示模块",
+            "frameSha256": "33ca66329f1670bd22b9acdb78e8119d81b07922c84e0ebc65aefec3f6c0df6a"
+          },
+          {
+            "seconds": 228,
+            "observation": "课程目录以章、节、小节、知识点的层次展开",
+            "frameSha256": "d9a387cba5ad145b22eae281a2dc7eb6bdd390925bb679cee7880e79c1a72870"
+          },
+          {
+            "seconds": 319,
+            "observation": "展示装有HC-SR04超声波模块和OLED的小车作品",
+            "frameSha256": "604713d24035ba49555d3f1ead4c834290fdabe26ad6de784b68f907dff7a58a"
+          }
+        ]
+      }
     },
     {
-      page: 2, phase: "prep", title: "1.1 [准备] 安装开发环境", duration: 1289,
-      summary: "Keil MDK5 安装、器件包、ST-Link 驱动与工程模板。",
-      notes: `\n## 本节定位
-这一节进入 STM32 最基础也最常用的外设：GPIO 输出。LED 闪烁看似简单，但它是理解寄存器配置、时钟使能、HAL 初始化流程和工程结构的第一课。掌握这一节后，点灯、蜂鸣器、继电器、简单状态灯都可以按同一套思路实现。
-
-## GPIO 的基本原理
-STM32 的每个引脚都可以配置成多种模式：输入浮空、输入上拉、输入下拉、模拟输入、开漏输出、推挽输出、复用推挽、复用开漏等。点亮 LED 通常使用推挽输出，引脚内部由两个 MOS 管分别负责拉高和拉低，驱动能力比开漏输出更直接。
-
-对于低电平点亮的接法，LED 正极接 3.3V，负极经过限流电阻接 GPIO。GPIO 输出低电平时形成通路；输出高电平时两端电压接近，LED 熄灭。高电平点亮的接法则相反。
-
-## 工程结构
-使用 HAL 库时，一般保留这几部分：
-
-1. \`Core/Src/main.c\`：主程序入口，包含 \`SystemClock_Config()\` 和业务逻辑。
-2. \`Core/Src/gpio.c\` 或 CubeMX 自动生成的外设初始化文件：负责引脚配置。
-3. \`Drivers/STM32xxxx_HAL_Driver\`：官方 HAL 库，一般不要手改。
-4. 工程目录中自定义的 \`led.c/led.h\`：把点灯封装成函数，避免把所有代码塞进 \`main.c\`。
-
-## 初始化流程
-HAL 库的 GPIO 初始化核心是 \`GPIO_InitTypeDef\`：
-
-~~~c
-GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-__HAL_RCC_GPIOC_CLK_ENABLE();
-
-GPIO_InitStruct.Pin = GPIO_PIN_13;
-GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-GPIO_InitStruct.Pull = GPIO_NOPULL;
-GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-~~~
-
-\`Mode\` 决定输入还是输出、推挽还是开漏；\`Pull\` 主要在输入时使用；\`Speed\` 并不是引脚输出电压的速度，而是边沿驱动能力，普通 LED 用低速即可。
-
-## 常用操作函数
-
-~~~c
-HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);  /* 输出低电平 */
-HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);    /* 输出高电平 */
-HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);                 /* 翻转电平 */
-~~~
-
-最简单的闪烁逻辑：
-
-~~~c
-while (1)
-{
-    HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
-    HAL_Delay(500);
-}
-~~~
-
-\`HAL_Delay()\` 基于 SysTick，在裸机程序中可用，但不能放在频繁中断或实时性要求高的路径里。
-
-## 排错方法
-如果灯不亮，按顺序检查：
-
-1. 限流电阻、正负极和 GPIO 引脚是否接对。
-2. 对应 GPIO 时钟是否已经使能，例如使用 PC13 必须打开 GPIOC 时钟。
-3. 引脚是否被 CubeMX 误配置成调试口或其他复用功能。
-4. 电平逻辑是否相反，低电平点亮时输出高电平当然不会亮。
-5. 板子供电是否正常，可用万用表或逻辑分析仪确认引脚实际电平。
-
-## 扩展理解
-点灯的真正价值是建立“外设 = 时钟 + 配置 + 读写”的心智模型。后面串口、定时器、ADC 都遵循同一流程：先使能外设时钟，再配置结构体，然后调用初始化函数，最后通过 HAL API 收发数据。把 LED 封装成 \`LED_ON()\`、\`LED_OFF()\`、\`LED_Toggle()\` 这类接口，也能提前训练模块化编程习惯。
-
-\n      `,
-      points: [
-        "Keil 路径避免中文空格",
-        "先装 DFP 器件包再建工程",
-        "SWD 四线连接：SWDIO、SWCLK、GND、3.3V"
-      ]
+      "page": 2,
+      "phase": "prep",
+      "title": "1.1 [准备] 安装开发环境",
+      "duration": 1289,
+      "summary": "准备Keil开发工程与ST-Link连接，并用标准库PC13闪灯程序验证编译下载。",
+      "notes": "本节实际展示Keil开发环境和工程模板。工程树包含user、startup、std_periph_driver及my_lib等分组，main.c使用stm32f10x.h与delay.h。画面还展示配套文件取得过程，以及ST-Link与最小系统板的连接。\n\n后段通过PC13板载LED程序验证环境：开启GPIOC时钟，设置GPIO_Pin_13、GPIO_Mode_Out_OD和GPIO_Speed_2MHz，然后在while循环交替写Bit_RESET与Bit_SET并延时。编译窗口出现0错误、0警告，随后显示Flash下载完成；这些是视频中的演示结果。",
+      "points": [
+        "Keil工程模板包含用户代码、启动文件和标准库",
+        "ST-Link连接最小系统板",
+        "PC13配置为开漏输出、2MHz，循环写电平实现闪灯"
+      ],
+      "cid": 26461668950,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 128,
+            "observation": "Keil打开工程模板，工程树含user、startup、std_periph_driver、my_lib",
+            "frameSha256": "e5a85ec0a2b907da1da0cea0c167c985f1a649dfd18f877b34f667361ebd7eee"
+          },
+          {
+            "seconds": 902,
+            "observation": "实物展示ST-Link通过导线连接最小系统板",
+            "frameSha256": "c58d2a70c8f3047df61f5c8ef5a0186a90c3cb8b61a09613f67b057330739aa3"
+          },
+          {
+            "seconds": 1160,
+            "observation": "main.c可见PC13开漏输出2MHz配置与循环写电平，编译结果0错误0警告",
+            "frameSha256": "9323e3d4c19c0744025687b21b703932e5840b8a4b05258aeda8d72f78ae9b86"
+          },
+          {
+            "seconds": 1259,
+            "observation": "Keil下载输出显示Flash Load finished并展示开发板",
+            "frameSha256": "4ff75efcbf1c82dd2ea02d498712052bfa89211fb2cc59db42addb6b682c5255"
+          }
+        ]
+      }
     },
     {
-      page: 3, phase: "prep", title: "1.1 [准备] STM32 的基本信息", duration: 864,
-      summary: "STM32 命名规则、F103C8T6 资源一览与内核结构。",
-      notes: `\n## 本节定位
-这一节讲解 GPIO 输入。按键是最典型的输入设备，重点在于识别电平、区分按下/释放、消除机械抖动，以及把输入状态转换成可靠的事件。
-
-## 按键电路
-常见轻触按键有两种接法：
-
-1. 引脚一侧接 GPIO，另一侧接 GND，同时 GPIO 配置为上拉输入。未按下时读到 1，按下时读到 0。
-2. 引脚一侧接 GPIO，另一侧接 3.3V，同时 GPIO 配置为下拉输入。未按下时读到 0，按下时读到 1。
-
-判断核心：不能让 GPIO 在按键断开时悬空。悬空引脚电平会随干扰变化，读数不稳定。上拉/下拉电阻的作用就是给断开状态一个确定的默认电平。
-
-## 初始化
-
-~~~c
-GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-__HAL_RCC_GPIOA_CLK_ENABLE();
-
-GPIO_InitStruct.Pin  = GPIO_PIN_0;
-GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-GPIO_InitStruct.Pull = GPIO_PULLUP;
-HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-~~~
-
-读取电平：
-
-~~~c
-GPIO_PinState state = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0);
-~~~
-
-对于上拉输入接 GND 的按键，\`state == GPIO_PIN_RESET\` 表示按下。
-
-## 机械抖动
-机械触点闭合和断开时不会立刻稳定，会反弹几毫秒到十几毫秒。如果直接把“读取到低电平”当作一次按下，一次物理动作可能被识别成多次事件。
-
-常用处理方法：
-
-1. 硬件消抖：按键并联小电容，或使用 RS 触发器、专用消抖芯片。电路更稳定但增加器件。
-2. 软件延时消抖：检测到按下后延时 10~20ms 再次确认。实现简单，但延时期间不能做其他事。
-3. 状态机消抖：主循环或定时器中周期采样，连续多次读到相同电平才改变状态。实时性更好，是推荐写法。
-
-## 软件消抖示例
-
-~~~c
-if (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET)
-{
-    HAL_Delay(15);
-    if (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET)
+      "page": 3,
+      "phase": "prep",
+      "title": "1.1 [准备] STM32 的基本信息",
+      "duration": 864,
+      "summary": "理解STM32名称、产品系列和F103C8T6型号字段，区分数据手册与参考手册。",
+      "notes": "开头拆解STM32名称，画面分别标注STMicroelectronics、Micro Controller与32位，并展示最小系统板实物。随后用产品系列图介绍STM32的不同系列位置。\n\n型号讲解把C8T6拆成四部分：C为48引脚，8为64Kbytes Flash，T为LQFP封装，6为图示温度档。后段对比两类手册：DS5319数据手册用于查性能指标和参数，RM0008参考手册用于理解芯片的使用与编程。结尾展示资料所在的文件目录。",
+      "points": [
+        "STM32名称与32位单片机概念",
+        "C8T6对应引脚数、Flash容量、封装和温度范围",
+        "DS5319给规格参数，RM0008说明使用与编程"
+      ],
+      "cid": 26054889101,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 86,
+            "observation": "STM32名称页分别标注STMicroelectronics、Micro Controller、32位",
+            "frameSha256": "0e58e953787541cee8d41e3cf84910246f27669ac4e09d3f5635857ce31195f6"
+          },
+          {
+            "seconds": 432,
+            "observation": "STM32产品系列树展示F系列及其他系列",
+            "frameSha256": "27aa639ae226566084d25da458cd8e4519e0ab7eaf8904eec6470d4f9c6b72fe"
+          },
+          {
+            "seconds": 604,
+            "observation": "C8T6字段图标出48引脚、64Kbytes Flash、LQFP和温度范围",
+            "frameSha256": "c436903163708b73a6c88b1d9a71e03be7a8f6f9dcbb1d88787ec0bee348fb26"
+          },
+          {
+            "seconds": 777,
+            "observation": "对比DS5319数据手册与RM0008参考手册的用途",
+            "frameSha256": "c031f922231cf1a90c077cab643de3a2d70af5256ca73cd18b30f475de25701e"
+          }
+        ]
+      }
+    },
     {
-        /* 执行按键动作 */
-        while (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET)
-        {
-            /* 等待释放，避免长按重复触发 */
-        }
+      "page": 4,
+      "phase": "prep",
+      "title": "1.2 [准备] STM32 的引脚分布",
+      "duration": 614,
+      "summary": "认识芯片引脚编号、电源命名和GPIO分组，结合LQFP48引脚图辨认端口。",
+      "notes": "本节从芯片资料与引脚识别开始。画面用封装示意图说明一般编号规则：圆点附近是1脚，再逆时针递增。中段展示NMOS的栅、漏、源端，并结合Vdd、Vss解释供电名称，还对照最小系统板实物寻找引脚。\n\n后段使用STM32F103的LQFP48引脚图，区分特殊功能脚和常规GPIO。GPIO以字母作为组编号、数字作为组内引脚编号，画面列出GPIOA的PA0—PA15、GPIOB的PB0—PB15、GPIOC的PC13—PC15及GPIOD的PD0/PD1。",
+      "points": [
+        "圆点附近为1脚，编号逆时针递增",
+        "说明Vdd/Vss与MOS管端子的命名联系",
+        "GPIOA/B/C/D按字母分组、数字编号"
+      ],
+      "cid": 26054951039,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 184,
+            "observation": "封装示意图写明圆点附近为1脚、编号逆时针递增",
+            "frameSha256": "e0e4225dd49771b78a3aa6cd679f50305b7e8f7ad3b344cb3819881948cbd63d"
+          },
+          {
+            "seconds": 307,
+            "observation": "NMOS示意图标注Gate、Drain、Source及Vdd/Vss名称",
+            "frameSha256": "fe1fd377bdaf78b5dd8e825fe3185f9612a522babd3c3fc69ab9d2b6ebd9aa49"
+          },
+          {
+            "seconds": 552,
+            "observation": "LQFP48引脚图旁列GPIOA、GPIOB、GPIOC、GPIOD分组",
+            "frameSha256": "c06f8da05979d3b6823571bfe7ba391c15e113ab946dac9b3c9331a613a84d56"
+          },
+          {
+            "seconds": 584,
+            "observation": "对GPIOA的PA0至PA15命名作标记",
+            "frameSha256": "6e239165a611c0fe975e81c6b0c1cf396d9d1494172fbc9166bb2a55ccc2b127"
+          }
+        ]
+      }
+    },
+    {
+      "page": 5,
+      "phase": "gpio",
+      "title": "2.1 [GPIO] 4 种输出模式",
+      "duration": 1973,
+      "summary": "借GPIO结构理解推挽/开漏的电气差别，以及通用/复用模式的控制来源。",
+      "notes": "本节先对照最小系统板认识GPIO，再以寄存器与引脚之间的箭头区分输出和输入。随后打开RM0008的GPIO与AFIO章节查找功能说明。\n\n推挽部分用P-MOS、N-MOS图解释写0与写1时的导通关系，并标出低、高电平；开漏部分则明确标出写0为低、写1为高阻。后段把同一引脚的两种用途并列：通用模式由CPU写电平驱动LED；复用模式把引脚交给串口模块，向外输出连续通信波形。这里强调的是控制来源与电气结构，而不是LED程序的完整编写。",
+      "points": [
+        "输出数据寄存器写电平，输入数据寄存器读电平",
+        "推挽结构交替控制P-MOS和N-MOS",
+        "开漏写0输出低，写1为高阻态",
+        "通用模式由CPU控制，复用模式交给串口等片上外设"
+      ],
+      "cid": 26335970481,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 591,
+            "observation": "输出/输入示意图分别连接输出数据寄存器和输入数据寄存器",
+            "frameSha256": "58652d0ae596bb47c861ef61bc7c8b5e7b8853b0f2e28e93d86b3735ccd71e2d"
+          },
+          {
+            "seconds": 986,
+            "observation": "浏览RM0008的GPIO与AFIO章节及GPIO功能描述",
+            "frameSha256": "2b1d717ff39e248567fa13a9d0e1a5d98e9132c58fe9754dd58c3524b893b68d"
+          },
+          {
+            "seconds": 1381,
+            "observation": "推挽图以P-MOS/N-MOS显示写0输出低、写1输出高",
+            "frameSha256": "a96897ebda8ee024cdeab29df1ff3a4b1b08c2235c5cdb430cb9c801e7797c73"
+          },
+          {
+            "seconds": 1530,
+            "observation": "开漏示意图写明写0为低、写1为高阻，P-MOS不参与主动拉高",
+            "frameSha256": "9b7119e6ecadc680f48057b51021a08396654aaef5afe178f53408b37a6676be"
+          },
+          {
+            "seconds": 1775,
+            "observation": "并列通用模式CPU驱动LED与复用模式串口驱动引脚的例子",
+            "frameSha256": "dd7d165f95e71cf9ed6ebae4257064a3428eef2648afb2438c83c0f3deda7a82"
+          }
+        ]
+      }
+    },
+    {
+      "page": 6,
+      "phase": "gpio",
+      "title": "2.2 [GPIO] IO 的最大输出速度",
+      "duration": 625,
+      "summary": "用波形说明GPIO输出速度档位、边沿失真与实际接口速度需求。",
+      "notes": "画面把IO最大输出速度定义为交替写0与1且输出不失真的最快速度，并用推挽输出电路与方波建立联系。随后比较理想方波和实际波形，标出上升、保持和下降时间；发送节奏越来越快时，有限的边沿时间使波形逐渐失真。\n\n中后段分别展示低速2MHz、中速10MHz和高速50MHz的波形。选档举例没有停留在抽象数字：一例查外设时序表，另一例以开发板USB 2.0 FS的12Mbps说明需要选择足够的GPIO输出速度。本节围绕波形与档位展开。",
+      "points": [
+        "理想方波与实际上升、保持、下降时间",
+        "2MHz、10MHz、50MHz三个输出速度档位",
+        "以外设时序表和USB12Mbps示例说明档位选择"
+      ],
+      "cid": 26054951429,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 62,
+            "observation": "画面定义IO最大输出速度，并画出推挽电路和交替0/1方波",
+            "frameSha256": "b3b2120cc9c33c6493140f924751e65d2d4fe5a5caa131a32ef105bc58667a62"
+          },
+          {
+            "seconds": 187,
+            "observation": "并列理想与实际波形，实际波形标出上升、保持、下降时间",
+            "frameSha256": "793e7c1391698499ed9ded9aeaf25c80d22b6cbd71aab3f7e9533a9a03e60e98"
+          },
+          {
+            "seconds": 437,
+            "observation": "分别展示2MHz、10MHz、50MHz的输出速度波形",
+            "frameSha256": "d1bc4dafa2ea321e17b56d397ceba9cf9b159692e241ddc52f31df696c25328d"
+          },
+          {
+            "seconds": 595,
+            "observation": "开发板USB 2.0 FS 12Mbps例子旁标注高速50MHz",
+            "frameSha256": "4abb1fb4b3e335800811e2c74873f4e9e1d22e9de108604929f2890dc2f6c4fb"
+          }
+        ]
+      }
+    },
+    {
+      "page": 7,
+      "phase": "gpio",
+      "title": "2.3 [GPIO] LED 闪灯实验",
+      "duration": 2554,
+      "summary": "从LED电路、GPIO编程接口到PC13板载LED的标准库闪烁实验。",
+      "notes": "先分析发光二极管、限流电阻和电流方向，再对照板载LED的VCC3V3—LED—电阻—PC13电路，比较推挽和开漏连接。GPIO编程接口表列出GPIO_Init、GPIO_WriteBit、GPIO_ReadInputDataBit和GPIO_ReadOutputDataBit。\n\n初始化参数画面解释GPIO_Pin、GPIO_Speed和GPIO_Mode。闪灯程序把PC13先写Bit_RESET点亮，Delay(100)，再写Bit_SET熄灭并Delay(100)，在while循环重复。最后回到Keil展示同样的循环和下载结果；本节的板载LED是低电平点亮。",
+      "points": [
+        "LED限流电阻与板载PC13连接方式",
+        "GPIO_Init、GPIO_WriteBit及输入/输出寄存器读取接口",
+        "PC13写0点亮、写1熄灭，两段各延时100ms"
+      ],
+      "cid": 26351173764,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 255,
+            "observation": "LED串联限流电阻示意图标注电流和二极管压降",
+            "frameSha256": "b0d22bbf23c866dbf8cc2223169efa571d0420c29d0b03b771fef3d901592e77"
+          },
+          {
+            "seconds": 766,
+            "observation": "板载LED原理图标注VCC3V3、D2、R5和PC13，并比较推挽/开漏连接",
+            "frameSha256": "efd1f6b79863b3e35ca18d0750ed787cd80df8adcb9db37f6ab31bf150a2469c"
+          },
+          {
+            "seconds": 1277,
+            "observation": "GPIO编程接口表列GPIO_Init、GPIO_WriteBit及两个读取接口",
+            "frameSha256": "01652aa4f290bbdf28c3787a88dfbda9559e2e6b1bdfa6e9ed48f1111002f8d6"
+          },
+          {
+            "seconds": 2298,
+            "observation": "程序写PC13低点亮、高熄灭，每段Delay(100)",
+            "frameSha256": "defc6579dcd95e2ef60ad872a42d10ea273c7b886aed0c1a5597973f3beed0f3"
+          }
+        ]
+      }
+    },
+    {
+      "page": 8,
+      "phase": "gpio",
+      "title": "2.4 [GPIO] 4 种输入模式",
+      "duration": 937,
+      "summary": "以GPIO输入电路解释上拉、下拉、浮空和模拟四种模式。",
+      "notes": "本节围绕GPIO输入结构展开，先展示开发板，再用电路图连接引脚、保护二极管、上下拉电阻、施密特触发器和输入数据寄存器。画面把施密特触发器标为电压转数字，把上拉电阻标为提供默认电压，把保护二极管标为防静电。\n\n图右列出输入上拉、输入下拉、输入浮空和模拟模式。后续画面通过标记电阻与通路的接通/断开，说明各模式的区别；末段图中将数字输入路径划去并标记上下拉状态。",
+      "points": [
+        "输入数据寄存器与施密特触发器",
+        "保护二极管用于输入端保护",
+        "上拉/下拉提供默认电压，四种模式对应不同通路状态"
+      ],
+      "cid": 26360349837,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 93,
+            "observation": "章节标题明确为GPIO的4种输入模式",
+            "frameSha256": "52df67dab8c84abfec7e1d371c86a255fd2bde16959f723de7b9d986a6d4824d"
+          },
+          {
+            "seconds": 468,
+            "observation": "输入结构图列出上拉、下拉、浮空、模拟模式，并标注默认电压与防静电",
+            "frameSha256": "951150064a83d1b792c153a68fb13b8979762d6e22621b415903e365d44ce442"
+          },
+          {
+            "seconds": 655,
+            "observation": "输入结构图显示上下拉电阻、保护二极管与施密特触发器",
+            "frameSha256": "4ef4f7f4d1ac661d482a5b838f1f2e563fa3fdc6e8fbf9947c013436e9802a13"
+          },
+          {
+            "seconds": 907,
+            "observation": "同一结构图对数字通路和上下拉状态作划线标记",
+            "frameSha256": "9eeecb3c2a5865fd9fefb5f8746678f8f2f6559662ef789e08dc866f5e35fff0"
+          }
+        ]
+      }
+    },
+    {
+      "page": 9,
+      "phase": "gpio",
+      "title": "2.5 [GPIO] 按钮实验",
+      "duration": 1233,
+      "summary": "PA1上拉输入读取按钮，控制PA0外接LED的亮灭。",
+      "notes": "开头比较两种LED连接：外接LED接PA0、限流电阻和地，板载LED则接PC13并由低电平点亮。视频随后在面包板搭建外接LED实验，Keil中将PA0配置为普通推挽输出。\n\n按钮电路使用PA1，一端接PA1、一端接地，PA1初始化为输入上拉。程序在while循环用GPIO_ReadInputDataBit读取PA1；等于Bit_RESET代表按钮按下，于是把PA0写Bit_SET点亮外接LED，否则写Bit_RESET熄灭。此处实现的是按住亮、松开灭。",
+      "points": [
+        "先比较PA0外接LED与PC13板载LED接法",
+        "PA0普通推挽输出，PA1输入上拉且按钮接地",
+        "主循环读取PA1，按下点亮PA0 LED，松开熄灭"
+      ],
+      "cid": 26054951605,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 123,
+            "observation": "并列PA0外接LED推挽接法和PC13板载LED开漏接法",
+            "frameSha256": "95d01f4e4445eaeddcef4f3d833e9594f3f8b873a0549f13927896317f37c2f1"
+          },
+          {
+            "seconds": 616,
+            "observation": "Keil配置PA0为GPIO_Mode_Out_PP，准备GPIO_WriteBit",
+            "frameSha256": "fb3c6b2f35a75310d73e64541538e58462f16e4a70ee5a9d72ca6f35235b36ea"
+          },
+          {
+            "seconds": 863,
+            "observation": "按钮示意图为PA1接地，代码配置PA1输入上拉",
+            "frameSha256": "bc779576365df592cbca10229e0b1078c11c8851bdee70ff1ff497bb96a1b9f4"
+          },
+          {
+            "seconds": 1109,
+            "observation": "while循环读取PA1，按下写PA0高电平、松开写低电平",
+            "frameSha256": "174306c73391fe8d0431da4571ab10de2f637762adcde72659284419df6c1f1d"
+          }
+        ]
+      }
+    },
+    {
+      "page": 10,
+      "phase": "uart",
+      "title": "3.1 [串口] 通信协议",
+      "duration": 1270,
+      "summary": "通过数字27、字符串Hello和校验示例理解串口帧格式。",
+      "notes": "开头用两端设备的连线解释Tx发送脚、Rx接收脚及交叉连接。随后画出空闲、起始位、D0—D7数据位、停止位的帧结构，并以十进制27为例把数字拆为二进制，再依发送顺序填写波形。\n\n另一个例子发送字符串Hello，画面给出各字符ASCII码并填写对应帧。中段列出可配置数据位长度、校验位以及停止位长度；后段用十进制85的波形展示奇校验，还在接收波形上标出某一位变化。本节围绕通信时序展开。",
+      "points": [
+        "Tx与Rx交叉连接",
+        "起始位、D0起的数据位、停止位与空闲状态",
+        "用数字27和Hello画帧，再用85演示奇校验"
+      ],
+      "cid": 26377979181,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 127,
+            "observation": "两设备Tx/Rx交叉连接图并解释Transmit与Receive",
+            "frameSha256": "1a470c1fe4aa6c8e943038db44812c39100644e1846d2a3abbf33f72847def19"
+          },
+          {
+            "seconds": 381,
+            "observation": "串口帧上标空闲、起始、D0至D7、停止，并列27及Hello例子",
+            "frameSha256": "70410ccefc3d0fc77be3484477e10b8a1b0d3c940876de5d25f5f1dd0c06a453"
+          },
+          {
+            "seconds": 635,
+            "observation": "数字27和Hello的二进制数据依次填写到帧波形",
+            "frameSha256": "dfccf2e96d8f9e343d7555883efef2bc088245c4540803b8cabf9e8f74aca63c"
+          },
+          {
+            "seconds": 889,
+            "observation": "列出数据位长度、校验位与停止位可选长度",
+            "frameSha256": "789d3612f5e2bdad84c499068b19cfb63cfa555084906e3eeed37ee8970342ee"
+          },
+          {
+            "seconds": 1240,
+            "observation": "85的奇校验波形上标出接收数据某位由1变0",
+            "frameSha256": "36c56e7a0ff7f0cb6f114ed8c0b40591de3f5daed43450d821e1f8140928042e"
+          }
+        ]
+      }
+    },
+    {
+      "page": 11,
+      "phase": "uart",
+      "title": "3.2 [串口] UART 模块的使用方法",
+      "duration": 1344,
+      "summary": "理解USART模块、串并转换、初始化参数和USART1的115200示例。",
+      "notes": "USART模块框图把时钟、分频器、发送/接收数据寄存器、移位寄存器、Tx/Rx和状态标志放在同一张图中。发送数据例子以寄存器中的字节逐位移出，说明串并转换过程。\n\n课程提纲随后列出模块简介、基本用法、串并转换、帧格式、波特率和编程接口。初始化画面介绍USART_Init及USART_InitTypeDef字段；具体例子为USART1开启时钟，设置115200波特率、收发双向、8位数据、无校验、1位停止位，再调用USART_Init。末段在Keil中填写这些配置。",
+      "points": [
+        "发送/接收数据寄存器、移位寄存器与Tx/Rx",
+        "USART_InitTypeDef配置波特率和帧格式",
+        "USART1例子设置115200、8位、1停止位、无校验、双向"
+      ],
+      "cid": 26054951803,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 134,
+            "observation": "USART框图显示时钟分频、发送/接收寄存器、控制电路、Tx/Rx与状态标志",
+            "frameSha256": "ce55af2fbed22486a89bb482ec178edfad63409e392f552a7b59c1647b97db68"
+          },
+          {
+            "seconds": 403,
+            "observation": "发送数据100的寄存器示意图逐位连接至Tx波形",
+            "frameSha256": "fb6c5abc06a1d989701100e87953efb81f98352c8377babfb78a2d6ba6363cc8"
+          },
+          {
+            "seconds": 940,
+            "observation": "USART_Init及初始化结构体字段说明页",
+            "frameSha256": "4dacb227c6d326fb9ff528573bc2ace575cff3ce7660dea1e58be647d7955858"
+          },
+          {
+            "seconds": 1209,
+            "observation": "USART1例子设置115200、8数据位、1停止位、无校验并调用USART_Init",
+            "frameSha256": "b5753acb1d6f1c9f750ed3a5da6996e54fde80d939ca53cace09693769cc5204"
+          }
+        ]
+      }
+    },
+    {
+      "page": 12,
+      "phase": "uart",
+      "title": "3.3 [串口] 为串口初始化 IO 引脚",
+      "duration": 1521,
+      "summary": "为USART配置GPIO，并比较默认引脚与AFIO重映射引脚。",
+      "notes": "本节从USART对外引脚展开，图区分Tx发送、Rx接收、CTS/RTS硬件流控以及同步模式时钟CK。随后比较普通GPIO输出和由串口模块控制的复用输出。\n\n引脚表列出USART1默认映射PA9/PA10与重映射PB6/PB7。默认配置示例把PA9设置为GPIO_Mode_AF_PP、10MHz，把PA10设置为GPIO_Mode_IPU，并注明接收也可使用浮空输入。后段在Keil中开启AFIO时钟、调用GPIO_PinRemapConfig(GPIO_Remap_USART1, ENABLE)，开始把发送脚改至GPIOB的PB6；这里演示的是引脚配置。",
+      "points": [
+        "区分Tx/Rx、CTS/RTS和同步时钟CK",
+        "默认USART1为PA9 Tx、PA10 Rx",
+        "Tx复用推挽，Rx浮空或上拉；重映射表给出PB6/PB7"
+      ],
+      "cid": 26054951882,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 152,
+            "observation": "USART外部引脚图列Tx、Rx、CTS、RTS及同步时钟CK",
+            "frameSha256": "fcf229c3d3deed9e724ebd98990c0dcd31fc9922b886f434a8b7a165f1c4154d"
+          },
+          {
+            "seconds": 760,
+            "observation": "引脚映射表列出USART1 PA9/PA10与PB6/PB7两种映射",
+            "frameSha256": "f991c8f91d9bb835c2c209b8e31d68f71991b7598c24d93e9637f7729d27f061"
+          },
+          {
+            "seconds": 1064,
+            "observation": "代码页将PA9配复用推挽10MHz，PA10配输入上拉",
+            "frameSha256": "b5904504fb037189d47ee8fbb92cc25d78d9e7c7b82b27df5831d7b8321a5523"
+          },
+          {
+            "seconds": 1368,
+            "observation": "Keil中开始添加AFIO时钟与USART1重映射配置",
+            "frameSha256": "2855e7592fe6e3e4ec6e1295220a47e720d50921b50d111783d616316c7712c5"
+          },
+          {
+            "seconds": 1491,
+            "observation": "重映射代码可见GPIOB的Pin6和AF_PP配置",
+            "frameSha256": "1932827a675a90fd633854d5f4511e947774ee4eee738b32f73fd9e559cd3541"
+          }
+        ]
+      }
+    },
+    {
+      "page": 13,
+      "phase": "uart",
+      "title": "3.4 [串口] 发送数据",
+      "duration": 1939,
+      "summary": "使能USART并封装多字节发送，结合串口调试助手检查输出。",
+      "notes": "开头在USART框图上移动多个字节，说明发送数据寄存器与移位寄存器之间的衔接。随后介绍USART_Cmd，分别展示ENABLE使能与DISABLE禁止USART1的写法。\n\n单字节发送接口使用USART_SendData，将数据写入发送数据寄存器。多字节函数My_USART_SendBytes接收串口、数组和Size参数；循环等待TXE后发送当前字节，循环结束再等待TC。末段打开串口调试助手，右侧同时展示开发板实物，接收窗口可见01、02、03、04、05等十六进制字节，供检查程序的发送结果。",
+      "points": [
+        "USART_Cmd是模块使能总开关",
+        "USART_SendData写发送数据寄存器",
+        "逐字节等待TXE，末尾等待TC；调试助手查看发送字节"
+      ],
+      "cid": 26054951912,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 193,
+            "observation": "USART框图上用多个绿色字节条演示寄存器间发送流程",
+            "frameSha256": "b6a108dc74cfefde7185595d8084494ab1055151bca465f49416a89c43f30445"
+          },
+          {
+            "seconds": 581,
+            "observation": "USART_Cmd函数页展示USART1 ENABLE和DISABLE两种调用",
+            "frameSha256": "76190cb961c07c01474f60736d844d07ac875d7b713a338d3d2acdf3f218f472"
+          },
+          {
+            "seconds": 969,
+            "observation": "USART_SendData接口说明把数据写入发送数据寄存器",
+            "frameSha256": "f8283053ade66a589b1a99dec8088e4235d23a595137413b574ac4c2c4bd0ce1"
+          },
+          {
+            "seconds": 1357,
+            "observation": "My_USART_SendBytes循环等待TXE、调用SendData，最后等待TC",
+            "frameSha256": "12d36a25bb54eb564b4ca2d9aceee28a3a5043ab5821074c2a94e81a85ebc46c"
+          },
+          {
+            "seconds": 1909,
+            "observation": "串口助手接收框显示FF 01 02 03 04 05，并展示接线后的开发板",
+            "frameSha256": "f01bfc88fc1e6ab9dafb7d9d4dcaa181d22dee14606d52a4439903e6b29200d7"
+          }
+        ]
+      }
+    },
+    {
+      "page": 14,
+      "phase": "uart",
+      "title": "3.5 [串口] 格式化打印字符串",
+      "duration": 1939,
+      "summary": "整理串口工程、重定向fputc，并把GetTick格式化为时分秒毫秒。",
+      "notes": "课程提纲先列出给工程重命名、整理代码和添加注释，再进入格式化字符串原理。示例用printf生成包含姓名的字符串，并说明字符经fputc送出；画面将原控制台输出与重写后串口输出并列。\n\n时间字符串示例以GetTick取得当前计时值，先对1000取余得到毫秒，再逐次除以1000、对60取余，得到秒、分和小时。printf用宽度与前导零把它们排成08:10:30.125一类格式。后段在Keil的while循环实现这一拆分和打印。",
+      "points": [
+        "工程重命名、代码整理与注释",
+        "printf生成字符串，经重写的fputc从串口输出",
+        "GetTick经取余和整除拆分为时、分、秒、毫秒"
+      ],
+      "cid": 26054951959,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 193,
+            "observation": "提纲列工程重命名、整理代码、添加注释、格式化字符串、重写fputc、格式化时间",
+            "frameSha256": "7a6b0fcc401ae5d35ab1909ab6d9a27f14e097d0a14fba4aa95ae2eb4622bd57"
+          },
+          {
+            "seconds": 581,
+            "observation": "printf姓名字符串例子与fputc重定向原理并列",
+            "frameSha256": "5d2e4fdf27b121f7c285e0f1dd92fdbd9e5c873e7f13a872fbcedc42dbdfda02"
+          },
+          {
+            "seconds": 969,
+            "observation": "GetTick计时值按取余/整除拆为时分秒毫秒，printf带前导零",
+            "frameSha256": "7043bfee615f0f7b39ea82cae48e511108b0b2af667b514d00edda833b1d867c"
+          },
+          {
+            "seconds": 1357,
+            "observation": "Keil中编写GetTick拆分和printf格式化时间代码",
+            "frameSha256": "e7844636a14c620bb90a926b61acc8d29da3af4bbef3205fd4a4c729806eba61"
+          }
+        ]
+      }
+    },
+    {
+      "page": 15,
+      "phase": "uart",
+      "title": "3.6 [串口] 接收数据",
+      "duration": 1300,
+      "summary": "轮询RXNE读取串口字节，以字符0/1控制PC13并认识接收错误标志。",
+      "notes": "USART框图先展示接收字节进入移位寄存器和接收数据寄存器的过程。接收步骤是等待RXNE不再为RESET，用USART_ReceiveData读取一个字节，再处理收到的数据。\n\nKeil示例在主循环等待USART1接收，比较字符'0'与'1'：'0'分支把PC13写Bit_SET，'1'分支写Bit_RESET。需注意该帧代码旁的“亮灯/灭灯”注释与前面PC13低电平点亮的电路说明相反，不能照注释判断极性。末段用波形解释NE噪声错，用寄存器图解释ORE过载导致的数据丢失。",
+      "points": [
+        "RXNE置位后调用USART_ReceiveData",
+        "ASCII字符0/1进入不同GPIO输出分支",
+        "末段解释NE噪声错与ORE过载错"
+      ],
+      "cid": 26054952041,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 130,
+            "observation": "USART框图展示外部字节沿Rx进入接收寄存器",
+            "frameSha256": "799cd305b2eced5ae356abb6cf6c6fc1eb5c6a3c8b71327f27fcc9f115b02a4d"
+          },
+          {
+            "seconds": 390,
+            "observation": "轮询RXNE、USART_ReceiveData、处理数据的三步代码",
+            "frameSha256": "a502e3b489e8cd5cac1ed5de3196d43ed79177c8ff7f0f40824f0af2a260707f"
+          },
+          {
+            "seconds": 909,
+            "observation": "Keil代码以字符'0'分支写PC13 Bit_SET、字符'1'分支写Bit_RESET，旁边亮灭注释存在矛盾",
+            "frameSha256": "66136f76b3ff1cb2a7db498cbcad05654cf3f4889b40796c709868a9c79b274d"
+          },
+          {
+            "seconds": 1170,
+            "observation": "NE Noise Error页用波形说明接收噪声",
+            "frameSha256": "c161de6eee4e05f0e797cbd40ac9b6e49e52e207b4435fc3ff6496324872e422"
+          },
+          {
+            "seconds": 1270,
+            "observation": "ORE Overrun Error页说明过载导致数据丢失",
+            "frameSha256": "bb9fd0d4474e6f4a0eab9ec25ce1779e65648bf8510e80fc6fcb64ea48638df4"
+          }
+        ]
+      }
+    },
+    {
+      "page": 16,
+      "phase": "uart",
+      "title": "3.7 [串口] 封装常用功能",
+      "duration": 1386,
+      "summary": "把串口常用收发整理为usart.h/usart.c接口，并配合串口助手测试。",
+      "notes": "本节把之前串口代码整理到独立接口。发送接口页依次列出My_USART_SendByte、SendBytes、SendChar、SendString和Printf，分别处理一个字节、多个字节、字符、字符串和格式化字符串。\n\nKeil中同时打开usart.h、usart.c与main.c，调用封装后的发送函数。头文件还列出ReceiveByte、ReceiveBytes、ReceiveLine，定义CR、LF、CRLF行分隔符，后两个接收声明带Timeout参数。末段打开串口助手并展示开发板实物，输入框可见测试字符串；本节重点是接口封装与调用。",
+      "points": [
+        "发送字节、数组、字符、字符串和格式化字符串",
+        "接收字节、多字节和一行字符串",
+        "头文件定义CR/LF/CRLF行分隔符，部分接收接口包含Timeout"
+      ],
+      "cid": 26054952078,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 415,
+            "observation": "发送接口页明确列SendByte、SendBytes、SendChar、SendString、Printf",
+            "frameSha256": "03c6b846adfbc1c18e89987c1960c52296d81d8861b40cf774f688c2d06b0c14"
+          },
+          {
+            "seconds": 693,
+            "observation": "Keil中打开usart.h/usart.c/main.c并调用My_USART_SendByte及SendBytes",
+            "frameSha256": "a9624b36bedc239663f3904d5675d5aed67ba709962a6f63e6fb2b6f7d08b938"
+          },
+          {
+            "seconds": 970,
+            "observation": "usart.h可见CR/LF/CRLF定义和ReceiveByte/ReceiveBytes/ReceiveLine声明",
+            "frameSha256": "b943d42b6fa2dd9d1eeb04e562a16d0a702cd26cff9bad0fe2ecd584e568a9a7"
+          },
+          {
+            "seconds": 1356,
+            "observation": "串口助手与开发板实物并排展示，输入框可见测试字符串",
+            "frameSha256": "17eae9ae6b4d2ef37762b0ef5846b960e487ef6fbdc99cf20dc0f6fe045530a1"
+          }
+        ]
+      }
+    },
+    {
+      "page": 17,
+      "phase": "i2c",
+      "title": "4.1 [I2C] 基本电路结构",
+      "duration": 1300,
+      "summary": "从串口连接限制引出I2C总线，分析SCL/SDA、上拉、开漏和线与关系。",
+      "notes": "开头用最小系统板同时连接三个串口设备的图说明串口设备连接方式。随后引出I2C总线：主机通过SCL时钟线和SDA数据线连接多个从机，从机在图中标有各自的7位地址，两条线上都画有上拉电阻。\n\n电路页特别注明所有SCL和SDA引脚设置为开漏输出。后续用颜色标出主机和从机的SCL连接，并画出时钟波形及Y=主&1&1…的逻辑式，说明总线电平由各参与端共同决定。本节围绕电路组织与开漏总线模型。",
+      "points": [
+        "同一SCL/SDA连接多个具有地址的从机",
+        "两条总线各用上拉电阻",
+        "各设备开漏输出，主从对总线电平形成线与关系"
+      ],
+      "cid": 26054952169,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 130,
+            "observation": "最小系统板连接USART1/2/3三个串口设备的示意图",
+            "frameSha256": "d354cfbe488a54e252c99817fe75127553d52e462453bc229cc3ef92bd45d087"
+          },
+          {
+            "seconds": 390,
+            "observation": "I2C主机与多个从机共享SCL/SDA，配上拉，标注7位地址及开漏输出",
+            "frameSha256": "2bdd6b5c82f01e828cb10b9ed6211bbd887336c5d4a21e532a24314c9ddf45a6"
+          },
+          {
+            "seconds": 650,
+            "observation": "SCL总线高亮，配时钟波形和Y=主&1&1…逻辑式",
+            "frameSha256": "0580a8d8d3e1d0c3d52aea7cb07e6fb8de9c3374a1c406b75d5cec3515b6015f"
+          }
+        ]
+      }
+    },
+    {
+      "page": 18,
+      "phase": "i2c",
+      "title": "4.2 [I2C] 通信协议",
+      "duration": 919,
+      "summary": "按I2C时序分析起止条件、寻址、ACK，以及两组读写波形练习。",
+      "notes": "先把一次通信拆成起始、寻址、数据方向和停止。时序图给出SCL保持高时SDA下降的起始条件，以及SDA上升的停止条件；数据段按时钟逐位传输。\n\n寻址页展示地址位、R/W位与ACK，画面说明主机释放SDA、从机拉低形成应答。后半节手工填写两道波形练习：按视频题目标注，向从机0x78写两个字节0x5A和0x33；从0x20读一个字节，假设读到0x64。提要保留视频的地址记法，学习时应结合完整寻址字节辨认R/W位。",
+      "points": [
+        "SCL高时SDA下降为起始、上升为停止",
+        "寻址段由地址与R/W组成，接收方应答",
+        "练习写0x5A/0x33以及读取假设值0x64的波形"
+      ],
+      "cid": 26054952392,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 91,
+            "observation": "流程图依次列起始、地址加读写位、主向从或从向主、停止",
+            "frameSha256": "517223778fbdc9df0210b6571249936ca3238a1c8ef34ae7992271952fad256d"
+          },
+          {
+            "seconds": 275,
+            "observation": "完整帧图下给出SCL高时SDA下降起始、上升停止的波形",
+            "frameSha256": "5aaf8087cda3f987890303804011e8bec031607e507128832d92f7d81839d0a9"
+          },
+          {
+            "seconds": 459,
+            "observation": "寻址0x78读例子标R/W和ACK，并画出主机释放SDA、从机拉低",
+            "frameSha256": "5a323a0486e0be40e4023e54b590f441e00090b1264092c3b17aaf62eca2d444"
+          },
+          {
+            "seconds": 643,
+            "observation": "练习题为向0x78写0x5A/0x33，向0x20读一字节假设0x64",
+            "frameSha256": "6870ff9620acc1f163391efc3d595944f15f600fdcbe5b3666ab8250e15ff5b8"
+          },
+          {
+            "seconds": 889,
+            "observation": "读取练习的波形写出0x64对应数据位并标出末尾应答",
+            "frameSha256": "0c35d8a032aaaf33c6995ee838a73b75bbaa781dfd92e62979bc8e139c77b853"
+          }
+        ]
+      }
+    },
+    {
+      "page": 19,
+      "phase": "i2c",
+      "title": "4.3 [I2C] I2C 模块的使用方法",
+      "duration": 1545,
+      "summary": "硬件 I2C 初始化：从引脚重映射、外部上拉接线到 I2C_Init 参数和模块使能。",
+      "notes": "画面中的实验工程为 I2CTest。07:43 在 My_I2C_Init 中编写 IO 初始化并打开 AFIO 时钟，12:52 用面包板示意图说明 OLED 与单片机连接，SCL、SDA 旁均标出 4.7k 上拉。18:01 展示 I2C_InitTypeDef 的时钟速度、模式、占空比、地址等成员。23:10 的代码先使能和复位 I2C1，再设置 400000 的时钟速度、标准 I2C 模式及 I2C_DutyCycle_2，最后调用 I2C_Init 和 I2C_Cmd。本节把接线、GPIO 设置和 I2C 模块初始化连成同一实验步骤。",
+      "points": [
+        "GPIO 与 AFIO 时钟、I2C1 引脚重映射。",
+        "SCL/SDA 上拉电阻与 OLED 接线。",
+        "I2C_InitTypeDef 参数、外设复位和 I2C_Cmd 使能。"
+      ],
+      "cid": 26054952246,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 463,
+            "observation": "My_I2C_Init 中配置 AFIO 时钟与 I2C1 重映射。",
+            "frameSha256": "77d0a983b730b4c9ef24aa86dcb7ae28b8861d855902018976ca7146c7a6e4e1"
+          },
+          {
+            "seconds": 772,
+            "observation": "OLED 接线与 SCL/SDA 各 4.7k 上拉示意图。",
+            "frameSha256": "da23a5728cbe35204196ca24db360851ea5abea3a86f4acc2bb0b93242cfcc20"
+          },
+          {
+            "seconds": 1081,
+            "observation": "I2C_InitTypeDef 成员解释。",
+            "frameSha256": "e76b293bf87632d8775cfa6974e003756867d16d1a1ab53b8bc07b3be00ae58d"
+          },
+          {
+            "seconds": 1390,
+            "observation": "I2C1 时钟、复位、400000 时钟参数与模块使能代码。",
+            "frameSha256": "ea011bd46558f71d232e8f67363450a90642a9f99d2f7f2de0f22f5e8cfb0481"
+          }
+        ]
+      }
+    },
+    {
+      "page": 20,
+      "phase": "i2c",
+      "title": "4.4 [I2C] 写数据",
+      "duration": 1853,
+      "summary": "硬件 I2C 发送：结合内部框图实现等待空闲、起始、地址、数据和停止的发送流程。",
+      "notes": "03:05 展示 I2C 内部结构，标出发送、接收、时钟以及 SCL/SDA 的关系。09:15 开始在 Keil 中声明 My_I2C_SendBytes，接口包含 I2C 外设、目标地址、数据指针和长度。21:37 的课件明确列出等待总线空闲、发送起始位、发送地址、发送数据和发送停止位；27:47 把停止位与 I2C_GenerateSTOP 调用对应起来。末尾画面回到面包板上的 OLED，屏幕呈亮色矩形。可结合发送顺序，逐一对照函数中的状态等待与总线操作。",
+      "points": [
+        "I2C 内部发送、接收、时钟与控制逻辑框图。",
+        "My_I2C_SendBytes 的接口与编写过程。",
+        "等待总线空闲、START、地址、数据、STOP 的顺序。"
+      ],
+      "cid": 26054952533,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 185,
+            "observation": "I2C 内部结构框图，标注发送、接收和时钟部分。",
+            "frameSha256": "4c29894c66c3a63a1b5287c58439201efed0cd0f75a8d79ec4bf48ccebb5854d"
+          },
+          {
+            "seconds": 555,
+            "observation": "Keil 中编写 My_I2C_SendBytes 函数接口。",
+            "frameSha256": "040b1290cd35719c508861d279bc3ca877e7866cb3c72849e62279aa31e92281"
+          },
+          {
+            "seconds": 1297,
+            "observation": "课件列出等待空闲至发送停止位的完整发送顺序。",
+            "frameSha256": "32d2b2b1af2a81d466cd4f7299dd5714f2c614468cd3bec7c6b224538613f719"
+          },
+          {
+            "seconds": 1667,
+            "observation": "I2C_GenerateSTOP 与总线停止位对应。",
+            "frameSha256": "3288ed7d2d7bf348628a216d4bded7f98dda074c30d311ed24c24ae05cf346b3"
+          }
+        ]
+      }
+    },
+    {
+      "page": 21,
+      "phase": "i2c",
+      "title": "4.5 [I2C] 读数据",
+      "duration": 2165,
+      "summary": "硬件 I2C 接收：编写接收接口，并处理地址标志、ACK、STOP 与接收数据的顺序。",
+      "notes": "03:36 的工程同时声明发送和接收接口，主程序先初始化 I2C 并发送 OLED 命令。10:49 转入 My_I2C_ReceiveBytes 的起始位和状态等待代码。18:02 的课件单独展开 Size 等于 1 的分支：依次读取 SR1、SR2 清 ADDR，关闭 ACK，产生停止位，等待 RXNE，再读入 pBuffer[0]。25:15 继续在 Keil 中编写接收结束阶段的寄存器读取、ACK 和 STOP 操作。35:35 回到 OLED 实物显示画面。本节的核心是硬件 I2C 接收时序和结束阶段的处理顺序。",
+      "points": [
+        "My_I2C_ReceiveBytes 接口与起始、地址流程。",
+        "单字节接收时清 ADDR、关闭 ACK、发 STOP、等待 RXNE。",
+        "在 Keil 中实现接收结束处理，并用 OLED 工程验证。"
+      ],
+      "cid": 26054888134,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 216,
+            "observation": "发送与 My_I2C_ReceiveBytes 接收接口并列声明。",
+            "frameSha256": "e733d073a43ad723480b5873088d8ca269e3553c065457d69c2544331519f0fb"
+          },
+          {
+            "seconds": 649,
+            "observation": "接收函数中产生起始位并等待状态标志。",
+            "frameSha256": "995332e5727ae4b918245b51c24c5551b5b0659ad3a95bf42f2f55626c347b5e"
+          },
+          {
+            "seconds": 1082,
+            "observation": "单字节接收清 ADDR、ACK=0、STOP、RXNE 和读取数据流程。",
+            "frameSha256": "d1307ceeb51648ec90e5fa8e3649c51e07ce002c1be94bc1c925d77cba549a5d"
+          },
+          {
+            "seconds": 1515,
+            "observation": "Keil 中编写接收结束阶段的 ACK、STOP 与读取代码。",
+            "frameSha256": "61f5d71206e5d8f85937b291948786ae32a1508ad6bcbabb06efc79995483d8e"
+          }
+        ]
+      }
+    },
+    {
+      "page": 22,
+      "phase": "i2c",
+      "title": "4.6 [I2C] 软 I2C",
+      "duration": 2721,
+      "summary": "软件 I2C：用 GPIO 和微秒延时实现起止、字节收发及 ACK/NACK，再组成总线接口。",
+      "notes": "13:36 的课件并排画出起始位和停止位，下面直接使用 sda_write、scl_write 与延时组成操作。22:40 在 Keil 中编写 SendByte，循环控制 SCL 并发送位；31:44 可见读取 ACK/NACK 的代码以及 ReceiveByte 的编写入口。40:48 把字节操作组合成 My_SI2C_ReceiveBytes 等接口，并在错误分支调用 SendStop。44:51 的 GPIO 初始化选择开漏输出，主程序调用软件 I2C 发送命令。这里从 GPIO 电平操作逐层组成起止条件、字节收发和多字节接口。",
+      "points": [
+        "SCL/SDA 的起始位、停止位与微秒级时序。",
+        "SendByte、ReceiveByte 和应答位处理。",
+        "开漏 GPIO 初始化以及多字节软件 I2C 收发接口。"
+      ],
+      "cid": 27827769119,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 816,
+            "observation": "起始位与停止位波形及 sda_write/scl_write 延时代码。",
+            "frameSha256": "6ec2948735cb34ab9fe8d922b1de679b1e6308cf1021feffc252f3981370ba94"
+          },
+          {
+            "seconds": 1360,
+            "observation": "Keil 中编写 SendByte 的逐位发送循环。",
+            "frameSha256": "0db1802f92d232d85ccf6120c4caa1a14f2675fc66e31788795c532c742b8410"
+          },
+          {
+            "seconds": 1904,
+            "observation": "读取 ACK/NACK 的代码与 ReceiveByte 函数。",
+            "frameSha256": "b6a26953ff58607fe3e84098b849c0daab6c8e1092c674efc3f476d17981ed56"
+          },
+          {
+            "seconds": 2448,
+            "observation": "My_SI2C_ReceiveBytes 接口和错误时发送停止位。",
+            "frameSha256": "4d7d88d3c74c1a107d02bf8637248d4984d28d4247fe4e3ca5b145e29ddebd78"
+          },
+          {
+            "seconds": 2691,
+            "observation": "软件 I2C GPIO 开漏输出初始化。",
+            "frameSha256": "05e8b208ac73b7092bc5d3b6796ac00beb14aea7e30b5784d022daa548bc589b"
+          }
+        ]
+      }
+    },
+    {
+      "page": 23,
+      "phase": "i2c",
+      "title": "4.7 [I2C] 封装常用功能",
+      "duration": 1050,
+      "summary": "I2C 常用功能封装：整理硬件和软件 I2C 文件，并在主程序分别通过各自接口操作 OLED。",
+      "notes": "01:45 的工程树已经包含 i2c 和 si2c 相关文件。05:15 在初始化函数中配置 PB6、PB7 为复用开漏，并继续填写硬件 I2C 初始化参数。08:45 主程序通过 My_I2C_SendBytes 发送 OLED 命令；12:15 又调用接收接口取得一个字节，并判断其中一位。15:45 至 17:00 的主程序改用 si2c 结构体，把 SCL/SDA 的端口和引脚作为成员填写，随后调用 My_SI2C_Init、My_SI2C_SendBytes 和 My_SI2C_ReceiveBytes。可以沿主程序中的调用次序检查初始化、发送、接收和结果判断之间的关系。",
+      "points": [
+        "整理 I2C 与软件 I2C 的源文件、头文件。",
+        "硬件 I2C 收发调用与接收结果判断。",
+        "用 SI2C 结构体保存 SCL/SDA 端口和引脚，再调用软件接口。"
+      ],
+      "cid": 26054952730,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 105,
+            "observation": "工程树中整理 i2c/si2c 源文件和头文件。",
+            "frameSha256": "4fe0d71d5f060110f96eeac235edb0ab9aec7d3c92bebc20200f9afbbf3b09ae"
+          },
+          {
+            "seconds": 315,
+            "observation": "PB6/PB7 复用开漏及硬件 I2C 初始化参数。",
+            "frameSha256": "c861bebe7f2f32a5b0c1ee026fa7b612eaaf7e23a10cd9d773f6eec2be233b5d"
+          },
+          {
+            "seconds": 735,
+            "observation": "主程序调用硬件接收函数并判断收到的字节位。",
+            "frameSha256": "5b0e65c1e467f648871d5b745b638214439043d09e84f2e7a612cbbaba550016"
+          },
+          {
+            "seconds": 1020,
+            "observation": "使用 si2c 结构体填写引脚并调用软件 I2C 初始化、发送和接收。",
+            "frameSha256": "814cf2b83dc9e14d426f04fc1ba0da398f73015ccb1648d1504d50749ed5590d"
+          }
+        ]
+      }
+    },
+    {
+      "page": 24,
+      "phase": "i2c",
+      "title": "4.8 [I2C] OLED 显示器",
+      "duration": 3846,
+      "summary": "OLED 显示库使用：连接软件 I2C、认识点阵显示，再演示文本区域、字体和图形绘制。",
+      "notes": "06:24 的 OLEDTest 工程使用 SI2C_TypeDef，并在主程序调用软件 I2C 初始化。19:13 的课件一边展示 OLED 上的“你好世界 / Hello world”，另一边用方格点阵说明数字如何由像素构成。44:52 给出 OLED_StartTextRegion、OLED_DrawString 和 OLED_SendBuffer 的连续调用，屏幕上可见多行英文文本。57:41 的代码还列出画线、LineTo、LineToH、设置颜色和 DrawCircle 等调用，结尾继续整理字体、字符串与文本区域示例。可先复现文本显示，再按画面中的接口扩展字体与基本图形。",
+      "points": [
+        "在 OLED 工程中接入 SI2C 和软件 I2C 初始化。",
+        "点阵像素组成字符，显示汉字与英文。",
+        "文本区域、字符串、发送缓冲区以及画线/圆等图形接口。"
+      ],
+      "cid": 26054952902,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 384,
+            "observation": "OLEDTest 工程使用 SI2C 结构体与软件 I2C 初始化。",
+            "frameSha256": "f4cf233fe1f8e6822f746f3806d7947e57b795417a3a653e6c77a6fdba5c371a"
+          },
+          {
+            "seconds": 1153,
+            "observation": "OLED 中英文显示与点阵数字示意图。",
+            "frameSha256": "9a52649fc599804e2ecaa9c041cb4baa4179954421c2e7ac6b22babf4a7400bf"
+          },
+          {
+            "seconds": 2692,
+            "observation": "文本区域、DrawString、SendBuffer 与对应多行英文显示。",
+            "frameSha256": "4d349013d2af8d7d96d8b93596f6ec6d7427a92fabb2b6d65a23ace332a78c2a"
+          },
+          {
+            "seconds": 3461,
+            "observation": "画线、LineTo、设置颜色与 DrawCircle 的调用示例。",
+            "frameSha256": "bcfafba059dd895b426fe0117dfb4c17f2282c9620c76e6fd91423f19d2f02e9"
+          }
+        ]
+      }
+    },
+    {
+      "page": 25,
+      "phase": "spi",
+      "title": "5.1 [SPI] 电路结构和通信协议",
+      "duration": 853,
+      "summary": "SPI 电路与通信参数：主从连线、片选、时钟极性和相位、传输顺序及数据宽度。",
+      "notes": "01:25 与 04:15 展示同一主机连接三个从机的电路，MOSI、MISO、SCK 共用，各从机有独立 NSS，文字明确标注 NSS 低电平有效。07:06 的目录列出通信流程、极性相位、四种模式、传输顺序和数据宽度。09:57 用两种空闲电平和第一、第二边沿的标号比较采样相位；12:47 对照 LSB First 与 MSB First 的数据位顺序；13:43 继续对照 8 bit 和 16 bit 波形。这些波形把后续初始化函数中的参数与总线上的实际信号对应起来。",
+      "points": [
+        "MOSI、MISO、SCK、NSS 信号与多从机连接。",
+        "时钟极性、相位及 SPI 四种模式。",
+        "MSB/LSB 优先和 8 位、16 位数据宽度的波形比较。"
+      ],
+      "cid": 26054952913,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 85,
+            "observation": "主机连接三个从机，标注 MOSI/MISO/SCK/NSS。",
+            "frameSha256": "faf7d49087796e005ae9dc71fe0a66835d04092ad77f8cc06816c22ead7561cd"
+          },
+          {
+            "seconds": 255,
+            "observation": "NSS 低电平有效的注释。",
+            "frameSha256": "55c8279568d78f52fb1a13640f77d2a9e18acda384315c0e4de632a94287ff59"
+          },
+          {
+            "seconds": 597,
+            "observation": "时钟极性及第一/第二边沿采样的相位比较。",
+            "frameSha256": "0caf535c79fa22ec79b681f27df259f89247be032199f1a31e1ec3752afbc2dc"
+          },
+          {
+            "seconds": 767,
+            "observation": "LSB First 与 MSB First 波形。",
+            "frameSha256": "feda728e91fecce06c04dee21acb00b56ee531fc7b6626eafde9da1b24202cdc"
+          },
+          {
+            "seconds": 823,
+            "observation": "8 bit 和 16 bit 数据宽度比较。",
+            "frameSha256": "e64c5d5bb950a1ba63dc6238e79eb349c79d6622eb68f4c14121fc52b82b8341"
+          }
+        ]
+      }
+    },
+    {
+      "page": 26,
+      "phase": "spi",
+      "title": "5.2 [番外] 按钮驱动程序编写",
+      "duration": 1295,
+      "summary": "按键驱动基础：PA0 上拉输入、PC13 板载 LED，轮询检测状态变化并认识机械抖动。",
+      "notes": "02:09 的电路页把按键设为 PA0 输入上拉，把 PC13 设为板载 LED 开漏输出，标出写 1 熄灭、写 0 点亮。06:28 在 Keil 中初始化按键输入。10:47 的示例保存 previous 与 current，读取当前 GPIO 后比较两次状态，再区分按钮松开或按下。15:06 将 GPIO_ReadOutputDataBit 与 GPIO_WriteBit 组合，用原输出值决定新输出值。19:25 用按键结构和波形展示接触抖动，结尾出现面包板实物按键操作。学习时可把状态变化判定与最后展示的机械抖动波形对照起来。",
+      "points": [
+        "PA0 按下为 0、松开为 1；PC13 板载 LED 写 0 点亮。",
+        "previous/current 比较以识别按下和松开。",
+        "读取输出状态再翻转 LED，观察按键机械抖动。"
+      ],
+      "cid": 26054953107,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 129,
+            "observation": "PA0 上拉按键和 PC13 板载 LED 电路与有效电平。",
+            "frameSha256": "78b6a4b03f004fbfb2c20419bd1013a8262066f86d7bc1c0871e2f8b0aaac223"
+          },
+          {
+            "seconds": 388,
+            "observation": "按键 GPIO 输入上拉初始化。",
+            "frameSha256": "f6521375e2e3980119128661f13df647ca7e2242bd38a0896a326ebae7e8e0af"
+          },
+          {
+            "seconds": 647,
+            "observation": "previous/current 状态比较识别按下或松开。",
+            "frameSha256": "93ed5979733e5cd7fe10ad5268d203af172bbb84bb3ad6fcba4c0c91ab3332a6"
+          },
+          {
+            "seconds": 906,
+            "observation": "读取输出位并翻转 LED 输出。",
+            "frameSha256": "54026eb3597bd167629afa8b10249ba6efd5770d7b55064309d3b5839b2214de"
+          },
+          {
+            "seconds": 1165,
+            "observation": "按键机械接触与抖动波形。",
+            "frameSha256": "8244bceeebbe5b40171ebb4c1640e5e946a5ea7009d13115b065908e92fe0bc6"
+          }
+        ]
+      }
+    },
+    {
+      "page": 27,
+      "phase": "spi",
+      "title": "5.3 [番外] 按钮代码的封装",
+      "duration": 1809,
+      "summary": "按钮代码封装：用初始化结构、进程函数和回调组织事件，并通过串口观察计数结果。",
+      "notes": "09:02 至 15:04 的画面把串口调试助手与面包板按键并排显示，接收区出现连续数值。21:06 的课件明确把本节拆成搭电路、串口初始化、按钮初始化、进程函数和回调函数。27:08 的代码填写 Button_InitTypeDef，可见 GPIOA、Pin_0、Interval、LongPressTime、LongPressInterval、ActiveLevel 和多个事件回调成员，随后调用 Button_Init；下方 button_clicked_cb 根据 clicks 更新计数。29:39 的串口窗口再次显示输出。这一过程展示了怎样在应用层配置按钮对象并接收点击事件。",
+      "points": [
+        "课程步骤包含搭电路、串口初始化、按钮初始化、进程函数和回调。",
+        "Button_InitTypeDef 配置 GPIO、有效电平、点击/长按时间与回调。",
+        "button_clicked_cb 等回调与串口计数演示。"
+      ],
+      "cid": 26054953051,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 542,
+            "observation": "串口调试助手和实物按键并列演示。",
+            "frameSha256": "79aa84c527878fc0f428d53811d6798d2da946db3a244448d219fbae707d679c"
+          },
+          {
+            "seconds": 1266,
+            "observation": "搭电路、串口、按钮、进程函数、回调函数的课程步骤。",
+            "frameSha256": "10cd668b933a025d9fa301281749e5385869fedd8e238cc01d095485f9ce0347"
+          },
+          {
+            "seconds": 1628,
+            "observation": "Button_InitTypeDef 字段与 Button_Init、button_clicked_cb。",
+            "frameSha256": "793cb51f0518ddd3158758f37ab154eafe7072da02c1130cf058c649d47f1231"
+          },
+          {
+            "seconds": 1779,
+            "observation": "串口接收区显示连续计数输出。",
+            "frameSha256": "e8cd1d6cf3c2f2630f65597b64c578d4d98eaa8d15978970b97e52fd879c07ae"
+          }
+        ]
+      }
+    },
+    {
+      "page": 28,
+      "phase": "spi",
+      "title": "5.4 [SPI] IO 引脚初始化",
+      "duration": 1266,
+      "summary": "SPI 引脚配置准备：认识 W25Q64 模块，查引脚配置表并确定 SPI1 重映射后的 IO 模式。",
+      "notes": "02:06 展示 W25Q64 模块近景，可见 VCC、CS、DO、GND、CLK、DI 标识；06:19 用 SPI 内部框图说明发送、接收、时钟和 NSS 所在路径。10:33 引用 SPI 的 GPIO 配置表。18:59 的整理页明确写出 PB3 对应 SCK、PB4 对应 MISO、PB5 对应 MOSI、PA15 作为普通 IO；SCK/MOSI 标为复用推挽，MISO 为上拉输入，PA15 为通用推挽，输出速度写为 2MHz。结尾的目录也只围绕模块、引脚位置、IO 模式和输出速度展开。",
+      "points": [
+        "W25Q64 模块实物及其引脚标识。",
+        "SPI 内部框图和参考手册的 GPIO 配置表。",
+        "PB3=SCK、PB4=MISO、PB5=MOSI，PA15 作为普通 IO 片选。"
+      ],
+      "cid": 26054953171,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 126,
+            "observation": "W25Q64 模块实物与引脚标识。",
+            "frameSha256": "bd953c092cba8f4c88a366adb9f2d5a0ec22ef2d84e2b73c795f112f590c18ad"
+          },
+          {
+            "seconds": 379,
+            "observation": "SPI 内部框图中的发送、接收、时钟与 NSS。",
+            "frameSha256": "0adc2a9bf3c7f1ce93dc117133e1199fa5f9612d062308394a87e19c7736c11b"
+          },
+          {
+            "seconds": 633,
+            "observation": "参考手册 SPI 引脚 GPIO 配置表。",
+            "frameSha256": "24042447259d7853cd423c98c7514237a225e7c704725a4e6dbf7f90670617be"
+          },
+          {
+            "seconds": 1139,
+            "observation": "PB3/PB4/PB5 与 PA15 的角色、模式和 2MHz 速度配置。",
+            "frameSha256": "5cbb7217572e6c54b866a78f4f5bc0a9823dffdce819b2137f309cd5519c6ee5"
+          }
+        ]
+      }
+    },
+    {
+      "page": 29,
+      "phase": "spi",
+      "title": "5.5 [SPI] SPI 模块的初始化",
+      "duration": 2537,
+      "summary": "SPI 模块初始化：通过结构框图和器件时序选择通信方向、数据格式、分频与 NSS 配置。",
+      "notes": "04:13 的结构框图标出 SPI 的时钟与分频路径；12:41 逐项列出 SPI_InitTypeDef，包括方向、主从模式、数据宽度、CPOL、CPHA、NSS、预分频和首位顺序。21:08 对照 8 位与 16 位帧。29:35 引用 W25Q64 Write Disable 的 0x04 波形，把 NSS、SCK、MOSI/MISO 与图中引脚相对应，并圈出数据宽度、极性、相位和 MSB/LSB 的选择。38:03 对比从机片选输入与多主机 NSS，结尾再归纳设置波特率和 NSS 配置。参数选择需要同时对照初始化结构体和被连接器件的时序图。",
+      "points": [
+        "SPI_InitTypeDef 参数与 SPI_Init。",
+        "数据宽度、极性、相位、MSB/LSB 顺序。",
+        "结合 W25Q64 指令波形选择参数，并认识软硬件 NSS。"
+      ],
+      "cid": 26054953302,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 253,
+            "observation": "SPI 内部时钟与分频路径。",
+            "frameSha256": "e97c1f2f19e1cd20e56d98c2db58331e1f0250dc71fb0146486cf95e1ac5cccf"
+          },
+          {
+            "seconds": 761,
+            "observation": "SPI_Init 与 SPI_InitTypeDef 各成员。",
+            "frameSha256": "4ac4a23ceaa9261fce30e1ce7afbfc589c9985518699d689c80a3db4c104fee5"
+          },
+          {
+            "seconds": 1268,
+            "observation": "8 位、16 位数据宽度波形。",
+            "frameSha256": "94ad5b5bf9d7a73e8aaaffa7b3f437fa75741812b66c7eb8d32622a399b08dfd"
+          },
+          {
+            "seconds": 1775,
+            "observation": "W25Q64 0x04 指令波形与 SPI 数据格式参数选择。",
+            "frameSha256": "e7b209083b6c2c97acaa5746a7862a80c4fc7aff6a191e846b019f9f126149ab"
+          },
+          {
+            "seconds": 2283,
+            "observation": "片选输入和多主机 NSS 行为示意。",
+            "frameSha256": "75067ca455c146364bcfac261fef29a6684175c32ebb39f718767efd29a63093"
+          }
+        ]
+      }
+    },
+    {
+      "page": 30,
+      "phase": "spi",
+      "title": "5.6 [SPI] 数据收发",
+      "duration": 1330,
+      "summary": "SPI 数据收发：理解同时发送与接收，再编写按 TXE/RXNE 状态推进的全双工收发函数。",
+      "notes": "02:13 的课件明确写出 SPI 收发是双向且同时的，每发送一个比特必然接收一个比特。06:39 将寄存器框图与收发流程并排展示：闭合总开关、写首字节、循环等待 TXE 并写下一字节，再等 RXNE 读取，最后读末字节。15:30 给出 App_SPI_MasterTransmitReceive 的完整投影片，参数含发送指针、接收指针和长度，末尾调用 SPI_Cmd 关闭模块。19:57 和 21:40 在 Keil 中录入相应函数。可沿数据缓冲区和状态标志观察发送与接收如何交错推进。",
+      "points": [
+        "SPI 每发送一个比特也接收一个比特。",
+        "先写首字节，再循环等待 TXE、写下一字节、等待 RXNE 并读取。",
+        "读取最后一个字节并关闭 SPI 的 App_SPI_MasterTransmitReceive 示例。"
+      ],
+      "cid": 26054953382,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 133,
+            "observation": "文字与波形说明 SPI 每发一位同时收一位。",
+            "frameSha256": "f69f7e4db708d3b0d53fb7f3dd9a7eaed1cc2cffd6f754276149010b5266e974"
+          },
+          {
+            "seconds": 399,
+            "observation": "寄存器框图及首字节、TXE/RXNE、最后字节的收发顺序。",
+            "frameSha256": "7407169474a78635123961e903272bf33c82c07f90cbfcaecc5590ca9a3e9f79"
+          },
+          {
+            "seconds": 930,
+            "observation": "App_SPI_MasterTransmitReceive 完整示例。",
+            "frameSha256": "0636a8dbc0a2467de3758f8c268cfb3f30af97d2a98fcbc79f0ecb07fa07546d"
+          },
+          {
+            "seconds": 1197,
+            "observation": "Keil 中录入收发循环与等待状态标志。",
+            "frameSha256": "cc94cc7fc4342a4fef22ac33d5e90d20e8c17c20f268284a5f5097cf7ca69755"
+          }
+        ]
+      }
+    },
+    {
+      "page": 31,
+      "phase": "spi",
+      "title": "5.7 [SPI] W25Q64 实验（上）",
+      "duration": 2512,
+      "summary": "W25Q64 实验上：完成 SPI1 重映射接线，按写使能、擦除、页编程与忙等待实现单字节保存和读取。",
+      "notes": "02:00 的接线页给出 SPI1 重映射，PB3 为 SCK、PB4 为 MISO、PB5 为 MOSI，普通 IO PA15 接模块 CS。04:00 至 08:00 在 Keil 中准备 SPI 初始化和收发函数。10:43 的课程结构明确为存储结构、存储数据和读取数据。18:00 展示写使能 0x06 及“写使能→扇区擦除→等待空闲→写使能→页编程→等待空闲”；27:00 通过 0x05 读状态寄存器等待忙位清除。39:00 用 SaveByte(0x12) 和 LoadByte 演示单字节存取。部分投影片的片选示例写成 PB12，与开头 PA15 接线不同，不能拼接照抄成一份代码。",
+      "points": [
+        "SPI1 重映射到 PB3/PB4/PB5，开头接线图用 PA15 作片选。",
+        "写操作前发送 0x06；通过 0x05 读取状态并等待空闲。",
+        "封装 App_W25Q64_SaveByte 和 LoadByte，用 0x12 演示单字节保存与读回。"
+      ],
+      "cid": 26054953378,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 120,
+            "observation": "SPI1 重映射表及 PB3/PB4/PB5、PA15 的 W25QXX 接线。",
+            "frameSha256": "376046b453cb7b87f0e1fc8cebf7e3bfd20b8e4dcc05e099012c965f6f3bcadd"
+          },
+          {
+            "seconds": 643,
+            "observation": "本节列出存储结构、存储数据、读取数据。",
+            "frameSha256": "b4390b3afe7b2005b5e28cebed65ba70b51b6efa120272cad27dc852fcfe365f"
+          },
+          {
+            "seconds": 1080,
+            "observation": "0x06 写使能及擦除、页编程、等待空闲顺序。",
+            "frameSha256": "2b0f953b8fddb83eb1b0b63886344b99c43105b6331121421abfc529d3e01798"
+          },
+          {
+            "seconds": 1620,
+            "observation": "0x05 读取状态寄存器并轮询忙状态。",
+            "frameSha256": "a828422ba8381586e8b1cd382e95ea9adb030c1cf8fdcd0e0e062efb9f4f06d3"
+          },
+          {
+            "seconds": 2340,
+            "observation": "App_W25Q64_SaveByte(0x12) 与 LoadByte 单字节存取示例。",
+            "frameSha256": "db533a0bd46d093a689814e1e91284de3f1c2a9a5d50e2a95a6ceeed69a9507c"
+          }
+        ]
+      }
+    },
+    {
+      "page": 32,
+      "phase": "spi",
+      "title": "5.8 [SPI] W25Q64 实验（下）",
+      "duration": 959,
+      "summary": "W25Q64 实验下：按键切换 PC13 LED，把当前状态写入 Flash，并在重新启动时读取恢复。",
+      "notes": "02:37 的原理图是从 3V3 经 LED、电阻连接到 PC13 的板载灯。04:41 的课件明确列出五步：初始化板载 LED、初始化按钮、使用按钮切换 LED 亮灭、保存当前状态、恢复状态。08:35 标到按键切换环节，11:34 标到保存环节，13:27 标到恢复环节。15:00 的 Keil 代码先初始化 SPI、板载 LED 和按钮，再调用 App_W25Q64_LoadByte，根据 byte 是否为 0 对 PC13 写不同电平，然后进入主循环。本节用 LED 的可见状态串起按键交互、Flash 保存和启动恢复。",
+      "points": [
+        "初始化板载 LED 和按钮，用按钮切换 LED。",
+        "把 LED 当前状态保存到 W25Q64。",
+        "主循环前调用 LoadByte，并根据读回值设置 PC13 恢复状态。"
+      ],
+      "cid": 26054953613,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 157,
+            "observation": "PC13 板载 LED 的供电、LED 与串联电阻原理图。",
+            "frameSha256": "d78021e598572d8d0d54096b1c986a8d5d0bfef89b7e9886f8c37402c725bfb1"
+          },
+          {
+            "seconds": 281,
+            "observation": "初始化 LED、按钮、切换、保存和恢复的五步任务列表。",
+            "frameSha256": "64072c39c2cee30ac7deb9084af2af43e5a3e5b21e7720653d759cb1dd2c264b"
+          },
+          {
+            "seconds": 694,
+            "observation": "课程标记到保存 LED 当前状态。",
+            "frameSha256": "f413a2c313af2295b72cb657426a576884814204fe8542106a346f8fe5934174"
+          },
+          {
+            "seconds": 807,
+            "observation": "课程标记到恢复 LED 状态。",
+            "frameSha256": "f5745889f8832d1aec917f6afd438ac02e1345016ded0d8529da2ac80ffb7958"
+          },
+          {
+            "seconds": 900,
+            "observation": "初始化后先 LoadByte，再按读回值设置 PC13。",
+            "frameSha256": "260ca0a34a9e063041729284aefdd8de1c8a7b8b1e9bf9e6904e4c365cec697a"
+          }
+        ]
+      }
+    },
+    {
+      "page": 33,
+      "phase": "int",
+      "title": "6.1 [中断] 中断的概念",
+      "duration": 919,
+      "summary": "中断概念：用日常事件解释暂停与返回，再把常规闪灯程序和 USART 接收中断并列说明。",
+      "notes": "01:31 用读书拍蚊子、跑步系鞋带、玩游戏开门收快递三组示意图表达任务被事件打断后继续。04:35 将常规程序时间线和中断响应函数对应到 main 的 while 循环与 xxx_IRQHandler。07:39 与 10:43 通过 USART 的收发内部框图和连续字节示意说明串口场景。13:47 的课件把闪灯程序放在上方，把 USART1_IRQHandler 放在下方，中断函数里调用 USART_ReceiveData 读入数据。结尾目录归纳为“中断的基本概念”和“中断编程举例”。",
+      "points": [
+        "事件打断常规任务、处理后继续原任务的时间线。",
+        "main 中常规程序与 xxx_IRQHandler 响应函数。",
+        "闪灯主循环与 USART1_IRQHandler 接收数据示例。"
+      ],
+      "cid": 26054953556,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 91,
+            "observation": "日常事件打断任务再返回的三组时间线。",
+            "frameSha256": "bcde04551c938ef947865bf9a5005c35ba4bc46fe3c0da8bb33c1f4416510178"
+          },
+          {
+            "seconds": 275,
+            "observation": "main 常规程序与 xxx_IRQHandler 的对应关系。",
+            "frameSha256": "6c3f2b094560e7e8c63d81fe39534dc641982bb1aaafc69e2b65300b70422577"
+          },
+          {
+            "seconds": 459,
+            "observation": "USART 收发内部结构图。",
+            "frameSha256": "d030f3e8d3f8787bf50d283e7515ecfb8969e566e96674aa25d7c32a3b1fdd02"
+          },
+          {
+            "seconds": 827,
+            "observation": "闪灯主循环与 USART1_IRQHandler 中接收数据示例。",
+            "frameSha256": "54f1a5a0d0bdbe9bf7e92d8f5e8d19a2c4f179865a317f72fc7864fd6304822e"
+          }
+        ]
+      }
+    },
+    {
+      "page": 34,
+      "phase": "int",
+      "title": "6.2 [中断] 中断优先级",
+      "duration": 1226,
+      "summary": "中断优先级：区分抢占与子优先级，理解四位优先级分组、中断嵌套和排队。",
+      "notes": "02:02 以病人就诊顺序和急诊插入作类比。06:07 把 USART、I2C、SPI、EXTI 的请求画入 NVIC，再连接中断时序与向量表。10:13 列出分组 0 至 4 中 bit3 到 bit0 的分配，分别标注抢占优先级与子优先级。14:18 明确写出“中断嵌套的条件：新中断的抢占优先级更高”，并以分组 2 的四组位值画出响应时间线；18:23 继续用同抢占、不同子优先级的例子练习。结尾列出优先级概念、表示方法、嵌套、排队和练习。",
+      "points": [
+        "片上外设请求经过 NVIC 关联中断向量和响应。",
+        "分组 0 到 4 对四位抢占/子优先级的划分。",
+        "只有更高抢占优先级能嵌套，子优先级用于排队比较。"
+      ],
+      "cid": 26163347874,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 122,
+            "observation": "就诊排队和急诊插入的优先级类比。",
+            "frameSha256": "d8d5e36af7bc250a5885c2e5f44540e5a08f8f9f38e4907b3ace325308478a4c"
+          },
+          {
+            "seconds": 367,
+            "observation": "外设中断、NVIC、中断时序与向量表关系。",
+            "frameSha256": "cb8118e3cc8018d2685d5aef7ded989fa74ad1e0e4b0e4609ee82d2770445f78"
+          },
+          {
+            "seconds": 613,
+            "observation": "四位优先级在分组 0 至 4 的分配。",
+            "frameSha256": "249474823a82699072c5c5df941f5a8b9e44f5525f38c712b83dc7eddbedd93e"
+          },
+          {
+            "seconds": 858,
+            "observation": "新中断抢占优先级更高才发生嵌套的条件与例子。",
+            "frameSha256": "3faf7a6810b2f36eb84406aa85f3f751d5d5a369f97347246d2e163443b192cf"
+          },
+          {
+            "seconds": 1103,
+            "observation": "分组 2、相同抢占等级下的时间线练习。",
+            "frameSha256": "0be785d42a6732003be0cbb53a68869e23ac21f72d3452a915af1d633de571b1"
+          }
+        ]
+      }
+    },
+    {
+      "page": 35,
+      "phase": "int",
+      "title": "6.3 [中断] 串口中断编程实验",
+      "duration": 2281,
+      "summary": "串口接收中断实验：主循环闪烁 PC13，接收字符 0、1、2 后修改闪烁间隔为慢、中、快。",
+      "notes": "11:24 的主循环按 blinkInterval 延时并翻转 PC13，同时继续配置 USART1。26:36 展示 NVIC_PriorityGroupConfig 与五种分组；34:12 的代码使用 115200、无校验、1 停止位、8 位数据和接收模式，并使能 USART_IT_RXNE。35:00 开始在 USART1_IRQHandler 中读取数据和修改闪烁间隔；36:00 的课件补充先判断 RXNE，读数据后按字符“0”“1”“2”将 blinkInterval 设为 1000、200、50，旁注慢、中、快。本节通过中断修改主循环使用的共享间隔，将串口输入与 LED 闪烁速度联系起来。",
+      "points": [
+        "PC13 LED 闪烁与 USART1 引脚、115200 接收初始化。",
+        "USART RXNE 中断源和 NVIC 优先级分组配置。",
+        "USART1_IRQHandler 读取接收数据，0/1/2 对应 1000/200/50 的 blinkInterval。"
+      ],
+      "cid": 26162955859,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 684,
+            "observation": "主循环以 blinkInterval 延时闪烁 PC13，并准备 USART1 初始化。",
+            "frameSha256": "8fed4141e88a6234f71861f5521165872b556869ad42ed07b1d585431f01f466"
+          },
+          {
+            "seconds": 1596,
+            "observation": "NVIC_PriorityGroupConfig 与抢占/子优先级位分配。",
+            "frameSha256": "5ae39adbedbc63109c3476d2fc535884b88864d3a42e348020ba6468f81fb7e4"
+          },
+          {
+            "seconds": 2052,
+            "observation": "USART1 115200 接收初始化、USART_IT_RXNE 使能和 NVIC 配置入口。",
+            "frameSha256": "bd394138e36a053ab161bd99cc75bf42387439c78b775a7b5f9efaa38a2e535d"
+          },
+          {
+            "seconds": 2100,
+            "observation": "USART1_IRQHandler 中读取数据并修改 blinkInterval。",
+            "frameSha256": "9f9f28208876d31c8e82d690be64cc19a369e3c3b0555e2896272568a38cfdfe"
+          },
+          {
+            "seconds": 2160,
+            "observation": "RXNE 判断后读取数据，字符 0/1/2 对应间隔 1000/200/50。",
+            "frameSha256": "c313404c12cb50e79930c8f763f45731a9fc0ad83c536d57c220bdb0e558784d"
+          }
+        ]
+      }
+    },
+    {
+      "page": 36,
+      "phase": "int",
+      "title": "7.1 [EXTI] 工作原理",
+      "duration": 1030,
+      "summary": "EXTI 原理：由 GPIO 经 AFIO 选择外部中断线，认识线路共享、边沿检测与中断请求路径。",
+      "notes": "01:43 的目录列出 EXTI 简介、应用、线的概念和线内部结构。05:09 展示面包板按键；08:35 用 GPIOA、GPIOB、GPIOC、GPIOD 的引脚组说明外部线的选择关系。12:01 的图把 AFIO 接入 EXTI0 至 EXTI15，并标出 EXTI0—4、中间的 EXTI9_5 和 EXTI15_10 中断入口。16:40 将 PA0、边沿检测选择、中断请求通路及按键按下/松开的波形放在同一页，两个边沿处均标有中断。本节是 EXTI 映射和触发原理，尚未展开下一节的初始化代码实验。",
+      "points": [
+        "EXTI 模块、应用与“线”的概念。",
+        "同编号 GPIO 通过 AFIO 选择对应 EXTI 线。",
+        "EXTI0—4 独立入口，5—9 和 10—15 分组共享入口；按键边沿触发。"
+      ],
+      "cid": 26163347929,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 103,
+            "observation": "EXTI 简介、应用、线概念和内部结构的课程目录。",
+            "frameSha256": "75abeb1d777c9050550715e7145522473904e6f30a6f35bc2b6604b9605c04a8"
+          },
+          {
+            "seconds": 515,
+            "observation": "GPIO 各端口与 EXTI 线的选择关系。",
+            "frameSha256": "17e1b6b27cd1ba91a38e8b8060f9c484a67e253c22defb89e22eefb7625e2360"
+          },
+          {
+            "seconds": 721,
+            "observation": "AFIO、EXTI0—15 及独立/分组中断入口。",
+            "frameSha256": "1ab4d120fc6e52486cdfcf1be07b45c321282325b3bf19d2e4e681308bc4c1c7"
+          },
+          {
+            "seconds": 1000,
+            "observation": "PA0、边沿检测路径、按下与松开波形上的触发标记。",
+            "frameSha256": "577a824fdfe5b4d8df47f8c30626b7bdcedf775e8c9a77190ce247a7d001a307"
+          }
+        ]
+      }
+    },
+    {
+      "page": 37,
+      "phase": "int",
+      "title": "7.2 [EXTI] 按钮实验",
+      "duration": 1655,
+      "summary": "用两个按钮和 EXTI 线 5、6 控制板载 LED，完成共用中断服务函数。",
+      "notes": "本节通过两个按钮分别控制板载 LED 的点亮和熄灭。实物演示之后，课程先介绍 GPIO_EXTILineConfig 的端口源和引脚源参数，并使用 AFIO 把 GPIOA 的引脚 5、6 分配给相应的 EXTI 线。随后结合边沿检测框图解释 EXTI_InitTypeDef 中的线号、模式、触发边沿与使能参数，程序分别配置两条上升沿中断。最后配置 EXTI9_5_IRQn，并在共用的 EXTI9_5_IRQHandler 中读取各线标志、分支操作 PC13。重点是把 GPIO 输入、AFIO 映射、EXTI 线配置和 NVIC 响应连接起来。画面也用共享入口说明，外部引脚与中断服务函数并不总是逐个一一对应。",
+      "points": [
+        "GPIO_EXTILineConfig 把 GPIOA 的引脚 5、6 接到 EXTI 线",
+        "分别配置 EXTI_Line5、EXTI_Line6 的上升沿中断",
+        "两条线共用 EXTI9_5_IRQHandler，按标志位分辨按钮"
+      ],
+      "cid": 26163743004,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 496,
+            "observation": "PPT 展示 GPIO_EXTILineConfig，并把 GPIOA 引脚 5、6 分配给 EXTI 线。",
+            "frameSha256": "3430ca9559aa16a9c5ce30fdfa1b864056295c34e975f1f796956a7ad0ed53a9"
+          },
+          {
+            "seconds": 827,
+            "observation": "PPT 展示 EXTI_InitTypeDef 的线号、模式、触发边沿和线使能字段。",
+            "frameSha256": "7bf899fe71469f6537f926137f3683e1eb1495e83cc8e1a45e75791b9a943b8c"
+          },
+          {
+            "seconds": 1158,
+            "observation": "Keil 中分别配置 EXTI_Line5、EXTI_Line6，触发条件均为 Rising。",
+            "frameSha256": "12d2e2a3cbd7b1ba3922114c81a1024a32dd3b7e3c7300bdaa26441b66af8ede"
+          },
+          {
+            "seconds": 1489,
+            "observation": "Keil 中出现 EXTI9_5_IRQn、共用 IRQHandler，以及读取线标志后操作 PC13 的分支。",
+            "frameSha256": "0621a3f4df10334c1103285cb487d8b1144fe1610c6c7d8cfb29012abeb8dc11"
+          }
+        ]
+      }
+    },
+    {
+      "page": 38,
+      "phase": "clk",
+      "title": "8.1 [时钟] 时钟树",
+      "duration": 1726,
+      "summary": "从串口时钟引出时钟树，讲解时钟源、分频器、PLL、复用器和总线分频。",
+      "notes": "本节从外设为什么需要时钟切入，画面先用串口内部结构说明输入时钟与分频后工作信号的联系，再把单片机时钟系统组织成树状结构。课程逐项讲分频器、锁相环和复用器的作用，并列出 HSI、HSE、LSI、LSE 四类时钟源。树干部分比较 SYSCLK 直接来自 HSI、来自 PLL 和直接来自 HSE 的三条路径；树枝部分继续分配为 HCLK、PCLK1 和 PCLK2。末尾给出多组系统时钟与总线频率要求，让学习者在时钟树图上选择分频系数。这里的主线是沿信号路径计算频率，而不是配置 ADC 采集。",
+      "points": [
+        "分频器做除法、PLL 做乘法、复用器选择时钟路径",
+        "区分 HSI、HSE、LSI、LSE 与 SYSCLK 的来源",
+        "按 SYSCLK、HCLK、PCLK1、PCLK2 的关系完成分频练习"
+      ],
+      "cid": 26163742877,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 172,
+            "observation": "PPT 为带时钟输入、分频器和 BRR 的串口内部结构图。",
+            "frameSha256": "1e60b963be3866357b9f0894690998ea6a1eb65b24bc4edbbda583b3fc072653"
+          },
+          {
+            "seconds": 517,
+            "observation": "PPT 明列分频器对频率做除法、PLL 做乘法、复用器做选择。",
+            "frameSha256": "72b45203d7888a2976464ac1b21c645ca0a828ed47dad24d788e5eabfeddf2b8"
+          },
+          {
+            "seconds": 863,
+            "observation": "目录页列时钟概念、分频/PLL/复用器、树根、树干、树枝，并手写四种时钟源。",
+            "frameSha256": "020d9d5094612742fa98cfdac3b320e743251fbb67fe79d6968d03b77b5c2076"
+          },
+          {
+            "seconds": 1208,
+            "observation": "PPT 比较 SYSCLK 来自 HSI、PLL、HSE 的三条路径。",
+            "frameSha256": "9632c6f1fddc18065ec310ee5f035b2c943ccca193bd61f8bb23dea14f8780e3"
+          },
+          {
+            "seconds": 1553,
+            "observation": "PPT 给出 SYSCLK=8 MHz、72 MHz 等多组 HCLK/PCLK 分频练习。",
+            "frameSha256": "a049624cb785206ff917db350d668d43a264f34454d21cb3a6753649205182c4"
+          }
+        ]
+      }
+    },
+    {
+      "page": 39,
+      "phase": "clk",
+      "title": "8.2 [时钟] 时钟树编程",
+      "duration": 2354,
+      "summary": "用 PC13 闪灯观察时钟频率，编写 RCC 配置并处理 Flash 预取和访问等待。",
+      "notes": "本节把时钟树原理落实到标准库程序。课程先画出初始 8 MHz 路径，用 PC13 点灯和循环延时观察程序执行速度，再列出 RCC 的 HSE、HSI、PLL、SYSCLK 和各总线配置接口。Keil 中建立 App_SystemClock_Init，逐步开启 HSE、等待就绪，并继续安排倍频、分频与系统时钟来源。后半部分专门解释内核从 Flash 取指、指令预取缓冲以及访问等待周期，展示 FLASH_PrefetchBufferCmd 和 FLASH_SetLatency。末尾还演示通过时钟树接口控制片上外设的时钟与复位。内容围绕系统时钟编程和闪灯验证展开。",
+      "points": [
+        "以循环延时闪灯观察时钟配置带来的执行速度变化",
+        "使用 RCC 接口配置 HSE、PLL、总线分频和 SYSCLK 来源",
+        "讲解 Flash 指令预取、访问延迟及外设时钟和复位接口"
+      ],
+      "cid": 26164136889,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 235,
+            "observation": "PPT 标出 HSI/SYSCLK 等初始 8 MHz 路径，并给出 PC13 循环延时闪灯片段。",
+            "frameSha256": "831c9263f3444a7be29c53bfcdbf26b55f6756c3dddb1658198072f7e566abbc"
+          },
+          {
+            "seconds": 1177,
+            "observation": "PPT 罗列 RCC_HSEConfig、RCC_PLLConfig、RCC_SYSCLKConfig、RCC_HCLKConfig 等接口。",
+            "frameSha256": "b59f68d2de5a1a38e5da16939052f0906278dfe14e634823fe5418de23b93ab4"
+          },
+          {
+            "seconds": 1647,
+            "observation": "Keil 中的 App_SystemClock_Init 已开启 HSE，并等待 RCC_FLAG_HSERDY。",
+            "frameSha256": "15c3a9ea51d97e8a24f27790b6aede7b63f4d47a6052f91587addf8ba32f7910"
+          },
+          {
+            "seconds": 1905,
+            "observation": "PPT 展示指令预取、不同频率的访问等待，以及 FLASH_PrefetchBufferCmd/FLASH_SetLatency。",
+            "frameSha256": "f7b905ef7ce21209258bcba0d4122a853e0c1bf7c0746c83772fccddbdc34d0d"
+          },
+          {
+            "seconds": 2324,
+            "observation": "Keil 中演示外设时钟接口和 I2C1 复位接口。",
+            "frameSha256": "55256e947c4f7c37707ff2754f9e1495bcd0eacb4a73d712c5e83de1b461e02d"
+          }
+        ]
+      }
+    },
+    {
+      "page": 40,
+      "phase": "tim",
+      "title": "9.1 [定时器] 时基单元",
+      "duration": 1702,
+      "summary": "拆解定时器时基单元，讲 PSC、CNT、ARR、RCR、计数方向和寄存器预加载。",
+      "notes": "本节先在单片机内部框图中定位高级和通用定时器，再把时基单元拆成时钟输入、预分频器 PSC、计数器 CNT、自动重装寄存器 ARR 和重复计数器 RCR。课程用信号流向解释时钟怎样变成计数变化与更新事件，并比较上计数、下计数和中心对齐三种波形。随后回到时钟树，区分定时器与 APB 时钟之间的分频和倍频关系。末尾以运行中突然改变 ARR 为例，画出活动寄存器与影子寄存器的区别，说明启用预加载后参数随更新事件生效，帮助理解定时周期不会简单地等同于直接写入值的瞬间变化。",
+      "points": [
+        "时基单元由时钟、PSC、CNT、ARR 和 RCR 等部分组成",
+        "比较上计数、下计数和中心对齐的计数波形",
+        "结合 APB 时钟与影子寄存器理解定时周期和参数更新"
+      ],
+      "cid": 26164461584,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 170,
+            "observation": "单片机结构图中圈出 TIM1 和 TIM2/TIM3/TIM4 的位置。",
+            "frameSha256": "5718e9d41ff0064d52e67af50bfbe648fea22f82301b07ff35affce5baed7a04"
+          },
+          {
+            "seconds": 510,
+            "observation": "PPT 拆解时钟、PSC、CNT、ARR、RCR 和 update 事件的信号路径。",
+            "frameSha256": "3620a090ae684987e0b5742f3c8aa93e94cd347e5e8b4c08303a062f54c78a48"
+          },
+          {
+            "seconds": 851,
+            "observation": "PPT 并排展示上计数、下计数和中心对齐波形。",
+            "frameSha256": "a8921cbcf13f29e98a67441970858edbe7e753b7f2d4c57a551fa070893886a9"
+          },
+          {
+            "seconds": 1191,
+            "observation": "时钟树上标出 APB2 72 MHz、APB1 36 MHz 与定时器倍频关系。",
+            "frameSha256": "cf69421c554e74b0da29d72d057e761f4ff5007110835d1970fc45971b5816bc"
+          },
+          {
+            "seconds": 1672,
+            "observation": "PPT 展示启用 ARR 预加载后影子寄存器到活动寄存器的更新过程。",
+            "frameSha256": "e25249b24aae4675a6c3f140298a83e985c42a4ca0c6d228be7b79428c6422bb"
+          }
+        ]
+      }
+    },
+    {
+      "page": 41,
+      "phase": "tim",
+      "title": "9.2 [定时器] 自制延迟函数",
+      "duration": 1443,
+      "summary": "用 TIM3 的 1 ms 更新中断维护 currentTick，并编写延时函数验证闪灯。",
+      "notes": "本节目标是用普通定时器实现自己的毫秒延时。开头先画出 72 MHz 输入、PSC=71、ARR=999、RCR=0 对应的 1 ms 更新事件，并用 volatile 全局变量 currentTick 记录累计时间。编程部分使用 TIM3，依次初始化时基单元、使能更新中断和配置 NVIC，再编写 TIM3_IRQHandler，检测并清除更新标志后递增 currentTick。课程随后写出 App_Delay：根据当前时间求结束时刻，在循环中等待计数达到目标。末尾用 PC13 高低电平和多次 500 ms 延时调用展示应用。视频主线是定时器中断构造毫秒时基。同一个计时变量在中断中更新，在主循环的延时函数中读取。",
+      "points": [
+        "示例参数为 PSC=71、ARR=999、RCR=0，形成 1 ms 更新事件",
+        "TIM3_IRQHandler 处理中断标志并自增 currentTick",
+        "App_Delay 根据 currentTick 等待，再用于 PC13 闪灯"
+      ],
+      "cid": 26164658846,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 144,
+            "observation": "PPT 明确标出 72 MHz、PSC=71、ARR=999、RCR=0、1 ms 和 currentTick++。",
+            "frameSha256": "159b69b73c7a315d1e330ff8c3caef9a9f2551f8e9484d6258cee6e4805815a6"
+          },
+          {
+            "seconds": 721,
+            "observation": "Keil 中出现 App_Delay、expireTime=currentTick+ms，并开始初始化 TIM3 时基。",
+            "frameSha256": "7c7174ed834e9052e3c58c95a5678387736d8738d420da197c7c4a2a835401ea"
+          },
+          {
+            "seconds": 1010,
+            "observation": "Keil 中配置 TIM3 时基、TIM_IT_Update 和 NVIC。",
+            "frameSha256": "84bf74f76d3f27e4e33927906e551b0ceaaf2544218c42da3d8df4e97f32ef62"
+          },
+          {
+            "seconds": 1298,
+            "observation": "TIM3_IRQHandler 检测并清除 TIM_FLAG_Update，然后 currentTick++。",
+            "frameSha256": "8e15c867e14758b9b840d287f8ab5756abaa5125c01fa9c4d04125830694b6fe"
+          },
+          {
+            "seconds": 1413,
+            "observation": "主循环使用 App_Delay(500) 配合 PC13 电平切换进行闪灯。",
+            "frameSha256": "9374843bdd61997b8b24d2857f966eca349b8d271deeeff18810cf4afcb02d09"
+          }
+        ]
+      }
+    },
+    {
+      "page": 42,
+      "phase": "tim",
+      "title": "9.3 [定时器] 输出比较",
+      "duration": 1277,
+      "summary": "解释 CNT/CCR 如何产生 PWM，并讲输出比较的八种模式、互补输出和极性选择。",
+      "notes": "本节先在定时器总体框图中指出 CCR、输入捕获和输出比较的位置，再用计数器波形说明输出比较怎样生成方波。示例把 ARR 设为 9、CCR1 设为 3，画出一个周期中的高电平部分，得到 30% 占空比。接着课程用对照表逐一展示八种输出比较模式，包括冻结、相等时有效或无效、翻转、强制有效或无效，以及 PWM1、PWM2。后半部分把正常输出和互补输出分成两条路径，继续解释信号取反、各自的极性选择和主输出开关。重点是读懂输出比较电路怎样把 CNT 与 CCR 的比较结果变成引脚信号。",
+      "points": [
+        "用 ARR=9、CCR1=3 的图例解释 30% 占空比",
+        "对比冻结、相等有效/无效、翻转、强制和 PWM 模式",
+        "在输出路径中区分 CHx、CHxN、极性选择与 MOE"
+      ],
+      "cid": 26714769572,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 127,
+            "observation": "定时器总体图标出 CCR、输入捕获和输出比较的关系。",
+            "frameSha256": "d2665a89ffe57432c507e990cf442268615295062c91bd8206df973c7c6b3ffe"
+          },
+          {
+            "seconds": 383,
+            "observation": "PPT 用 ARR=9、CCR1=3 的计数波形画出 30% PWM。",
+            "frameSha256": "905ab4d3076431d7644b9cbb2f63924b9c9731d3361932e29507b45fdf436ea6"
+          },
+          {
+            "seconds": 638,
+            "observation": "PPT 用一张波形表对照八种输出比较模式。",
+            "frameSha256": "ee6d7950b5dddd0029a2ce6db6a12e22419d14529562b593fc0d86225de162b6"
+          },
+          {
+            "seconds": 1247,
+            "observation": "PPT 将 CHx、CHxN、极性选择和 MOE 放在同一输出路径中。",
+            "frameSha256": "4050fc5a6d634c45cb9142f5253c61a6db7775a0a0e46c36735474844b0c97de"
+          }
+        ]
+      }
+    },
+    {
+      "page": 43,
+      "phase": "tim",
+      "title": "9.4 [定时器] 呼吸灯实验",
+      "duration": 2150,
+      "summary": "用 TIM1 的 PA8/CH1 与 PB13/CH1N 驱动双灯，按正弦规律更新 PWM 占空比。",
+      "notes": "本节以面包板上的红蓝两只 LED 演示呼吸灯。课程先把连续变化的亮度目标画成正弦曲线，再用占空比随时间变化的 PWM 表达这个目标。硬件选择 TIM1 通道 1 的正常输出 PA8 和互补输出 PB13，两脚配置为推挽复用输出。时基图给出 72 MHz、PSC=71、ARR=999、RCR=0，对应 1 ms 的 PWM 周期。随后配置 PWM1 和正常、互补输出路径，并用 TIM_CtrlPWMOutputs 打开 MOE。主循环读取 GetTick，计算正弦形式的占空比和 CCR1，再通过 TIM_SetCompare1 写入 TIM1，形成明暗变化。课程依次配置引脚、时基、输出比较参数，再增加动态占空比计算，把双灯硬件和数学表达连在一起。",
+      "points": [
+        "实际示例为红蓝双 LED，使用 TIM1 正常输出和互补输出",
+        "PA8、PB13 配推挽复用输出，时基为 PSC=71、ARR=999、RCR=0",
+        "设置 PWM1、开启 MOE，并通过 TIM_SetCompare1 更新 CCR"
+      ],
+      "cid": 26755662507,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 30,
+            "observation": "实物画面可见面包板上的红色、蓝色两只 LED。",
+            "frameSha256": "95f270b634e1d69f4b327e22df2d2c43504fc802745139726efe7341acecc7b8"
+          },
+          {
+            "seconds": 215,
+            "observation": "PPT 画出正弦曲线和占空比=0.5(sin(2πt)+1)、周期 1 ms 的 PWM。",
+            "frameSha256": "8188306c99f71c300cb661565c1deea6d027950a49d957a2a0d87d5b1f20adbe"
+          },
+          {
+            "seconds": 360,
+            "observation": "引脚表中 TIM1_CH1 为 PA8、TIM1_CH1N 为 PB13。",
+            "frameSha256": "ce6bba1598513b11a6c288b0924e8b7c0656d284186901194d606e16efb7c127"
+          },
+          {
+            "seconds": 645,
+            "observation": "PPT 手写 PA8、PB13，并标出正常与互补输出均使用 AF_PP。",
+            "frameSha256": "1a1734a86edbc653d8e6b4a179f3c8b0246c3c61f580ca840bd3013a318d2618"
+          },
+          {
+            "seconds": 1075,
+            "observation": "PPT 标注 TIM1、APB2、PSC=71、ARR=999、RCR=0。",
+            "frameSha256": "3a336ff24c3bd326fb385242def56a54857ee55e1955cd6996729a0a42f21224"
+          },
+          {
+            "seconds": 1505,
+            "observation": "PPT 展示 PWM1、正常/互补输出开关和 TIM_CtrlPWMOutputs 对应的 MOE。",
+            "frameSha256": "073296d2cc841265b4d2bbea2a270a10c8faeb4f704cd8439628fb450a63fbd6"
+          },
+          {
+            "seconds": 2120,
+            "observation": "主循环用 GetTick、sin、CCR1 和 TIM_SetCompare1(TIM1,ccr1) 更新占空比。",
+            "frameSha256": "4ad9dee2efcd40eead124b9bf68324dea4f88de19ba7e74826cf7db07165e03c"
+          }
+        ]
+      }
+    },
+    {
+      "page": 44,
+      "phase": "tim",
+      "title": "9.5 [定时器] 输入捕获",
+      "duration": 1006,
+      "summary": "解释输入捕获记录边沿时刻的原理，拆解滤波、边沿检测、信号选择和分频。",
+      "notes": "本节从定时器输入通道进入输入捕获。课程先用一个外部脉冲和 CNT 递增波形，演示上升沿与下降沿出现时分别把计数值保存到 CCR，再通过两次记录的差值表达脉宽。随后把通道 1、通道 2 的内部链路展开，按输入滤波、边沿检测、信号选择和分频四部分讲解。框图中既有本通道的直接输入，也有来自相邻通道的间接输入，以及 TRC 选择。课末回到目录，梳理基本原理与内部结构之间的联系。本节主要帮助读懂捕获电路，为后续超声波测距和 PWM 参数测量建立基础。",
+      "points": [
+        "在边沿到来时把 CNT 的数值捕获到 CCR",
+        "用两个捕获时刻的差值表示脉宽",
+        "输入链路包含滤波、边沿检测、直接/间接/TRC 选择与分频"
+      ],
+      "cid": 26758545421,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 100,
+            "observation": "定时器总体图从外部脉冲指向输入捕获和 CCR。",
+            "frameSha256": "6cc96d5f0677605911309c253f38807995b666962a5d69a553f5fa47d224812d"
+          },
+          {
+            "seconds": 301,
+            "observation": "PPT 用 CNT 递增波形、CCR1/CCR2 标记两个边沿时刻来表达脉宽。",
+            "frameSha256": "8f88b80d547f8ef399b08e99958f0ba2e64f3b386ef969c0823f52b824b7c35d"
+          },
+          {
+            "seconds": 503,
+            "observation": "PPT 展开通道 1、2 的输入捕获内部链路。",
+            "frameSha256": "f6e7b7f3ea7df2f168a1c63ef169e56c6e21be177211e0703f2ccb20596cf1f9"
+          },
+          {
+            "seconds": 704,
+            "observation": "PPT 分框标出输入滤波、边沿检测、信号选择和分频。",
+            "frameSha256": "11bfc03929cf380e981812a3039c44050aa721495e5172892ef19883cd371307"
+          },
+          {
+            "seconds": 905,
+            "observation": "目录页列出输入捕获原理、内部结构及四个组成部分。",
+            "frameSha256": "7aead86196ceae74ffd3656e4d82120a17e10ea5e5baf1611fcbf726d10f0205"
+          }
+        ]
+      }
+    },
+    {
+      "page": 45,
+      "phase": "tim",
+      "title": "9.6 [定时器] 超声波测距实验",
+      "duration": 2976,
+      "summary": "用 PA0 触发 HC-SR04，通过 PA8/TIM1_CH1 捕获 Echo 脉宽并换算距离。",
+      "notes": "本节把输入捕获用于 HC-SR04 超声波测距。课程先画出 Trig 启动脉冲、发射声波和 Echo 返回脉宽之间的关系，再给出距离由往返时间换算的公式。接线图使用 PA0 发送 Trig，PA8 即 TIM1_CH1 接收 Echo，同时接上 USART1 与 USB 转串口模块。程序配置 TIM1 的 PSC=71、ARR=65535，并把 PA8 作为输入；捕获链路选择通道 1 直接上升沿、通道 2 间接下降沿。测量循环先清零 CNT、清除 CC1/CC2 标志，再开启定时器并发送启动脉冲。课程围绕脉宽的获取、距离计算和串口观察组织实验。双通道捕获在这里共用同一个外部输入引脚，分别记录两种边沿。",
+      "points": [
+        "接线图明确 PA0→Trig、PA8/TIM1_CH1←Echo",
+        "TIM1 用 PSC=71、ARR=65535；CH1 直接上升沿、CH2 间接下降沿",
+        "程序清 CNT 和 CC 标志、启动测量，再按捕获时间处理距离"
+      ],
+      "cid": 26758285375,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 297,
+            "observation": "PPT 展示 HC-SR04 的 Trig、Echo 波形与距离=脉宽×340 m/s÷2。",
+            "frameSha256": "fa92ec3d2bcf8a968dd9a3c631c3a8c11252192ca532ea94914d2d89d3fc1dfd"
+          },
+          {
+            "seconds": 450,
+            "observation": "接线图明确标出 Echo→PA8(TIM1_CH1)、Trig→PA0 及 USART1 接线。",
+            "frameSha256": "e76f9456e6852d9af716b017aa66ba4db39bcf92652b5fdb54c5e482b23c4583"
+          },
+          {
+            "seconds": 2083,
+            "observation": "Keil 中 TIM1 时基参数为 Period=65535、Prescaler=71、RCR=0，并准备初始化 PA8 IPD。",
+            "frameSha256": "f3ee22870b839a70e4f561b78dbe89d35d86225a2b921e51d2661bd7900fa459"
+          },
+          {
+            "seconds": 2260,
+            "observation": "PPT 绿色路径明确 CH1 直接上升沿与 CH2 间接下降沿捕获，分频为 1。",
+            "frameSha256": "0e1528352faa644e241884d0ab0237fcce84f7792e759d4129031d90fe531975"
+          },
+          {
+            "seconds": 2678,
+            "observation": "主循环先清 CNT 和 CC1/CC2 标志，再开启 TIM1 并向 PA0 发送 Trig 脉冲。",
+            "frameSha256": "1be24c04ee37daac957dabc0fbe693abf20866cdbf62e7e6cc43d5e7811f6b92"
+          }
+        ]
+      }
+    },
+    {
+      "page": 46,
+      "phase": "tim",
+      "title": "9.7 [定时器] 从模式控制器",
+      "duration": 1291,
+      "summary": "讲解 TRGI/TRGO、八种从模式与主模式，并用同时启停和定时器级联举例。",
+      "notes": "本节在定时器框图上把从模式控制器、TRGI 输入、TRGO 输出和时基单元连接起来，说明定时器既能接收控制，也能向其他模块发出控制。课程随后列出八种从模式，解释编码器、复位、门、触发和外部时钟等模式对应的行为，再介绍主模式。应用图先让 TIM1 的使能信号通过 TRGO 控制 TIM2、TIM3 的门模式，展示多个定时器同时启停。另一个例子把定时器串成秒针、分针和时针，用前一级的 Update 输出作为后一级的外部计数来源。视频中也明确把级联图作为解释控制器功能的例子。",
+      "points": [
+        "从模式控制器通过 TRGI 控制时基，也通过 TRGO 输出控制信号",
+        "用复位、门、触发、外部时钟及编码器等从模式解释输入动作",
+        "TIM1 Enable→TIM2/TIM3 Gated；另以 Update→External Clock 展示级联"
+      ],
+      "cid": 26757173218,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 129,
+            "observation": "总体图中圈出 TRGI、TRGO 以及从模式控制器与时基单元的连接。",
+            "frameSha256": "db6c60711838e89e078e0ba6a8ca08d6593b5197194c042e0211bfebcf623295"
+          },
+          {
+            "seconds": 645,
+            "observation": "PPT 列八种从模式，包含复位、门、触发与外部时钟模式。",
+            "frameSha256": "db883b99509401f5a7d086bc65a1b56796964bf0aaa0eb750cdc4d18eb01c96e"
+          },
+          {
+            "seconds": 903,
+            "observation": "PPT 展示 TIM1 Enable 模式的 TRGO 同时连接 TIM2、TIM3 的 Gated 模式。",
+            "frameSha256": "22078d026a70d343bb58b8213046920629a9853ad81ff8c218a55590950fe42d"
+          },
+          {
+            "seconds": 1161,
+            "observation": "PPT 以 TIM1/TIM2/TIM3 模拟秒针、分针、时针，标注 Update 与外部时钟模式级联。",
+            "frameSha256": "f0f09df63f1b4f4d5ed60076cedaee4df5e3b2e526b8828f8b4e2379ae68e89c"
+          }
+        ]
+      }
+    },
+    {
+      "page": 47,
+      "phase": "tim",
+      "title": "9.8 [定时器] PWM 参数测量原理",
+      "duration": 1649,
+      "summary": "从参考手册识别输入节点与 TRGI 来源，用复位模式和双边沿捕获测 PWM。",
+      "notes": "本节首先回到参考手册中的高级定时器框图，帮助学习者把简化示意图和正式信号名称对应起来。课程解释 TI 表示定时器输入、F 表示滤波后、P 表示极性选择后的信号，并继续查看 TRGI 的可选来源和定时器内部触发连接表。PWM 测量部分把同一个输入分成两条捕获路径：通道 1 捕获上升沿，通道 2 捕获下降沿，同时把 TI1FP1 送给从模式控制器的复位模式。时序图显示每个上升沿清零 CNT；下降沿记录高电平时间，下一个上升沿记录完整周期，由此读懂 CCR2 与 CCR1 的不同含义。",
+      "points": [
+        "识别 TI、F、P 等输入捕获节点名称",
+        "结合内部触发连接表选择 TRGI 来源",
+        "TI1FP1 上升沿触发复位，CCR1 对应周期、CCR2 对应高电平宽度"
+      ],
+      "cid": 26757562526,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 164,
+            "observation": "目录明确包含参考手册结构图、输入捕获节点名称、TRGI 来源和 PWM 参数测量原理。",
+            "frameSha256": "9de059e91a1f3f5ba4010614e1eab61ec6173b8986854343a168cee9a0d526b1"
+          },
+          {
+            "seconds": 494,
+            "observation": "PPT 展示参考手册中的高级定时器完整结构框图。",
+            "frameSha256": "144c357752cd676973e78c2ee9dd5d72c4c5da4beba36efb596ef9476f707d67"
+          },
+          {
+            "seconds": 824,
+            "observation": "PPT 解释 TI=Timer Input、F=Filtered、P=Polarized，并在通道链路中标节点。",
+            "frameSha256": "0c7871c8e66fa9d75217707dade078b031b67898b0e2b375b7eb122e8d1314c1"
+          },
+          {
+            "seconds": 1154,
+            "observation": "PPT 展示 TRGI 输入选择和 TIMx 内部触发连接表。",
+            "frameSha256": "5e2a9ca0a6e13b2713b89bdd8fe8bb8396fb16acbf15618d8d9b7337e9328591"
+          },
+          {
+            "seconds": 1484,
+            "observation": "PPT 连接 TI1FP1 到复位模式，并将通道 1 上升沿、通道 2 下降沿分成捕获路径。",
+            "frameSha256": "280b10f15bf3f46bd10638a6fddda50568cad1fc0eff93e711af0df000ba56fc"
+          },
+          {
+            "seconds": 1619,
+            "observation": "时序图标明上升沿清 CNT、CCR1 记录周期、CCR2 记录高电平宽度。",
+            "frameSha256": "ac2428781bbee2be1f8c7df1d68bb0a1bc9ff7373eacd6af18b37e47f970cce0"
+          }
+        ]
+      }
+    },
+    {
+      "page": 48,
+      "phase": "tim",
+      "title": "9.9 [定时器] PWM 参数测量实验",
+      "duration": 2865,
+      "summary": "编写 PWM 参数测量工程：TIM3 产生测试信号，TIM1 输入捕获并配合 USART1。",
+      "notes": "本节把上一节 PWM 参数测量原理写成工程。课程先建立 USART1 初始化和输出通道，再使用 TIM3 产生测试 PWM；主循环读取时间、计算正弦变化的占空比，并更新 TIM3 的比较值。测量侧另行配置 TIM1 的时基单元及 PA8 输入捕获，引入从模式控制器，使每个输入上升沿同时参与捕获与计数器复位。后面的时序图再次区分上升沿记录的周期和下降沿记录的高电平宽度，并标出 Trigger、CC1、CC2 事件。末尾按实验原理、产生信号、初始化各部分和测量参数的顺序回顾，重点是把输出测试源与输入测量端连成一条实验链。",
+      "points": [
+        "工程分为产生 PWM、时基、输入捕获、从模式控制器和参数测量",
+        "主循环对 TIM3 的 CCR1 按正弦规律更新，形成测试 PWM",
+        "TIM1 的 PA8 用于输入捕获，测量路径使用前节的触发复位时序"
+      ],
+      "cid": 26757957690,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 859,
+            "observation": "Keil 中初始化 USART1 的 PA9 为 AF_PP。",
+            "frameSha256": "ed6023061825ad7ea6c34ccf298485f490f69ba0f6ae6bf375b23117ffc44f92"
+          },
+          {
+            "seconds": 1432,
+            "observation": "主循环调用 App_TIM3_Init，计算正弦 duty，并准备使用 TIM_SetCompare1 更新测试信号。",
+            "frameSha256": "cfccf64a07a214f85fd0749bc3a727b8a217f97572fa8ed7ea5b91771ca201b6"
+          },
+          {
+            "seconds": 2005,
+            "observation": "Keil 中初始化 TIM1 时基和输入捕获，引脚为 GPIOA Pin8，注释为 IPD。",
+            "frameSha256": "c645727ff16107bd6f698cf3d26df40985470076e7fbdcb8e00efb17cdd774ac"
+          },
+          {
+            "seconds": 2578,
+            "observation": "PPT 时序图标出 Trigger、CC1、CC2，以及上升沿复位和捕获的关系。",
+            "frameSha256": "9592d4788c4cb0fdd7a05fa99a77167e316844f42c5746e36b203cbfdb15795f"
+          },
+          {
+            "seconds": 2835,
+            "observation": "目录回顾产生 PWM、初始化时基/输入捕获/从模式控制器和测量 PWM 参数。",
+            "frameSha256": "6652237865ac9a13adc48f91c21e1989e672f37bf52722b05b672ec8b74d51e8"
+          }
+        ]
+      }
+    },
+    {
+      "page": 49,
+      "phase": "adc",
+      "title": "10.1 [ADC] 逐次逼近型 ADC",
+      "duration": 1744,
+      "summary": "区分模拟和数字信号，介绍采样深度、SAR、采样保持，并用简化电路演示转换。",
+      "notes": "本节从自然界中的连续信号与计算机中的离散记录讲起，用一天气温的曲线和分时数据说明模拟量与数字量的区别。随后课程介绍单片机 ADC、采样深度，以及不同类型 ADC 的结构和用途，再聚焦逐次逼近型 ADC。图中的转换器由结果寄存器、电压发生器、比较器和采样保持电路组成，采样开关与电容负责暂时保持被测电压。为便于解释，后半段使用简化四位电路，以 3.3 V 参考和 2.21 V 输入展示不同位权与比较过程。要区分课程用来讲原理的简化四位图和前面介绍的单片机十二位采样深度。",
+      "points": [
+        "模拟量连续，数字记录在时间和幅值上离散",
+        "认识 ADC 类型、采样深度和逐次逼近结构",
+        "以简化四位电路和 2.21 V 输入演示逐位比较"
+      ],
+      "cid": 26547585091,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 174,
+            "observation": "PPT 对照一天气温连续曲线和分时数字记录，区分模拟与数字信号。",
+            "frameSha256": "dabbb7199f7a0d6f6d56bf3e78855825b4cbf77be721b51aa5e4d88528069fad"
+          },
+          {
+            "seconds": 523,
+            "observation": "目录列 ADC、单片机 ADC、采样深度、SAR、采样保持和例子，并手写 12 位。",
+            "frameSha256": "aaa3531903d2e0861e99bb9a291f08fc6e7251fe5a43e6274a73284e17e0c3e3"
+          },
+          {
+            "seconds": 872,
+            "observation": "PPT 对照 SAR、Flash、Integrating、Sigma-Delta 等 ADC 类型。",
+            "frameSha256": "e96530868185d8f00cc85dcd9ab27227ca0d93ddadc4a104973551f710f12fba"
+          },
+          {
+            "seconds": 1220,
+            "observation": "PPT 展示结果寄存器、电压发生器、比较器及采样保持电路。",
+            "frameSha256": "fbc05378cb08e4712555a8d8e3dbcdba1aeea0fee7a566f8028f677243b55574"
+          },
+          {
+            "seconds": 1569,
+            "observation": "简化四位示例显示 3.3 V 参考、0.22 V 位权及 2.21 V 输入。",
+            "frameSha256": "c556484688736facec9a630723a21e371363ef5f350ae1fc553d29e7255bf68f"
+          },
+          {
+            "seconds": 1714,
+            "observation": "四位示例继续演示从高位到低位的电压比较。",
+            "frameSha256": "c305dcd729d7e0b25275cdc82169873cbf74f28213ff900c0c833a53078581a7"
+          }
+        ]
+      }
+    },
+    {
+      "page": 50,
+      "phase": "adc",
+      "title": "10.2 [ADC] ADC 模块的结构框图",
+      "duration": 1545,
+      "summary": "拆解 ADC 多路复用、规则与注入序列、触发源和 DR/JDR 结果寄存器。",
+      "notes": "本节在逐次逼近电路基础上展开 ADC 外设结构，先说明多个模拟输入怎样复用同一个采样转换电路。总体框图把规则序列、注入序列、各自的外部触发、结果寄存器和状态信号放在一起：规则序列可安排较长的通道次序，转换结果通向 DR；注入序列最多四项，分别对应 JDR1 到 JDR4。课程也用定时器时基与 TRGO 示意固定间隔的触发。后半段给规则序列和注入序列分别安排通道与时序，在图上演示注入任务出现时插入处理、之后继续规则转换的过程，强调两类序列在组织与结果保存方式上的区别。",
+      "points": [
+        "多个输入通道复用一个十二位 SAR ADC",
+        "规则序列使用 DR，注入序列使用 JDR1—JDR4",
+        "通过转换时序示例展示注入序列插入规则序列的过程"
+      ],
+      "cid": 26148276533,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 154,
+            "observation": "PPT 仍使用采样保持、比较器、电压发生器和结果寄存器解释转换核心。",
+            "frameSha256": "2ba901e60067c476d0cd90788ed3864380fe369ee46362fbba254ae392bcc668"
+          },
+          {
+            "seconds": 463,
+            "observation": "ADC 总体图显示输入通道、规则序列 16、DR、注入序列 4 和 JDR1—JDR4。",
+            "frameSha256": "b7b0ea4b761ed664f28f6eb93e01131a379284ad8cebf616e2bd389df40d7f2a"
+          },
+          {
+            "seconds": 1081,
+            "observation": "PPT 用 PSC=71、ARR=999 的定时器 Update/TRGO 画出 1 ms 触发间隔。",
+            "frameSha256": "38b37b7a43dd80aa50ee0cd8dc8f65e91b6cc882e4eef677496b6c7d5b228088"
+          },
+          {
+            "seconds": 1390,
+            "observation": "PPT 将规则序列通道 0/1/2 与注入序列通道 3/4 放在同一执行时序中。",
+            "frameSha256": "ec515179f61ca978367be355b8e49205ce6b0acd73c2d1a59f287a25cf6e25d0"
+          },
+          {
+            "seconds": 1515,
+            "observation": "执行时序示意注入序列插入后再继续规则序列转换。",
+            "frameSha256": "32f97414b10bc06f1149ba21f414b28f5f630ea52e96c58066819732aa7126f2"
+          }
+        ]
+      }
+    },
+    {
+      "page": 51,
+      "phase": "adc",
+      "title": "10.3 [ADC] 采样时间和转换时间",
+      "duration": 1691,
+      "summary": "计算 ADC 时钟与转换时间，结合信号源内阻和采样保持电路确定采样时间。",
+      "notes": "本节首先沿时钟树查找 ADC 的时钟来源，示例把 72 MHz 的 PCLK2 六分频为 12 MHz，并在图中标出 ADC 时钟不超过 14 MHz。转换时间部分把十二位逐次逼近过程换成时钟周期，给出 12.5 cycle 在该时钟下约为 1.04 μs。随后将信号源内阻加入采样保持电路，解释内阻会影响采样电容充电。课程以光敏传感器分压电路为例，用戴维南等效方法得到输出电压和等效内阻，再把信号源内阻、ADC 内部采样电阻、采样电容、采样深度和 ADC 频率带入手册关系式。重点是把采样时间与实际输入电路联系起来。",
+      "points": [
+        "示例由 PCLK2=72 MHz 六分频得到 ADC 的 12 MHz 时钟",
+        "图示十二位转换需要 12.5 个 ADC 时钟周期",
+        "用光敏模块的戴维南等效内阻和数据手册参数分析采样时间"
+      ],
+      "cid": 26536248591,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 169,
+            "observation": "时钟树标出 ADC 12 MHz、fADC≤14 MHz，以及 72 MHz 的 PCLK2。",
+            "frameSha256": "86ed787ce77ce878ccf8186fc1c5f5124f3e25176b8ad2c687ec631b5b9cd28c"
+          },
+          {
+            "seconds": 507,
+            "observation": "PPT 写出转换时间=12 cycle+0.5 cycle=12.5 cycle≈1.04 μs。",
+            "frameSha256": "3952285a0a34ea30e2850b9988da1d2373d197044537408537702d8ef9eb550c"
+          },
+          {
+            "seconds": 845,
+            "observation": "采样保持图加入信号源内阻，并连到 ADC 采样电阻与电容。",
+            "frameSha256": "553b059a86a5d62c4c168ca98285381e4297cfebec30722da4bfe0f08d0cd97d"
+          },
+          {
+            "seconds": 1183,
+            "observation": "光敏分压电路经戴维南等效，等效内阻为 R1//R2≤10 kΩ。",
+            "frameSha256": "b38ab003acf5c81377e89bbd30b97ac82fe676a1fa3c7dedd39d661f77cfa988"
+          },
+          {
+            "seconds": 1521,
+            "observation": "PPT 的采样时间关系式逐项标出信号源内阻、RADC、CADC、N 和 fADC。",
+            "frameSha256": "ce9b48cc0738051ff2e21ad9aaef69fb1127bf1ed51fcd442851f460e2689861"
+          }
+        ]
+      }
+    },
+    {
+      "page": 52,
+      "phase": "adc",
+      "title": "10.4 [ADC] 常规单通道转换",
+      "duration": 3101,
+      "summary": "用 PA0 采集光敏模块电压，配置 ADC1 的软件触发规则单通道转换。",
+      "notes": "本节将光敏传感器的模拟输出送入 PA0，使用 ADC1 的规则序列完成单通道转换。开头的框图用绿色路径连接 PA0、通道 0、规则序列和 DR，并选择软件启动。接着配置 ADC 时钟，示例使用 PCLK2 六分频；Keil 部分逐项填写 ADC 的基本参数。课程通过接口表区分通用控制、规则通道配置、软件启动、读取转换结果和校准相关函数，安排规则序列中的通道。后半段解释结果寄存器的左、右对齐，以及将十二位转换结果乘以 3.3/4095 得到电压。末尾回到最小系统板与光敏模块的实物演示，主线是从模拟输入到规则转换结果。",
+      "points": [
+        "光敏模块 AO 连接 PA0/ADC 通道 0",
+        "ADC1 时钟示例为 PCLK2 六分频，使用规则序列和软件启动",
+        "讲解结果对齐、读取 DR 和按 3.3/4095 换算电压"
+      ],
+      "cid": 26538477378,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 310,
+            "observation": "PPT 绿色路径明确光敏 AO→PA0/通道 0→规则序列→DR，并选择软件启动。",
+            "frameSha256": "49de9a859c7439c347a5ed5ba5906a37037c182f897e6afe6cf09efd7f901c38"
+          },
+          {
+            "seconds": 930,
+            "observation": "PPT 展示 RCC_ADCCLKConfig(RCC_PCLK2_Div6) 与 ADC1 时钟使能。",
+            "frameSha256": "4860393cc3a5bb1c01f745680b4f4dae2760cbd61e91d1e324ecdf5d2212bdd5"
+          },
+          {
+            "seconds": 1550,
+            "observation": "Keil 中为 ADC1 建立 ADC_InitTypeDef 并填写基本参数。",
+            "frameSha256": "2db1da6c7cbc11efd5d8141fd09b9612e0d979f6587187a9e131fb55cd31f7bc"
+          },
+          {
+            "seconds": 2170,
+            "observation": "PPT 接口表区分规则通道配置、软件启动、取结果以及校准函数。",
+            "frameSha256": "69ec9f108cd4091d42b35c2d65a8bf69582e66129b95a067b8b4078077d2440d"
+          },
+          {
+            "seconds": 2790,
+            "observation": "PPT 展示左右对齐图和电压=dr×(3.3÷4095)。",
+            "frameSha256": "9323ffa7faa43e320e19421e3ba1826f0d75258120cd8cef5cc95f92b02e5e15"
+          },
+          {
+            "seconds": 3071,
+            "observation": "原片回到最小系统板和光敏模块的硬件演示。",
+            "frameSha256": "4bec43d9e06d5647fcb4b0b4e2e191023a30d9b5be773b3335ce6d8318a6a78d"
+          }
+        ]
+      }
+    },
+    {
+      "page": 53,
+      "phase": "adc",
+      "title": "10.5 [ADC] 定时器触发",
+      "duration": 2776,
+      "summary": "由 TIM1 更新 TRGO 周期触发 ADC1 注入单通道采样，串口发送并用 VOFA 看波形。",
+      "notes": "本节把采样启动交给定时器，先用 Update 到 TRGO 的路径画出固定间隔的触发脉冲与模拟信号采样点。实际 ADC 框图选择 TIM1_TRGO，触发 ADC1 的注入序列；序列长度为一，输入为 PA0 的通道 0，结果保存到 JDR1。编程部分先准备 USART1，再配置定时器与 ADC 的基本参数及注入序列。主循环等待 JEOC，调用 ADC_GetInjectedConversionValue 读取注入通道 1 的结果，清除完成标志并换算电压。末尾用串口把数据发送到 VOFA，画面中显示电压曲线和硬件操作。该节重点是定时器触发的注入单通道采样。",
+      "points": [
+        "实际采样路径为 TIM1_TRGO→注入序列长度 1→JDR1",
+        "PA0/通道 0，注入单通道；使用 JEOC 判断完成并读取注入结果",
+        "通过串口向 VOFA 发送电压数据，观察采样波形"
+      ],
+      "cid": 26389449160,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 277,
+            "observation": "PPT 画出 Update→TRGO→ADC 的定周期触发与模拟信号采样点。",
+            "frameSha256": "81d1d5a018dc7c150e26a67b6b898d627cab8875d44ec16649dbd2cd2b034322"
+          },
+          {
+            "seconds": 1388,
+            "observation": "ADC 框图高亮 TIM1_TRGO→注入序列长度 1→JDR1，同时选中 PA0/通道 0。",
+            "frameSha256": "c4e2f3bfd88f6d3a3226d1805a0e0794d21fbdab0324144d6e30dafa7a288ccb"
+          },
+          {
+            "seconds": 1943,
+            "observation": "Keil 配置 ADC1 基本参数，时钟为 PCLK2 六分频。",
+            "frameSha256": "00281fd52e962a0d643ac60fd947e51bb0440be76aff95c98b640e6e5298ada8"
+          },
+          {
+            "seconds": 2205,
+            "observation": "Keil 中注入序列长度为 1，ADC_InjectedChannelConfig 使用 ADC_Channel_0、rank 1。",
+            "frameSha256": "79cf47384d7f2941f79cc8c20f57dc4b6867c82ad310efc9781810bc3a010db7"
+          },
+          {
+            "seconds": 2498,
+            "observation": "主循环等待 ADC_FLAG_JEOC，调用 ADC_GetInjectedConversionValue(...ADC_InjectedChannel_1)。",
+            "frameSha256": "7c5e07c5eeb0943eb7a2d23fe5a1c41759c7ded04cccbfb0e6626e692e972cef"
+          },
+          {
+            "seconds": 2746,
+            "observation": "VOFA 显示采样电压曲线，并有操作硬件的画中画。",
+            "frameSha256": "ef64822f1fd48529fc543bc1d24e33ef50995bcf0e9a9a4a006c668902737e5c"
+          }
+        ]
+      }
+    },
+    {
+      "page": 54,
+      "phase": "adc",
+      "title": "10.6 [ADC] 扫描模式",
+      "duration": 2768,
+      "summary": "启用扫描模式，以 TIM1_TRGO 触发两个注入通道，采集两只电位器并在 VOFA 显示。",
+      "notes": "本节将单通道实验扩展为两只电位器的电压采集。课程先说明电位器分压与等效内阻，再用定时器 Update/TRGO 提供周期触发。ADC 图中明确选中 TIM1_TRGO，注入序列长度为二，依次安排通道 0 和通道 1，并开启扫描模式。Keil 中可见 ADC_InjectedSequencerLengthConfig(ADC1,2)，两个通道分别配置 rank 1、rank 2，触发宏为 ADC_ExternalTrigInjecConv_T1_TRGO。主循环等待 JEOC，分别读取 jdr1、jdr2，按 3.3/4095 换算为两个电压后经 USART1 输出。末尾 VOFA 以两个显示量配合两只电位器的实物操作验证效果。这里分别保存两次转换的结果，两个结果寄存器与注入序列中的先后位置对应。",
+      "points": [
+        "实际是注入扫描序列：长度 2，通道 0/rank 1 与通道 1/rank 2",
+        "触发源明确为 ADC_ExternalTrigInjecConv_T1_TRGO",
+        "等待 JEOC 后读取 jdr1、jdr2，换算两个电压并发往 VOFA"
+      ],
+      "cid": 26454986609,
+      "verification": {
+        "status": "video-keyframes-checked",
+        "method": "公开视频关键画面核验",
+        "checkedAt": "2026-10-28",
+        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "anchors": [
+          {
+            "seconds": 276,
+            "observation": "PPT 展示电位器的三个端子、分压关系及等效内阻。",
+            "frameSha256": "efac231b7cbf8c6af14e023c32043eb057f7d33dc4550cddd7a39b714a8c1eaf"
+          },
+          {
+            "seconds": 1384,
+            "observation": "PPT 展示 Update/TRGO，时基图标注 PSC=71、ARR=999、RCR=0。",
+            "frameSha256": "4cb0b0b3d60dd8924147cb4056b94945a92947c6fd976dcb70ad45a70374f218"
+          },
+          {
+            "seconds": 1850,
+            "observation": "PPT 放大后清楚标出 TIM1_TRGO、注入 L=2、CH0/CH1、JDR1/JDR2 和扫描模式打勾。",
+            "frameSha256": "775cfbfb5c958f9fc635f935802b71e01b304df593a86a0f77bde86f8cac75cd"
+          },
+          {
+            "seconds": 2280,
+            "observation": "Keil 明确 ScanConvMode=ENABLE、注入长度 2、通道 0/1 及 ADC_ExternalTrigInjecConv_T1_TRGO。",
+            "frameSha256": "e804aaade80beecaf86863e4a3a95c10963f2ec14210e859ee3e89566fd3b0f8"
+          },
+          {
+            "seconds": 2491,
+            "observation": "主循环等待 JEOC，分别读取 jdr1/jdr2，换算 v1/v2 后调用 USART 打印。",
+            "frameSha256": "59b099a10138f47158c2b32c43f66b59494a44cf78f983f89faafda6e01c6ee6"
+          },
+          {
+            "seconds": 2738,
+            "observation": "VOFA 显示两个量，画中画中可见两只电位器与最小系统板。",
+            "frameSha256": "057b1e285bc2373eaee19bd2c6e9fc37bd40d562dc85950c97c9692cfc310b8e"
+          }
+        ]
+      }
     }
-}
-~~~
-
-这个写法容易理解，但 \`while\` 等待释放会阻塞主循环。更适合实时程序的写法是记录上次状态：
-
-~~~c
-static GPIO_PinState last = GPIO_PIN_SET;
-GPIO_PinState now = HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin);
-
-if (last == GPIO_PIN_SET && now == GPIO_PIN_RESET)
-{
-    /* 检测到下降沿，可加入 15ms 定时消抖 */
-}
-last = now;
-~~~
-
-## 单击、长按与连发
-实用按键通常还要区分动作类型：
-
-1. 短按：按下后短时间内释放。
-2. 长按：按住超过阈值，例如 800ms。
-3. 连发：长按期间每 100~200ms 触发一次。
-4. 组合键：记录多个按键状态，同时按下时触发。
-
-实现时不要只看“当前是否按下”，而要维护时间戳和状态机。
-
-## 与中断的区别
-轮询方式由主循环不断读取，简单但可能漏检；外部中断方式由按键电平变化触发回调，响应快，但必须处理消抖和中断安全。本节先把轮询学好，后续 EXTI 节会对比两种方式。
-
-\n      `,
-      points: [
-        "F103C8T6 = 48 脚 / 64KB Flash / 20KB SRAM",
-        "Cortex-M3 内核，72MHz 主频",
-        "芯片手册三件套：数据手册 DS1319、参考手册 RM0008、闪存编程手册"
-      ]
-    },
-    {
-      page: 4, phase: "prep", title: "1.2 [准备] STM32 的引脚分布", duration: 614,
-      summary: "LQFP48 引脚图读法：电源、时钟、复位、调试与 GPIO。",
-      notes: `\n## 本节定位
-这一节用光敏、热敏、红外反射等传感器模块引出传感器接口的基本分类。重点不是记住某个传感器，而是理解数字量输出、模拟量输出和阈值调节之间的关系。
-
-## 常见传感器模块
-1. 光敏传感器模块：感知环境光强，常用于自动夜灯、循迹遮光检测。
-2. 热敏传感器模块：感知温度变化，成本极低，但精度和线性不如 DS18B20、NTC 校准表或专用温度芯片。
-3. 红外反射/对管模块：检测前方是否有反射物，常用于循迹和障碍检测。
-4. 声音、火焰、触摸模块：多数也是把传感元件的模拟变化转换成数字电平或模拟电压输出。
-
-## 数字输出与模拟输出
-很多模块同时提供 DO 和 AO：
-
-1. DO：Digital Output，模块内部比较器把传感电压和一个阈值比较，超过阈值输出高或低电平。MCU 只需 GPIO 输入读取。
-2. AO：Analog Output，输出连续变化的电压，需要 MCU 使用 ADC 采样才能知道具体强度。
-
-模块上的电位器通常调整比较器阈值。顺时针或逆时针方向因模块而异，调试时应观察指示灯或用串口打印 ADC 值确认。
-
-## 数字量读取
-
-~~~c
-if (HAL_GPIO_ReadPin(SENSOR_DO_GPIO_Port, SENSOR_DO_Pin) == GPIO_PIN_RESET)
-{
-    /* 传感器触发，例如检测到黑线、遮挡或低于阈值 */
-}
-~~~
-
-注意不同模块的触发极性可能不同，有的检测到目标输出低，有的输出高。不要背结论，应看模块原理图或实测。
-
-## 模拟量需要 ADC
-若想知道光照更强还是更弱、温度更高还是更低，就需要 AO 接到 ADC 引脚：
-
-~~~c
-HAL_ADC_Start(&hadc1);
-if (HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK)
-{
-    uint32_t raw = HAL_ADC_GetValue(&hadc1);
-}
-HAL_ADC_Stop(&hadc1);
-~~~
-
-原始值越大不一定代表光越强，取决于分压电路中光敏电阻的位置。调试时可打印原始值建立对应关系。
-
-## 调试思路
-1. 先看电源：多数模块为 3.3V 或 5V，要确认 STM32 引脚耐压。
-2. 再看指示灯：很多模块上有电源灯和触发灯。
-3. 转动电位器：观察阈值变化导致的触发点。
-4. 用串口打印：数字模块打印 0/1，模拟模块打印 ADC 原始值。
-5. 避免干扰：线长、触摸、电机噪声都会造成跳变，需要滤波或消抖。
-
-## 关键概念
-传感器本身通常输出电阻、电流或微小电压变化，模块负责整形和放大。MCU 侧只需要理解两个问题：它是离散电平还是连续电压；触发阈值由谁决定。后面学习 ADC、DAC、比较器时会自然衔接。
-
-\n      `,
-      points: [
-        "37 个普通 GPIO：PA0-15、PB0-15、PC13-15、PD0-1",
-        "PA13/PA14 被 SWD 调试占用，慎用作普通 IO",
-        "正常跑程序 BOOT0 必须接地"
-      ]
-    },
-    {
-      page: 5, phase: "gpio", title: "2.1 [GPIO] 4 种输出模式", duration: 1973,
-      summary: "推挽/开漏、通用/复用：四个维度拆解 GPIO 输出模式。",
-      notes: `\n## 1. GPIO 概述与核心概念引入
-
-本教程进入第二章，正式开启 STM32 单片机的学习。第一章仅做了准备工作，本章的核心主题是 **GPIO**（General Purpose Input Output，通用输入输出）。为了帮助理解这一抽象概念，讲师首先引入了人体结构的类比模型。
-
-在人体中，大脑虽然负责思考，但无法独立完成所有任务。例如：
-- 视觉需要借助眼睛。
-- 嗅觉需要借助鼻子。
-- 语言交流需要借助嘴巴。
-- 移动需要借助双腿，抓取物体需要借助手。
-
-同理，在 **STM32** 单片机内部，**Cortex-M3** 内核相当于“大脑”，它负责执行运算指令，但其本身无法直接操作外部硬件。若要完成具体任务，必须依赖芯片内部的“器官”，即 **片上外设**。本章学习的 **GPIO** 模块正是这些片上外设之一，它的主要功能是控制单片机外部的引脚（Pin）。如果将 Cortex-M3 比作大脑，那么 GPIO 模块就相当于“手”，通过编程控制这只“手”去触碰或操作外部电路。
-
-## 2. STM32 内部结构与 GPIO 模块划分
-
-要深入理解 GPIO，需回顾单片机的内部结构框图（参考数据手册 **DS1319** 第 11 页或参考手册 **RM0008**）。简化后的结构图显示，单片机由核心的 **Cortex-M3** 和多个片上外设组成。
-
-由于 **STM32F103** 系列常用的封装为 **LQFP48**，即拥有 48 个物理引脚。其中部分引脚具有特殊功能（如复位、时钟、调试接口），其余则为普通 **IO 引脚**。为了管理大量的普通 IO 引脚，系统将其进行了分组命名，共分为四组：
-
-- **GPIOA (GPA)**：控制 **PA0** 至 **PA15**，共 16 个引脚。
-- **GPIOB (GPB)**：控制 **PB0** 至 **PB15**，共 16 个引脚。
-- **GPIOC (GPC)**：控制 **PC13**、**PC14**、**PC15**，共 3 个引脚。
-- **GPIOD (GPD)**：控制 **PD0**、**PD1**，共 2 个引脚。
-
-这四组模块合计覆盖了芯片上的 37 个普通 IO 引脚。每一组 GPIO 模块都可以独立工作，就像人有四只手一样，每只手有若干手指（引脚），分别对应不同的端口地址和功能寄存器。
-
-## 3. 输入与输出模式的基础逻辑
-
-GPIO 共有 8 种工作模式，分为输入和输出两大类，每类各 4 种。本节课重点讲解前四种输出模式。理解输出与输入的区别是掌握这 8 种模式的前提。
-
-### 3.1 信号流向定义
-- **输出模式 (Output)**：信号流向为 **芯片内部 → 芯片外部**。
-- **输入模式 (Input)**：信号流向为 **芯片外部 → 芯片内部**。
-
-### 3.2 应用场景示例
-- **输出控制 LED**：
-  通过向输出数据寄存器写入 \`0\` 或 \`1\` 来控制电压高低。
-  - 写 \`1\`：输出高电压（3.3V），LED 点亮。
-  - 写 \`0\`：输出低电压（0V），LED 熄灭。
-  这是最典型的输出应用，CPU 直接决定引脚电平。
-
-- **输入检测开关**：
-  外部开关连接到引脚，读取输入数据寄存器的值来判断状态。
-  - 开关断开：输入低电压，寄存器读值为 \`0\`。
-  - 开关闭合：输入高电压，寄存器读值为 \`1\`。
-  此时 CPU 不主动驱动引脚，而是被动监测外部电压变化。
-
-## 4. 四种输出模式详解 (核心重点)
-
-本节深入分析 GPIO 的 4 种输出模式：**通用输出推挽**、**通用输出开漏**、**复用输出推挽**、**复用输出开漏**。这四个名称可拆解为两个维度进行理解：**推挽 vs 开漏** 以及 **通用 vs 复用**。
-
-### 4.1 推挽模式 (Push-Pull)
-推挽模式基于内部电路中的 **PMOS** 和 **NMOS** 两个晶体管的交替导通实现。
-- **工作原理**：
-  - 当寄存器写 \`0\` 时：下方的 **NMOS** 导通，上方 **PMOS** 断开。引脚连接 **VSS**（地），输出低电平（0V）。
-  - 当寄存器写 \`1\` 时：上方的 **PMOS** 导通，下方 **NMOS** 断开。引脚连接 **VDD**（电源），输出高电平（3.3V）。
-- **注意事项**：两个 MOS 管严禁同时导通，否则会造成 VDD 与 VSS 直接短路。因此它们必须是互斥工作的，一个推（Push），一个拉（Pull）。
-- **特点**：能够主动输出高电平和低电平，驱动能力强。
-
-### 4.2 开漏模式 (Open-Drain)
-开漏模式是指上述电路中的上方 **PMOS** 始终保持断开状态。
-- **工作原理**：
-  - 当寄存器写 \`0\` 时：下方的 **NMOS** 导通，引脚接地，输出低电平（0V）。
-  - 当寄存器写 \`1\` 时：下方的 **NMOS** 也断开。此时引脚既未接 VDD 也未接 VSS，处于悬空状态。
-- **电气特性**：
-  - 悬空状态下，电流恒等于 0。根据欧姆定律 \$R = U/I\$，当 \$I \\to 0\$ 时，电阻趋于无穷大。
-  - 这种状态被称为 **高阻抗 (High Impedance)** 或浮空。
-- **外部需求**：若要在开漏模式下获得高电平，必须在引脚外部连接一个 **上拉电阻** 到 VDD。否则，写 \`1\` 时引脚电平是不确定的。
-- **对比推挽**：推挽能直接输出高电平，开漏只能输出低电平或高阻态。
-
-### 4.3 通用功能 (General Purpose)
-此概念指控制信号的来源路径。
-- **定义**：控制信号直接来自 **CPU**，通过软件向 **输出数据寄存器** 写入数据。
-- **流程**：CPU 编写代码 → 修改寄存器 → 控制 MOS 管 → 改变引脚电平。
-- **适用场景**：简单的 GPIO 控制，如点灯、读取按键等，不需要其他硬件模块介入。
-
-### 4.4 复用功能 (Alternate Function)
-此概念指控制权转移给其他片上外设。
-- **定义**：控制信号不再来自 CPU 的直接寄存器写入，而是来自其他的片上外设模块。
-- **机制**：
-  - 单片机内除 GPIO 外还有其他外设（如串口 UART、定时器、SPI 等）。
-  - 当某个引脚被分配给特定外设使用时，该外设会接管引脚的控制权。
-  - CPU 只需配置外设参数，外设自动控制引脚的电平变化。
-- **适用场景**：通信协议引脚。例如，将 **PA9** 配置为复用模式，连接 **UART 发送端**。此时 CPU 发送字符串 "Hello"，硬件 UART 模块会自动在 PA9 引脚上产生对应的波形数据，无需 CPU 逐位控制电平。
-
-## 5. 总结与知识图谱
-
-通过对 GPIO 模块的剖析，我们构建了完整的知识框架：
-1.  **定位**：GPIO 是连接 CPU 与外部世界的桥梁（手与器官的关系）。
-2.  **分组**：依据引脚数量分为 PA、PB、PC、PD 四个端口。
-3.  **方向**：区分输入（读状态）与输出（设状态）。
-4.  **模式选择**：
-    - 若需驱动能力强且直接控制电平，选 **推挽**。
-    - 若需多机通信（如 I2C）或电平转换，选 **开漏**。
-    - 若用于简单 IO 控制，选 **通用**。
-    - 若用于通信接口（如 USART、SPI），选 **复用**。
-
-掌握这四种输出模式及其背后的电路原理（MOS 管导通逻辑），是后续学习 STM32 外设驱动开发的基石。\n      `,
-      points: [
-        "GPIO = 通用输入输出，是片上外设之一",
-        "F103C8T6 共 37 个普通 IO，分 PA/PB/PC/PD 四组",
-        "推挽：双 MOS 交替导通，主动输出高低电平",
-        "开漏：只有下拉 NMOS，高电平靠外部上拉",
-        "复用：引脚控制权交给 UART/定时器/SPI 等外设"
-      ]
-    },
-    {
-      page: 6, phase: "gpio", title: "2.2 [GPIO] IO 的最大输出速度", duration: 625,
-      summary: "2/10/50MHz 三档输出速度的选择依据与影响。",
-      notes: `\n## 本节定位
-这一节引入 OLED 显示屏。OLED 是调试界面和人机交互的重要外设，本课重点掌握 0.96 寸 OLED、SSD1306 驱动、I2C 通信和显示函数的使用方式。
-
-## 硬件认识
-常见 0.96 寸 OLED 分辨率 128x64，控制器通常是 SSD1306。四脚 I2C 版本引脚为：
-
-1. VCC：3.3V 或 5V，按模块说明。
-2. GND：共地。
-3. SCL：I2C 时钟。
-4. SDA：I2C 数据。
-
-I2C 是同步串行总线，SCL 由主机提供，SDA 在时钟节拍下传输数据。I2C 支持多设备，每个从设备有地址，SSD1306 常见写地址为 \`0x78\`，有些库写 \`0x3C\`，这是因为地址表示方式不同，一个是 8 位地址，一个是 7 位地址。
-
-## 接线示例
-使用硬件 I2C1 时常见为 PB8=SCL、PB9=SDA；使用软件 I2C 时可以任意普通 GPIO，但要在代码中指定。软件 I2C 通用性更强，硬件 I2C 速率和 CPU 占用更好。
-
-## 软件移植
-OLED 驱动通常由这些文件组成：
-
-1. \`oled.c/oled.h\`：封装初始化、清屏、显示字符、字符串、数字。
-2. \`oledfont.h\`：ASCII 字库，按行列方式存储点阵数据。
-3. 底层 I2C 函数：负责发送命令和数据。
-
-SSD1306 的写法一般是：发送从机地址，然后发送控制字节，\`0x00\` 表示后面是命令，\`0x40\` 表示后面是显示数据。
-
-## 常用显示逻辑
-
-~~~c
-OLED_Init();
-OLED_Clear();
-OLED_ShowString(0, 0, "STM32 Study", 16);
-OLED_ShowNum(0, 2, 1234, 4, 16);
-~~~
-
-不同驱动库参数顺序可能不同，有的用页地址和列地址，有的用 x/y 坐标。移植时先看函数原型，不要直接照抄调用。
-
-## 显示原理
-SSD1306 内部是一块显存，MCU 把点阵数据写入显存，控制器自动扫描刷新。点阵字符由字库给出，例如 8x16 字符占用 16 字节数据。清屏就是把整个显存清 0。
-
-## 常见问题
-1. 屏幕完全不亮：检查 VCC/GND、SCL/SDA 是否接反、I2C 地址是否正确。
-2. 显示花屏：初始化命令序列错误或供电不稳。
-3. 只显示部分内容：驱动分辨率按 128x32 配置，而屏幕实际是 128x64。
-4. I2C 卡死：总线释放不干净，可降低速率、加 4.7k 上拉，或复位时先把 SCL 拉高若干次释放总线。
-5. 主循环刷新太慢：不要每次都 \`OLED_Clear()\`，只更新变化区域。
-
-## 编程建议
-把 OLED 封装成简单 UI 函数，例如显示标题、传感器值、状态。调试 ADC、传感器、电机时，比串口打印更直观。注意 OLED 刷新不宜放在高频中断里，应在主循环或低优先级任务中更新。
-
-\n      `,
-      points: [
-        "速度档位影响的是边沿陡峭程度，不是 CPU 性能",
-        "高速档带来更大功耗与 EMI",
-        "普通 IO 用 2MHz 即可，SPI 等 高速信号才上 50MHz"
-      ]
-    },
-    {
-      page: 7, phase: "gpio", title: "2.3 [GPIO] LED 闪灯实验", duration: 2554,
-      summary: "第一个完整工程：时钟使能、GPIO 初始化、点亮与闪烁。",
-      notes: `\n## 实验引入与 LED 基础原理\\n\\n\\n课程回顾上一期内容，包括 GPIO 的四种输出模式及输入速度概念。本节课目标是进行 LED 闪烁实验，利用已学知识控制电路板上的灯。首先讲解 LED（发光二极管）的基本物理特性，其符号由普通二极管加光线箭头组成。LED 点亮需要阳极接正电压、阴极接负电压，形成电流回路。电流需控制在 2 至 10 毫安之间，通常通过串联限流电阻实现。例如在 3.3V 电源下，减去二极管导通压降约 0.7V，结合 510 欧姆电阻可计算得出电流约为 5 毫安，符合发光条件。
-
-## GPIO 驱动电路接法分析\\n\\n\\n分析两种控制 LED 亮灭的电路连接方式。第一种为推挽接法：将开关置于 LED 阳极，类似 GPIO 设置为推挽模式，高电平点亮，低电平熄灭。第二种为开漏接法：将开关移至 LED 阴极，类似 GPIO 设置为开漏模式，闭合（接地）时点亮，断开时熄灭。通过查看最小系统板原理图确认，实际使用的红色电源指示灯常亮，而蓝色实验 LED 连接在 PC13 引脚。对比原理图发现，LED 阳极接 VDD，阴极经电阻接 PC13，属于标准的开漏接法。因此编程时需将 PC13 配置为开漏输出模式。
-
-## 开发工程建立与配置\\n\\n\\n进入编码阶段前需搭建开发环境。提供百度网盘链接供学生下载标准库资料，其中包含名为 template.zip 的模板工程文件。下载后解压至当前文件夹，并将文件夹重命名为 blin_led 以便识别。打开解压后的 .uvprojectx 工程文件，该文件对应 Keil 软件。在工程树中展开 Sources 目录下的 main.c 文件，这是主程序入口，后续代码将在此文件中编写。
-
-## GPIO 时钟与初始化配置\\n\\n\\n第一步操作是开启外设时钟。类比人体心脏供血，单片机各模块工作前需开启对应时钟信号。使用 RCC_APB2PeriphClockCmd 函数，参数指定要开启的模块名称（如 GPIOC）以及时钟使能宏。接着进行引脚初始化，调用 GPIO_Init 函数。该函数接收一个结构体指针作为参数，类似菜单定制选项。结构体包含三个成员：GPIO_Pin 指定具体引脚编号（如 PC13），GPIO_Mode 选择工作模式（通用输出开漏），GPIO_Speed 设定最大输出速率（如 2MHz）。根据之前的电路分析，此处应选择开漏模式并赋予地址给函数调用。
-
-## GPIO 数据读写接口说明\\n\\n\\n介绍控制引脚输出的核心接口。GPIO_WriteBit 用于向输出数据寄存器写入单个位值，参数包括端口号、引脚编号及写入值（SET 或 RESET）。对于开漏模式，写零即闭合内部 N 管接地，LED 点亮；写一则断开，LED 熄灭。另一接口 GPIO_ReadOutputDataBit 用于读取寄存器当前状态，反映最近一次写入的值。梳理实验流程：先初始化 PC13 为开漏输出，再通过写入高低电平控制 LED 状态。注意测试代码中，写零点亮，写一熄灭的逻辑关系。
-
-## 代码编译与在线调试\\n\\n\\n完成代码编写后进行编译检查。点击编译按钮，观察日志窗口，必须显示 Zero errors 和 Zero warnings 才算成功。随后设置调试器，选择 ST-Link 方案并确认。点击调试按钮进入仿真模式，支持单步执行代码。执行第一行时钟开启，第二行初始化，此时因默认复位值为零，LED 应处于点亮状态。继续单步执行写高电平语句，观察 LED 熄灭。再执行写低电平语句，观察 LED 重新点亮，验证控制逻辑正确性。调试结束后退出模拟状态。
-
-编译成功后不再进入仿真调试模式，而是点击工具栏中带有双向下箭头图标的下载按钮（Load）。观察 IDE 下方日志窗口，等待显示 "programming down"、"verify ok"、"finish" 三行提示信息，确认代码已烧录至单片机内部。烧录完成后，按下开发板实物上的硬件复位按钮触发程序运行，此时可直观观察到板上 LED 灯按照设定频率持续闪烁，从而验证整个程序的最终功能正确性。
-
-## LED 闪烁程序逻辑构思\\n\\n\\n从手动控制过渡到自动循环闪烁。核心思路是在无限循环中重复执行：写低电平点亮 -> 延时等待 -> 写高电平熄灭 -> 延时等待。使用 While(1) 死循环保证程序持续运行。引入延时函数 Delay_ms，参数单位为毫秒，控制亮灭持续时间。虽然本段未详细实现延时函数，但明确了闪烁所需的时序逻辑框架。最后将之前用于测试的写零写一行代码注释掉，避免干扰正常循环逻辑，为后续完整代码编写做准备。
-
-删除之前用于测试的手动控制代码行，将完整的亮灭逻辑写入 while(1) 死循环结构中。首先调用 \`GPIO_WriteBit(GPIOC, GPIO_Pin_13, GPIO_Reset)\` 引脚置低以点亮 LED，随后调用 \`Delay_ms(100)\` 函数实现 100 毫秒延时。在使用延时函数前，必须在 main.c 文件顶部添加 \`#include <delay.h>\` 头文件引用，否则会导致函数未定义错误。接着调用 \`GPIO_WriteBit(GPIOC, GPIO_Pin_13, GPIO_Set)\` 引脚置高熄灭 LED，并再次延时 100 毫秒，形成完整的自动闪烁循环逻辑。
-\n      `,
-      points: [
-        "板载 LED 接 PC13，开漏接法：低电平点亮、高电平熄灭",
-        "PC13 要配 GPIO_Mode_Out_OD 开漏输出",
-        "三步套路：使能时钟 → 配置结构体 → GPIO_Init",
-        "GPIO_WriteBit(GPIOx, Pin, Bit_SET/Bit_RESET) 控制电平",
-        "延时用课程 delay 模块：#include \"delay.h\" + Delay_ms()"
-      ]
-    },
-    {
-      page: 8, phase: "gpio", title: "2.4 [GPIO] 4 种输入模式", duration: 937,
-      summary: "上拉/下拉/浮空/模拟输入的电路差异与用途。",
-      notes: `\n## 本节定位
-这一节进入串口通信。串口是 STM32 调试中最常用的通道，可以打印日志、接收命令，也是后续蓝牙、GPS、Modbus、RS485 的基础。
-
-## 通信参数
-UART 异步通信需要两端约定相同参数：
-
-1. 波特率：常见 9600、115200。115200 表示每秒约 115200 位。
-2. 数据位：常见 8 位。
-3. 校验位：None、Even、Odd，普通调试常用 None。
-4. 停止位：常见 1 位。
-5. 流控：一般不用。
-
-一帧典型结构是：起始位 + 数据位 + 可选校验位 + 停止位。空闲时 TX/RX 保持高电平。
-
-## 接线原则
-两个 UART 设备交叉连接：
-
-~~~text
-STM32 TX  ->  USB 转 TTL RX
-STM32 RX  ->  USB 转 TTL TX
-GND       ->  GND
-~~~
-
-忘记共地是串口乱码最常见原因之一。另外要确认电平：STM32 引脚为 3.3V TTL，不要直接接 RS232 电平。
-
-## CubeMX 与 HAL 初始化
-CubeMX 中启用 USART1，模式选择 Asynchronous，设置 115200/8-N-1。生成代码后核心配置在 \`MX_USART1_UART_Init()\` 中：
-
-~~~c
-huart1.Instance = USART1;
-huart1.Init.BaudRate = 115200;
-huart1.Init.WordLength = UART_WORDLENGTH_8B;
-huart1.Init.StopBits = UART_STOPBITS_1;
-huart1.Init.Parity = UART_PARITY_NONE;
-huart1.Init.Mode = UART_MODE_TX_RX;
-~~~
-
-发送函数：
-
-~~~c
-HAL_UART_Transmit(&huart1, (uint8_t *)"Hello STM32\\r\\n", 13, 100);
-~~~
-
-最后一个参数是超时时间，单位毫秒。阻塞发送在数据量大时会占用 CPU，调试可以接受，正式项目应考虑中断或 DMA。
-
-## printf 重定向
-为了直接使用 \`printf()\`，需要重写字符输出函数。Keil/ARMCC 下常见：
-
-~~~c
-#include <stdio.h>
-
-int fputc(int ch, FILE *f)
-{
-    HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 10);
-    return ch;
-}
-~~~
-
-GCC 工具链通常重写 \`_write()\`。如果 \`printf\` 没输出，检查是否重定向到了正确 UART、是否包含 \`stdio.h\`、工程是否支持半主机模式。
-
-## 接收基础
-最简单的阻塞接收：
-
-~~~c
-uint8_t rx;
-HAL_UART_Receive(&huart1, &rx, 1, 100);
-~~~
-
-但阻塞接收会卡住主程序，实际更常用中断接收：
-
-~~~c
-uint8_t rx_byte;
-HAL_UART_Receive_IT(&huart1, &rx_byte, 1);
-~~~
-
-当收到数据后进入回调：
-
-~~~c
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if (huart->Instance == USART1)
-    {
-        /* 处理 rx_byte，然后重新启动接收 */
-        HAL_UART_Receive_IT(&huart1, &rx_byte, 1);
-    }
-}
-~~~
-
-## 调试技巧
-1. 乱码：检查波特率、晶振频率、时钟树是否正确。
-2. 完全没输出：检查 TX/RX 是否交叉、COM 口和串口助手是否打开。
-3. 只能发不能收：检查 RX 线、接收中断是否重新启动。
-4. 长数据丢包：阻塞发送期间没有及时接收，可加环形缓冲区或使用 DMA。
-5. 打印太多影响实时性：降低打印频率，或用二进制协议、DMA。
-
-## 本节要掌握
-串口不只是“打印 Hello”，它是把 MCU 内部状态导出来的窗口。调试传感器、定时器、协议解析时，先用串口验证数据和状态，再进入下一步功能。
-
-\n      `,
-      points: [
-        "按键检测常用上拉输入：按下读到 0",
-        "浮空输入要求外部电路有确定电平",
-        "模拟输入专为 ADC 准备，不读数字寄存器"
-      ]
-    },
-    {
-      page: 9, phase: "gpio", title: "2.5 [GPIO] 按钮实验", duration: 1233,
-      summary: "按键扫描、消抖与按下/松开事件检测。",
-      notes: `\n## 本节定位
-上一节完成串口发送，这一节把串口做成双向通道：MCU 能持续接收 PC 或模块发来的数据，并根据指令控制 LED、查询状态。重点是中断接收、缓冲区和协议解析。
-
-## 为什么不能阻塞接收
-阻塞函数 \`HAL_UART_Receive()\` 会一直等到收满指定字节或超时。主程序调用它时无法处理按键、刷新屏幕和其他任务。接收不确定的数据必须使用事件驱动：平时主程序继续运行，UART 收到字节时硬件触发中断，回调函数里保存数据。
-
-## 单字节中断接收
-全局变量：
-
-~~~c
-uint8_t rx_byte;
-~~~
-
-初始化后启动接收：
-
-~~~c
-HAL_UART_Receive_IT(&huart1, &rx_byte, 1);
-~~~
-
-回调：
-
-~~~c
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if (huart->Instance == USART1)
-    {
-        uart_push(rx_byte);          /* 放入环形缓冲区 */
-        HAL_UART_Receive_IT(&huart1, &rx_byte, 1);  /* 必须重新启动 */
-    }
-}
-~~~
-
-HAL 库每完成一次接收就关闭该次传输，所以要在回调里重新调用 \`HAL_UART_Receive_IT()\`。
-
-## 环形缓冲区
-直接在回调里解析长包容易丢数据。推荐先把字节存入环形缓冲区，主循环再解析：
-
-~~~c
-#define RX_BUF_SIZE 128
-uint8_t rx_buf[RX_BUF_SIZE];
-volatile uint16_t rx_head = 0, rx_tail = 0;
-
-void uart_push(uint8_t data)
-{
-    uint16_t next = (rx_head + 1) % RX_BUF_SIZE;
-    if (next != rx_tail)
-    {
-        rx_buf[rx_head] = data;
-        rx_head = next;
-    }
-}
-~~~
-
-主循环读取：
-
-~~~c
-while (rx_tail != rx_head)
-{
-    uint8_t ch = rx_buf[rx_tail];
-    rx_tail = (rx_tail + 1) % RX_BUF_SIZE;
-    protocol_feed(ch);
-}
-~~~
-
-\`rx_head\` 由中断写，\`rx_tail\` 由主循环写，这种结构在裸机中简单可靠。
-
-## 常用协议形式
-1. 单字符命令：例如收到 \`a\` 点灯，收到 \`b\` 灭灯。调试最简单。
-2. 文本行协议：以 \`\\r\\n\` 结尾，如 \`LED ON\`。适合人机交互。
-3. 帧头帧尾协议：例如 \`AA 01 02 03 55\`，带长度和校验，适合设备间通信。
-4. MODBUS、自定义二进制协议：字段明确，需要解析函数。
-
-状态机解析的关键：收到帧头进入收集状态，收到足够长度后校验，校验失败则丢弃并复位状态。
-
-## 发送与接收并存
-注意 \`HAL_UART_Transmit()\` 和 \`HAL_UART_Receive_IT()\` 共用同一个 UART 句柄。阻塞发送时间过长，可能导致接收中断处理不及时。改进方法：
-
-1. 降低单次发送数据量。
-2. 使用 \`HAL_UART_Transmit_IT()\` 或 DMA 发送。
-3. 接收使用环形缓冲区，主循环及时取出。
-
-## 常见错误
-1. 回调里忘记重新启动接收，导致只能收到一次。
-2. 在中断回调中执行 \`HAL_Delay()\`，SysTick 优先级低于 UART 中断时会卡死。
-3. 共享变量没有加 \`volatile\`，主循环可能读到旧值。
-4. 缓冲区溢出没有处理，应丢弃最新数据或覆盖旧数据，并记录错误。
-5. 协议没有处理粘包和断包，应基于状态机而不是一次性读取固定长度。
-
-## 实践建议
-先实现“收到字符控制 LED”，再升级为“收到字符串命令”，最后加入帧头、长度、校验。这个递进过程能快速建立串口应用框架。
-
-\n      `,
-      points: [
-        "上拉输入 + 按键接 GND = 松开 1、按下 0",
-        "软件消抖：延时 10ms 后二次确认",
-        "阻塞式等待松开简单但占用 CPU，后续可用中断解决"
-      ]
-    },
-    {
-      page: 10, phase: "uart", title: "3.1 [串口] 通信协议", duration: 1270,
-      summary: "UART 帧格式：起始位、数据位、校验位、停止位与波特率。",
-      notes: `\n## 本节定位
-这一节学习 OLED 显示汉字和图片。点阵显示的本质相同：把字形数据按行列排布写入显存。掌握这一节后，自制字库、显示图标、局部刷新都会变得清晰。
-
-## 取模方式
-显示英文用 ASCII 字库，显示中文或图标需要取模软件生成数组。常见参数：
-
-1. 字体大小：常用 8x16 英文、16x16 汉字。
-2. 取模方式：逐行式、逐列式、列行式、行列式。
-3. 扫描方向：从高到低或从低到高。
-4. 字节倒序：有些驱动要求每字节最低位在左，有些要求最高位在左。
-
-取模软件设置必须和 OLED 驱动代码一致，否则显示会镜像、旋转或乱码。
-
-## 汉字数组示例
-
-~~~c
-/* 16x16 点阵，按实际取模结果填写 */
-const unsigned char hanzi_zhong[32] = {
-    0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00,
-    0x3F,0xF8,0x21,0x08,0x21,0x08,0x21,0x08,
-    0x21,0x08,0x21,0x08,0x3F,0xF8,0x21,0x08,
-    0x01,0x00,0x01,0x00,0x01,0x00,0x01,0x00
-};
-~~~
-
-一个 16x16 汉字有 16 行，每行 2 字节，所以是 32 字节。8x16 英文一个字符通常 16 字节。
-
-## 显示函数思路
-
-~~~c
-void OLED_ShowChinese(uint8_t x, uint8_t y, uint8_t index)
-{
-    for (uint8_t i = 0; i < 32; i++)
-    {
-        OLED_WriteData(chinese_font[index][i]);
-    }
-}
-~~~
-
-实际驱动会根据坐标计算页地址和列地址，并按 half-word 或逐字节写入。不要在业务代码里直接写地址，应该交给 \`OLED_Show...()\` 封装。
-
-## 图片显示
-一张 128x64 单色图对应 1024 字节。使用取模软件把 BMP 转成 C 数组，然后整屏写入：
-
-~~~c
-void OLED_ShowImage(const uint8_t *image)
-{
-    for (uint16_t i = 0; i < 1024; i++)
-    {
-        OLED_WriteData(image[i]);
-    }
-}
-~~~
-
-若驱动按页写入，外层还要按 8 个页循环。整屏刷新较慢，动态界面应只更新变化的区域。
-
-## 局部刷新
-频繁 \`OLED_Clear()\` 再重画所有内容会导致闪烁。推荐：
-
-1. 固定标题只在启动时画一次。
-2. 数值区域先用空格覆盖旧内容，再写新值。
-3. 使用双重缓冲：先在 MCU RAM 中修改，再一次写屏，能减少闪烁但需要 1KB 显存。
-4. 状态变化才刷新，用时间戳控制刷新频率，例如 100ms 一次。
-
-## 常见坑
-1. 汉字乱码：字模方向、字节倒序或页模式不对。
-2. 位置偏移：坐标单位是像素还是列/页没分清。
-3. 长字符串越界：SSD1306 每页 128 列，写满会自动回卷到下一页。
-4. 闪屏：整屏清屏频率太高。
-
-## 实践建议
-先固定 16x16 字模和封装好的 \`OLED_ShowChinese()\`，把常用字做成数组索引表。菜单、状态页、数据页分别封装函数，不要把坐标常量散落在主循环中。
-
-\n      `,
-      points: [
-        "波特率一致是通信前提，课程常用 115200",
-        "帧 = 起始位 + 8 数据位 + 校验位(可选) + 停止位",
-        "TXD 接 RXD、RXD 接 TXD，交叉连接并共地"
-      ]
-    },
-    {
-      page: 11, phase: "uart", title: "3.2 [串口] UART 模块的使用方法", duration: 1344,
-      summary: "USART 寄存器结构、库函数体系与初始化流程。",
-      notes: `\n## 本节定位
-这一节是 I2C 通信的原理课。OLED 和 MPU6050 都用 I2C，理解时序和地址才能排查卡死、无响应等问题。
-
-## I2C 物理结构
-I2C 使用两根线：
-
-1. SCL：时钟，由主机产生。
-2. SDA：数据，双向。
-
-两根线都需要上拉电阻，常见 4.7k~10k。设备采用开漏/开集输出，只能主动拉低，不能主动驱动高电平，因此可实现线与和多主机仲裁。
-
-## 起始与停止
-I2C 的电平在 SCL 高电平期间必须稳定；SCL 低电平期间才允许改变 SDA。
-
-1. 起始条件：SCL 高电平时，SDA 由高变低。
-2. 停止条件：SCL 高电平时，SDA 由低变高。
-3. 重复起始：不产生停止，直接再次产生起始，用于切换读/写方向。
-
-## 字节与应答
-每字节高位在前，发送 8 位后第 9 个时钟是应答位：
-
-1. 接收方拉低 SDA 表示 ACK。
-2. 保持高电平表示 NACK。
-3. 主机发送后检查从机 ACK；主机接收最后一字节时通常回 NACK，然后产生停止。
-
-## 7 位地址
-7 位从机地址左移 1 位，最低位表示方向：0 写，1 读。
-
-例如 MPU6050 7 位地址 \`0x68\`：
-
-1. 写地址字节：\`0xD0\`。
-2. 读地址字节：\`0xD1\`。
-
-SSD1306 常见 7 位地址 \`0x3C\`，写地址字节为 \`0x78\`。手册、CubeMX、库函数对地址表示方式不同，使用前必须确认。
-
-## 完整写寄存器流程
-以向 MPU6050 寄存器 \`REG\` 写 \`DATA\` 为例：
-
-~~~text
-START -> 地址+W -> ACK -> REG -> ACK -> DATA -> ACK -> STOP
-~~~
-
-读寄存器通常两段：
-
-~~~text
-START -> 地址+W -> ACK -> REG -> ACK
-RESTART -> 地址+R -> ACK -> 读数据 -> NACK -> STOP
-~~~
-
-第一次写是为了告诉从机要访问哪个寄存器，随后重新起始切换为读。
-
-## 软件 I2C 思路
-软件 I2C 用普通 GPIO 模拟：
-
-~~~c
-void i2c_start(void)
-{
-    SDA_HIGH();
-    SCL_HIGH();
-    delay_us(2);
-    SDA_LOW();
-    delay_us(2);
-    SCL_LOW();
-}
-
-void i2c_stop(void)
-{
-    SDA_LOW();
-    SCL_HIGH();
-    delay_us(2);
-    SDA_HIGH();
-}
-~~~
-
-写一字节时按位循环：先设置 SDA，再拉高 SCL，然后拉低 SCL。读 ACK 时释放 SDA，在 SCL 高电平期间读取。
-
-软件 I2C 的优势是引脚任意、调试灵活、不易受某些硬件 I2C 状态机问题影响；缺点是占用 CPU，速率受延时影响。
-
-## 硬件 I2C
-HAL 库典型写寄存器：
-
-~~~c
-HAL_I2C_Mem_Write(&hi2c1, DEV_ADDR, REG_ADDR, I2C_MEMADD_SIZE_8BIT, &data, 1, 100);
-~~~
-
-典型读寄存器：
-
-~~~c
-HAL_I2C_Mem_Read(&hi2c1, DEV_ADDR, REG_ADDR, I2C_MEMADD_SIZE_8BIT, buf, len, 100);
-~~~
-
-\`DEV_ADDR\` 必须与库定义一致：HAL 通常使用左移后的 8 位地址。
-
-## 排错清单
-1. SCL/SDA 接反。
-2. 缺上拉电阻或上拉过大。
-3. 地址表示方式错误，7 位没有左移，或 8 位被再次左移。
-4. 设备未共地。
-5. 电源电压不匹配。
-6. 总线被拉死：从机持续拉低 SDA，可先释放 SCL、必要时重新上电。
-
-## 本节要掌握
-看懂波形比记住 API 更重要。遇到问题可用逻辑分析仪看是否有 START、地址 ACK、数据 ACK，不 ACK 的位置通常就是故障点。
-
-\n      `,
-      points: [
-        "USART1 在 APB2（72MHz），USART2/3 在 APB1（36MHz）",
-        "TX 复用推挽输出，RX 浮空输入",
-        "看 TXE/RXNE 标志位判断收发状态"
-      ]
-    },
-    {
-      page: 12, phase: "uart", title: "3.3 [串口] 为串口初始化 IO 引脚", duration: 1521,
-      summary: "PA9/PA10 的 GPIO 与 USART1 配置代码。",
-      notes: `\n## 本节定位
-这一节是串口的底层初始化课，重点理解 TX/RX 引脚为什么要配置成不同模式，以及波特率寄存器和外设时钟的关系。
-
-## 引脚模式
-USART1 默认映射：
-
-1. PA9：TX，单片机发送，必须配置为复用推挽输出。
-2. PA10：RX，单片机接收，通常配置为浮空输入或上拉输入。
-
-原因是 TX 的电平由 USART 外设控制，GPIO 要让出控制权给复用功能；RX 只需要读外部电平，不需要驱动。
-
-## 重映射
-F103 部分外设支持引脚重映射。USART1 可由 AFIO 重映射到 PB6/PB7。使用重映射必须：
-
-1. 使能 AFIO 时钟。
-2. 调用 \`GPIO_PinRemapConfig()\`。
-3. 再初始化新引脚。
-
-如果硬件走线是 PB6/PB7，忘记重映射就会“代码看起来正确但没有输出”。
-
-## 波特率计算
-USART 波特率由 \`USART_BRR\` 决定：
-
-~~~text
-TX/RX baud = fCK / (16 * USARTDIV)
-~~~
-
-USART1 挂在 APB2，72MHz；USART2/3 挂在 APB1，36MHz。同样写 115200，底层 BRR 会不同，所以标准库把 \`USART_BaudRate\` 换算成寄存器值。若时钟树配错，波特率会等比例偏差，串口乱码。
-
-## 8-N-1 参数
-常用配置：
-
-1. 8 数据位。
-2. 无校验。
-3. 1 停止位。
-4. 无硬件流控。
-
-两端必须完全一致。有些串口助手默认显示为 \`115200-8-N-1\`，检查时要连流控一起看。
-
-## 初始化顺序
-
-~~~text
-使能 GPIO/USART 时钟
--> 配置 TX/RX 引脚
--> 配置波特率和帧格式
--> 使能 USART
--> 需要中断时再配置 NVIC
-~~~
-
-标准库 \`USART_Init()\` 内部会根据当前时钟计算 BRR，因此必须先保证 \`SystemCoreClock\` 正确。
-
-## 自检方法
-最简单的回环测试：
-
-1. 临时把 PA9 直接接到 PA10。
-2. 发送一字节后立即读取。
-3. 相同则 TX/RX 路径正常。
-
-也可以先不接外设，用示波器/逻辑分析仪看 TX 空闲是否为高、发送波形是否正确。
-
-## 常见错误
-1. TX 没配复用推挽，波形出不来。
-2. RX 配成推挽输出，反而驱动总线。
-3. USART2/3 忘记 APB1 时钟是 36MHz。
-4. 重映射引脚没有开 AFIO。
-5. 共地缺失，出现不稳定乱码。
-
-## 本节要掌握
-串口初始化的关键链路是“时钟 -> 引脚模式 -> 波特率 -> 外设使能”。以后换 USART2、USART3 或重映射引脚，都是按这条链路替换参数。
-
-\n      `,
-      points: [
-        "TX（PA9）必须配成复用推挽 GPIO_Mode_AF_PP",
-        "RX（PA10）浮空输入即可",
-        "两个时钟一起使能：GPIOA + USART1"
-      ]
-    },
-    {
-      page: 13, phase: "uart", title: "3.4 [串口] 发送数据", duration: 1939,
-      summary: "轮询发送单字节与字符串，理解 TXE 等待逻辑。",
-      notes: `\n## 课程概述
-
-本期视频由铁头山羊主讲，属于 STM32 入门教程第三章第四节。课程核心目标是讲解如何使用 STM32 的串口模块（USART）发送数据。内容涵盖串口发送底层原理、关键状态标志位的含义、三个新增的标准库编程接口、自定义发送函数的代码编写以及最终的硬件连接与测试验证。通过本章节的学习，学员将掌握可靠的多字节串口发送方法，避免数据覆盖和发送未完成导致的错误。
-
-## 1. 串口发送原理回顾
-
-### 内部结构与数据流向
-STM32 的 USART 模块核心包含两个主要寄存器：发送数据寄存器（TXDR）和接收数据寄存器（RXDR）。每个寄存器下方都挂载了一个移位寄存器。数据发送时，CPU 先将数据写入发送数据寄存器，随后该数据会自动移入下方的移位寄存器。移位寄存器负责将数据按比特位逐个移出发送到外部线路。
-
-### 多字节发送流程
-以发送五个字节的数据为例，具体时序如下：
-1.  CPU 将第一个字节写入发送数据寄存器，随后自动移至移位寄存器开始发送。
-2.  在第一个字节发送过程中，发送数据寄存器变为空闲状态。
-3.  编程人员可立即将第二个字节写入发送数据寄存器，等待第一个字节发完后自动填补移位寄存器。
-4.  依此类推，当所有字节依次填入后，最后一个字节从移位寄存器完全移出时，整个发送过程结束。
-5.  最终，发送数据寄存器和移位寄存器均恢复为空状态。
-
-## 2. 关键状态标志位详解
-
-为了准确控制发送流程，需要关注 USART 模块内部的两个核心标志位：TXE 和 TC。这两个标志位的值反映了模块当前的工作状态，可以通过查询其状态来判断是否可以进行下一步操作。
-
-### TXE 标志位（发送数据寄存器空）
-*   **全称**：Transmit Data Register Empty。
-*   **含义**：指示发送数据寄存器是否为空。
-*   **状态判断**：
-    *   当值为 1（SET）时，表示寄存器内无数据，可以写入新数据。
-    *   当值为 0（RESET）时，表示寄存器内仍有待发送数据。
-*   **作用**：防止数据覆盖。如果在未确认 TXE 为 1 的情况下强行写入新数据，可能导致前一个字节丢失。因此在每次写入新字节前，必须轮询检查此标志位。
-
-### TC 标志位（发送完成）
-*   **全称**：Transmit Complete。
-*   **含义**：指示整个发送过程是否彻底完成。
-*   **触发条件**：只有当发送数据寄存器为空 **且** 移位寄存器也为空时，该标志位才等于 1。
-*   **深层逻辑**：仅移位寄存器为空并不代表发送结束，因为可能还有下一个字节已经预加载到发送数据寄存器中。只有两个寄存器同时为空，才意味着物理链路和数据缓冲区均已清空。
-*   **应用场景**：在批量发送完所有数据后，需等待 TC 标志位置 1，以确保最后一个比特位已完全移出，避免后续操作中断当前传输。
-
-## 3. 标准库编程接口介绍
-
-本节介绍了三个用于控制 USART 通信的关键 API 函数，分别用于使能模块、查询状态和发送数据。
-
-### USART_Cmd：模块使能控制
-*   **功能**：作为 USART 模块的总开关，控制模块的开启与关闭。
-*   **参数说明**：
-    1.  \`USARTx\`：指定具体的串口编号（如 USART1、USART2、USART3）。
-    2.  \`NewState\`：枚举类型，\`ENABLE\` 表示开启，\`DISABLE\` 表示关闭。
-*   **示例**：\`USART_Cmd(USART1, ENABLE)\` 用于闭合开关启动串口。初始化完成后必须调用此函数确保模块工作。
-
-### USART_GetFlagStatus：标志位查询
-*   **功能**：获取指定标志位的当前状态值。
-*   **参数说明**：
-    1.  \`USARTx\`：目标串口。
-    2.  \`USART_FLAG_\`：指定要查询的标志位名称（如 \`USART_FLAG_TXE\`、\`USART_FLAG_TC\`）。
-*   **返回值**：返回 \`FlagStatus\` 类型。
-    *   \`SET\`：对应标志位值为 1。
-    *   \`RESET\`：对应标志位值为 0。
-*   **用途**：常用于配合 \`while\` 循环进行状态轮询，例如等待发送寄存器变空或等待发送完成。
-
-### USART_SendData：数据写入
-*   **功能**：将数据写入发送数据寄存器，触发自动发送流程。
-*   **参数说明**：
-    1.  \`USARTx\`：目标串口。
-    2.  \`Data\`：要发送的数据。
-*   **数据类型注意**：虽然通常以字节（8bit）为单位发送，但该接口的 \`Data\` 参数类型为 \`uint16_t\`（无符号 16 位整形）。
-*   **原因分析**：串口帧格式支持 9 位数据位模式。若使用 8 位整形无法容纳 9 位数据，因此采用 16 位整形以保证兼容性和灵活性。写入后，USART 硬件会自动处理后续的移位发送。
-
-## 4. 自定义发送函数实现逻辑
-
-为了实现一次性发送多个字节的功能，需要封装一个自定义函数 \`my_USART_SendByte\`。该函数结合了上述 API 和标志位机制，确保数据传输的可靠性。
-
-### 函数定义与参数
-*   **函数名**：\`my_USART_SendByte\`。
-*   **参数列表**：
-    1.  \`USART_TypeDef *USARTx\`：指定使用的串口实例指针。
-    2.  \`uint8_t *data\`：指向待发送数据的数组指针。
-    3.  \`uint16_t size\`：指定需要发送的字节数量。
-
-### 核心代码逻辑
-函数内部采用“循环发送单字节 + 最终等待完成”的策略：
-
-1.  **循环发送阶段**：
-    *   使用 \`for\` 循环遍历 \`size\` 次。
-    *   在每次写入前，使用 \`while\` 循环轮询 \`USART_FLAG_TXE\`。只要标志位为 \`RESET\`（0），则持续等待，直到寄存器变空。
-    *   寄存器变空后，调用 \`USART_SendData\` 将数组中的当前字节写入。
-    *   **注意**：此步骤确保每次写入前缓冲区都是安全的，防止旧数据被覆盖。
-
-2.  **发送完成等待阶段**：
-    *   \`for\` 循环结束后，所有字节已写入发送寄存器，但可能仍在移位中。
-    *   需在循环外再次使用 \`while\` 循环轮询 \`USART_FLAG_TC\`。
-    *   等待标志位变为 \`SET\`（1），即确认移位寄存器也清空后，函数才返回。
-    *   **关键点**：此等待逻辑必须放在 \`for\` 循环之外，否则会在发送中途错误地提前退出。
-
-## 5. 硬件连接与调试验证
-
-### 引脚重映射与电路连接
-实验基于最小系统板，涉及引脚复用和电平转换。
-*   **引脚配置**：默认情况下 USART1 的 TX/RX 位于 PH9/PH10，但经过重映射后，实际连接到 PB6（TX）和 PB7（RX）。
-*   **交叉连接**：单片机与 USB-TTL 模块通信需交叉连接信号线。
-    *   单片机 PB6（TX） 连接 TTL 模块的 RX 引脚。
-    *   单片机 PB7（RX） 连接 TTL 模块的 TX 引脚。
-    *   两者共地（GND），使用棕色导线连接。
-*   **调试器连接**：ST-LINK 调试器需连接至 SWD 接口以便烧录程序。
-
-### 软件环境配置
-使用串口调试助手进行数据接收验证。
-*   **端口识别**：插入 USB-TTL 模块前查看设备管理器，插入后新增的串口号即为目标端口（如 COM13）。
-*   **参数匹配**：波特率设置为 115200，数据位 8，停止位 1，校验位无。必须与单片机初始化参数一致，否则无法正确解析。
-*   **显示模式**：选择 HEX（十六进制）模式以便观察原始数据编码。
-
-### 测试执行与结果分析
-*   **代码调用**：在主程序中初始化串口后，调用 \`my_USART_SendByte\` 函数，传入数组 \`{12, 34, 5}\` 及长度 5。
-*   **下载运行**：编译无误后下载至单片机，复位芯片。
-*   **接收现象**：串口助手收到 6 个字节数据。
-    *   前两个字节 \`FF FF\` 为干扰或初始化残留数据。
-    *   后三个字节 \`12 34 05\` 为预期发送内容（注：原视频演示中数据为 12345 的 ASCII 或 hex 表现，此处以 Hex 模式为准）。
-    *   验证成功表明函数逻辑正确，能够完整发送多个字节并等待传输结束。
-\n      `,
-      points: [
-        "TXE = 数据寄存器空，TC = 帧发送完全结束",
-        "连续发送时每字节都要等 TXE",
-        "字符串结尾靠 \\0 判断，发送完再等 TC 才算干净收尾"
-      ]
-    },
-    {
-      page: 14, phase: "uart", title: "3.5 [串口] 格式化打印字符串", duration: 1939,
-      summary: "printf 重定向到串口：fputc 与勾选 MicroLIB。",
-      notes: `\n## 本节定位
-这一节讲解 MPU6050 的寄存器配置和初始化。MPU6050 集成三轴加速度计、三轴陀螺仪，并通过 DMP 可输出姿态角。学习重点是寄存器地址、量程、采样率和原始数据转换。
-
-## 关键寄存器
-常用寄存器包括：
-
-1. \`0x6B\` PWR_MGMT_1：电源管理，写 \`0x00\` 唤醒，写 \`0x80\` 复位。
-2. \`0x19\` SMPLRT_DIV：采样率分频。
-3. \`0x1A\` CONFIG：低通滤波配置。
-4. \`0x1B\` GYRO_CONFIG：陀螺仪量程。
-5. \`0x1C\` ACCEL_CONFIG：加速度计量程。
-6. \`0x75\` WHO_AM_I：设备地址验证寄存器。
-7. \`0x3B\`~\`0x48\`：加速度、温度、陀螺仪原始数据。
-
-初始化基本流程：
-
-~~~c
-mpu_write(0x6B, 0x80);   /* 复位 */
-HAL_Delay(100);
-mpu_write(0x6B, 0x01);   /* 时钟源选择 PLL，唤醒 */
-mpu_write(0x19, 0x07);   /* 分频，具体按课程工程 */
-mpu_write(0x1A, 0x03);   /* 低通滤波 */
-mpu_write(0x1B, 0x18);   /* 陀螺仪 +-2000dps */
-mpu_write(0x1C, 0x00);   /* 加速度 +-2g */
-~~~
-
-不同工程参数可能不同，理解每项含义比照抄数字更重要。
-
-## 读取 WHO_AM_I
-
-~~~c
-uint8_t id = mpu_read(0x75);
-~~~
-
-许多模块返回 \`0x68\`，部分兼容芯片或克隆芯片可能返回其他值。无返回或读出 \`0xFF\` 通常说明 I2C 不通。
-
-## 读取原始数据
-加速度和陀螺仪各轴都是 16 位，高字节在前。连续读 14 字节：
-
-~~~c
-uint8_t buf[14];
-mpu_read_buf(0x3B, buf, 14);
-
-int16_t ax = (buf[0]  << 8) | buf[1];
-int16_t ay = (buf[2]  << 8) | buf[3];
-int16_t az = (buf[4]  << 8) | buf[5];
-int16_t temp_raw = (buf[6] << 8) | buf[7];
-int16_t gx = (buf[8]  << 8) | buf[9];
-int16_t gy = (buf[10] << 8) | buf[11];
-int16_t gz = (buf[12] << 8) | buf[13];
-~~~
-
-## 原始值换算
-换算公式取决于量程：
-
-1. 加速度 \`+/-2g\`：\`a = raw / 16384.0\`，单位 g。
-2. 陀螺仪 \`+/-2000dps\`：\`g = raw / 16.4\`，单位 deg/s。
-3. 温度：按数据手册公式换算，不同批次寄存器公式略有差异。
-
-静态水平放置时，Z 轴加速度应接近 1g，X/Y 接近 0。这是快速验证传感器方向和灵敏度的方法。
-
-## 零偏校准
-陀螺仪静止时理论输出 0，但实际有零偏。校准方法：
-
-1. 上电后保持静止数秒。
-2. 采集几百次 gx/gy/gz 求平均。
-3. 后续读取减去零偏。
-
-加速度计可用静止时六面朝向数据估计零偏和灵敏度误差，简单应用中通常直接使用出厂值并滤波。
-
-## 数据处理
-原始数据抖动大，不能直接当作角度：
-
-1. 加速度计短期噪声大、长期相对稳定，可通过 atan2 计算倾角。
-2. 陀螺仪短期稳定，但积分会漂移。
-3. 互补滤波融合两者：\`angle = alpha * (angle + gyro*dt) + (1-alpha) * accel_angle\`。
-4. DMP 内部完成四元数融合，直接输出姿态，但初始化和移植更复杂。
-
-## 常见问题
-1. 读到全 0：寄存器没有正确唤醒。
-2. 读到全 FF：I2C 地址、接线或时序错误。
-3. 数据跳动：供电噪声、未滤波、机械振动。
-4. 角度漂移：陀螺零偏未校准或未融合。
-
-## 本节要掌握
-MPU6050 应用分三层：I2C 读写、寄存器配置、姿态解算。先把前两层跑通，再逐步理解滤波和 DMP。
-
-\n      `,
-      points: [
-        "重写 fputc 即完成 printf 重定向",
-        "必须勾选 MicroLIB，否则程序跑飞",
-        "printf(\"Temp = %d\\r\\n\", val) 是最常用的调试输出"
-      ]
-    },
-    {
-      page: 15, phase: "uart", title: "3.6 [串口] 接收数据", duration: 1300,
-      summary: "RXNE 轮询接收、接收数据包的思路。",
-      notes: `\n## 本节定位
-这一节继续 I2C 应用：读写 AT24C02 EEPROM。EEPROM 掉电不丢失，适合保存少量配置。相比 MPU6050 的只读传感器数据，本节重点是页写入、随机读和写周期时间。
-
-## 硬件与地址
-AT24C02 容量为 2Kbit，即 256 字节。A0/A1/A2 引脚决定器件地址，若全部接地，7 位地址通常是 \`0x50\`，左移后的写地址为 \`0xA0\`。不同模块地址可能不同，实测最可靠。
-
-WP 引脚为写保护：接 GND 允许写入，接 VCC 禁止写入。调试时先确认 WP 状态。
-
-## 字节写
-
-~~~text
-START -> 设备地址+W -> ACK -> 字地址 -> ACK -> 数据 -> ACK -> STOP
-~~~
-
-HAL 示例：
-
-~~~c
-uint8_t value = 0x55;
-HAL_I2C_Mem_Write(&hi2c1, 0xA0, 0x10, I2C_MEMADD_SIZE_8BIT, &value, 1, 100);
-HAL_Delay(5);
-~~~
-
-EEPROM 内部写入需要时间，典型 5ms。写完立刻读可能读到旧数据，必须等待写周期完成。
-
-## 页写入
-AT24C02 页大小 8 字节。一次最多连续写 8 字节，且不能跨越页边界。
-
-~~~c
-HAL_I2C_Mem_Write(&hi2c1, 0xA0, 0x00,
-                  I2C_MEMADD_SIZE_8BIT, buf, 8, 100);
-HAL_Delay(5);
-~~~
-
-如果从 \`0x06\` 连续写 8 字节，会回卷到本页开头 \`0x00\`，覆盖前两字节。跨页必须拆分写入。
-
-## 读操作
-当前地址读：直接读一字节，内部地址指针保持上次位置。
-
-随机读：先写目标地址，再重新起始读。
-
-~~~c
-uint8_t value;
-HAL_I2C_Mem_Read(&hi2c1, 0xA0, 0x10,
-                 I2C_MEMADD_SIZE_8BIT, &value, 1, 100);
-~~~
-
-连续读没有 8 字节限制，地址会自动递增，超过 0xFF 后回卷到 0。
-
-## 写周期确认
-除了固定延时，更可靠的 ACK 轮询：
-
-~~~text
-写完成后反复发送设备地址，直到收到 ACK，表示内部写完成。
-~~~
-
-简单项目用 \`HAL_Delay(5)\` 即可，注意不要把 EEPROM 写函数放在高频循环里。
-
-## 保存配置的典型结构
-
-~~~c
-typedef struct {
-    uint32_t magic;
-    uint8_t brightness;
-    uint16_t threshold;
-} Config;
-~~~
-
-保存时可以：
-
-1. 直接逐字段写入固定地址。
-2. 把结构体按字节序列化后写入。
-3. 加入校验和或 CRC。
-4. 使用 magic number 判断 EEPROM 中是否已有有效配置。
-
-首次上电若 magic 不匹配，就写入默认配置。
-
-## 寿命
-EEPROM 写入寿命通常为百万次级别。不要把频繁变化的数据直接存 EEPROM，例如每秒保存计数器，可先存 RAM，掉电场景配合大电容或专用 FRAM/Flash 方案。
-
-## 常见问题
-1. 写不进：WP 接高、页越界回卷、地址错误。
-2. 读全是 FF：器件地址不对、线路未通。
-3. 读数据混乱：写周期未等待，或连续读起始地址错误。
-4. 页写回卷：一次写入跨越页边界。
-
-## 本节要掌握
-EEPROM 的三个关键点：设备地址、页写规则、写周期等待。理解它们后，I2C 存储器件大多可以按同样方式使用。
-
-\n      `,
-      points: [
-        "读 DR 会自动清 RXNE 标志",
-        "接收一包数据要靠协议：帧头 + 数据 + 帧尾",
-        "更好的方案是中断或 DMA，后面章节展开"
-      ]
-    },
-    {
-      page: 16, phase: "uart", title: "3.7 [串口] 封装常用功能", duration: 1386,
-      summary: "把串口收发整理成 bsp_usart.c 驱动模块。",
-      notes: `\n## 本节定位
-这一节讲解外部中断 EXTI。中断让 MCU 不再反复轮询按键或传感器电平，而是事件发生时立即执行处理函数。重点是引脚映射、触发方式、回调和优先级。
-
-## 中断与轮询
-轮询：
-
-~~~c
-while (1)
-{
-    if (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET) { /* 处理 */ }
-}
-~~~
-
-缺点是主循环忙时可能漏检。中断由硬件监测边沿，主循环不需要反复查询，响应更快，但要在中断里保持短小、避免阻塞。
-
-## EXTI 引脚映射
-STM32F1 的 EXTI 线按引脚号共享：
-
-1. PA0/PB0/PC0... 只能选择其中一个映射到 EXTI0。
-2. PA1/PB1/PC1... 映射到 EXTI1，其余类推。
-
-因此不能同时让 PB0 和 PC0 都作为 EXTI0 中断。CubeMX 会体现这一限制。
-
-## 配置步骤
-CubeMX 中把 GPIO 设为 \`EXTI_MODE\`，选择上升沿、下降沿或双沿触发，并配置上拉/下拉：
-
-1. 按键接 GND、平时高电平：选下降沿触发 + 上拉。
-2. 信号平时低电平、事件产生高电平：选上升沿触发 + 下拉。
-3. 双沿触发可用于测量脉宽或状态翻转。
-
-生成代码后还需要在 NVIC 中启用中断，CubeMX 通常自动生成。
-
-## HAL 回调
-HAL 把多个 EXTI 线汇总到 \`EXTI0_IRQHandler()\`、\`EXTI15_10_IRQHandler()\` 等中断服务函数，再调用公共回调：
-
-~~~c
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-    if (GPIO_Pin == KEY_Pin)
-    {
-        /* 快速记录事件或设置标志 */
-    }
-}
-~~~
-
-回调中不要执行 OLED 刷新、长延时、串口阻塞发送。推荐只设置 \`volatile\` 标志，主循环处理业务。
-
-## 消抖
-中断抖动会多次进入回调。常用方法：
-
-1. 简单延时：不推荐在中断里 \`HAL_Delay()\`。
-2. 时间戳：记录上次触发时间，间隔小于 20ms 则忽略。
-3. 定时器扫描：外部中断置位事件，定时器 10ms 后再次确认电平。
-
-时间戳示例：
-
-~~~c
-static uint32_t last_tick = 0;
-uint32_t now = HAL_GetTick();
-if (now - last_tick > 20)
-{
-    key_event = 1;
-}
-last_tick = now;
-~~~
-
-## 中断优先级
-NVIC 数字越小优先级越高，同一抢占优先级不会互相打断。配置原则：
-
-1. 安全相关、实时性强的中断优先级更高。
-2. 通信、显示等业务中断不要抢安全中断。
-3. 尽量缩短临界区，必要时关闭某个中断而不是全局中断。
-
-## 常见问题
-1. 一次按键触发多次：抖动未处理。
-2. 完全不触发：引脚映射冲突、时钟未使能、NVIC 未打开。
-3. 卡死：回调中调用了依赖更低优先级中断的函数。
-4. 触发后主循环看不到：标志没有 \`volatile\`。
-
-## 本节要掌握
-中断的核心不是“会写回调”，而是分层设计：中断只抓事件，主循环处理事务。这个思想在 UART、定时器、DMA 中都一样。
-
-\n      `,
-      points: [
-        "bsp = Board Support Package，板级支持包",
-        "驱动与业务分离，换板只改 bsp 层",
-        "封装好的 SendString/printf 直接复用"
-      ]
-    },
-    {
-      page: 17, phase: "i2c", title: "4.1 [I2C] 基本电路结构", duration: 1300,
-      summary: "SCL/SDA 双线、上拉电阻与开漏输出的配合。",
-      notes: `\n## 本节定位
-NVIC 是 STM32 的中断控制器。这一节把前面零散的中断配置整理成系统方法：中断号、抢占优先级、响应优先级、中断嵌套和 HAL 中断处理链。
-
-## NVIC 的作用
-CPU 收到异常或外设中断请求后，NVIC 决定：
-
-1. 是否允许该中断。
-2. 是否允许打断当前程序。
-3. 多个中断同时发生时先执行谁。
-
-HAL/CubeMX 常用函数：
-
-~~~c
-HAL_NVIC_SetPriority(EXTI0_IRQn, 1, 0);
-HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-~~~
-
-## 抢占优先级与响应优先级
-STM32F1 通常使用 4 位优先级，可配置为不同分组。常见理解为：
-
-1. 抢占优先级：数字越小越高，高抢占优先级可以打断低抢占优先级的中断，形成嵌套。
-2. 响应优先级/子优先级：抢占优先级相同时，决定同时挂起的中断谁先执行，但不能打断正在执行的中断。
-3. 数值再相同时，向量表中断号小的先执行。
-
-不要把“先响应”误解为“能打断”。能否打断只看抢占优先级。
-
-## 中断服务函数结构
-标准外设通常有这样的链条：
-
-~~~c
-void USART1_IRQHandler(void)
-{
-    HAL_UART_IRQHandler(&huart1);
-}
-~~~
-
-\`HAL_UART_IRQHandler()\` 读取状态、清除标志，并根据事件调用 \`HAL_UART_RxCpltCallback()\` 等回调。用户一般只重写回调，不要重复清标志。
-
-## 常用中断号
-1. SysTick：系统滴答，HAL_Delay 和 HAL_GetTick 依赖它。
-2. EXTI0~EXTI4：外部中断线 0~4。
-3. EXTI9_5：外部中断线 5~9。
-4. EXTI15_10：外部中断线 10~15。
-5. USART1、TIMx、ADCx、I2Cx、SPIx：对应外设中断。
-
-EXTI5~9 和 10~15 共用一个向量，回调中要按 GPIO_Pin 判断来源。
-
-## 优先级设计
-裸机项目可按此分层：
-
-1. 最高：硬件安全、电机急停、欠压检测。
-2. 中：定时器控制环、高速通信。
-3. 较低：UART、按键、显示刷新。
-4. 最低或主循环：日志、UI、状态机。
-
-中断内只做短任务：
-
-~~~c
-volatile uint8_t key_pressed = 0;
-
-void HAL_GPIO_EXTI_Callback(uint16_t pin)
-{
-    if (pin == KEY_Pin) key_pressed = 1;
-}
-~~~
-
-主循环：
-
-~~~c
-if (key_pressed)
-{
-    key_pressed = 0;
-    /* 处理按键业务 */
-}
-~~~
-
-## 临界区与共享数据
-多个执行流访问同一变量时需要保护：
-
-1. 单字节布尔标志且只被一边写，通常 \`volatile\` 即可。
-2. 多字节变量、队列、结构体需要关中断或使用双缓冲/环形缓冲。
-3. HAL 提供的 \`__disable_irq()\`/\`__enable_irq()\` 是粗暴方案，时间要非常短。
-
-## 常见陷阱
-1. SysTick 优先级低于当前中断时，在中断里调用 \`HAL_Delay()\` 会卡死。
-2. 忘记清中断标志，函数会不断重入。
-3. 在中断和主循环同时操作同一缓冲区，数据损坏。
-4. 把大量业务放进回调，系统响应变差。
-5. 优先级分组设置混乱，导致实际优先级位宽与预期不同。
-
-## 本节要掌握
-NVIC 决定“谁更紧急”，代码结构决定“中断里做什么”。前者是硬件规则，后者是软件设计能力，两者都要正确系统才能稳定。
-
-\n      `,
-      points: [
-        "I2C 两线制：SCL 时钟 + SDA 数据",
-        "开漏输出 + 上拉电阻 = 线与逻辑",
-        "总线空闲时 SCL/SDA 都为高电平"
-      ]
-    },
-    {
-      page: 18, phase: "i2c", title: "4.2 [I2C] 通信协议", duration: 919,
-      summary: "起始信号、设备地址、读写位、应答与停止信号。",
-      notes: `\n## 本节定位
-这一节进入 SPI 通信，并结合 W25Q64 Flash 芯片。SPI 常用于 Flash、TFT 屏、SD 卡、高速传感器；W25Q64 容量为 8MB，是理解存储器页、扇区、块操作的典型器件。
-
-## SPI 基本结构
-SPI 通常四线：
-
-1. SCK：主机输出时钟。
-2. MOSI：主机输出，从机输入。
-3. MISO：从机输出，主机输入。
-4. NSS/CS：片选，通常低电平选中。
-
-主机通过 SCK 同步收发，每个时钟交换一位。数据可设置为 MSB First 或 LSB First。
-
-## CPOL 和 CPHA
-SPI 模式由 CPOL/CPHA 决定：
-
-1. CPOL=0：SCK 空闲低电平；CPOL=1：空闲高电平。
-2. CPHA=0：第 1 个边沿采样；CPHA=1：第 2 个边沿采样。
-3. 常见模式 0：CPOL=0，CPHA=0；模式 3：CPOL=1，CPHA=1。
-
-W25Q64 通常使用模式 0 或模式 3，两边必须一致。
-
-## HAL SPI 收发
-HAL 的发送和接收同时进行：
-
-~~~c
-uint8_t tx = 0x9F;
-uint8_t rx;
-HAL_SPI_TransmitReceive(&hspi1, &tx, &rx, 1, 100);
-~~~
-
-只发命令时从机可能也输出数据；读数据期间主机必须发送哑数据产生时钟。
-
-## W25Q64 基本命令
-1. \`0x9F\`：读取 JEDEC ID，应答 \`EF 40 17\`。
-2. \`0x05\`：读状态寄存器，检查 BUSY 位。
-3. \`0x06\`：写使能。
-4. \`0x02\`：页编程。
-5. \`0x03\`：读数据。
-6. \`0x20\`：扇区擦除 4KB。
-7. \`0xD8\`：块擦除 64KB。
-8. \`0xC7\`：整片擦除。
-
-Flash 的关键规则：写只能把 1 变成 0，擦除把位变回 1。因此改数据前通常要先擦除。
-
-## 读取 ID 示例
-
-~~~c
-uint8_t cmd = 0x9F;
-uint8_t id[3];
-
-CS_LOW();
-HAL_SPI_Transmit(&hspi1, &cmd, 1, 100);
-HAL_SPI_Receive(&hspi1, id, 3, 100);
-CS_HIGH();
-~~~
-
-如果 ID 读出 \`00\` 或 \`FF\`，先查片选、SCK/MOSI/MISO 和电源。
-
-## 页编程
-W25Q64 页大小 256 字节，一次页编程不能跨页。流程：
-
-~~~text
-写使能 -> CS低 -> 0x02 -> 24位地址 -> 数据 -> CS高 -> 等待BUSY=0
-~~~
-
-跨页写需要软件拆分。页编程不会擦除已为 0 的位，更新数据通常先擦除。
-
-## 扇区擦除
-
-~~~text
-写使能 -> CS低 -> 0x20 -> 24位扇区地址 -> CS高 -> 等待完成
-~~~
-
-擦除时间远长于写，典型几十毫秒到几百毫秒。程序中要等待状态寄存器 BUSY 位清零。
-
-## 文件系统
-8MB Flash 可挂接 FatFs，形成 U 盘或日志盘。文件系统按扇区/簇访问，底层驱动需要实现初始化、读扇区、写扇区、控制命令。频繁写小文件会放大擦写量，注意磨损均衡。
-
-## 排错思路
-1. 先确认 SPI 模式和速率。
-2. 用逻辑分析仪看 CS 是否正确包住命令。
-3. 命令与地址位数要完整，W25Q64 是 24 位地址。
-4. 写前检查写使能，写后检查 BUSY。
-5. 擦除后读应全为 FF，这是判断驱动是否正确的好方法。
-
-## 本节要掌握
-SPI 是“时钟交换数据”，Flash 是“必须先擦后写”。把命令、片选、地址、等待完成这几个环节分开检查，问题很快会定位。
-
-\n      `,
-      points: [
-        "每个字节后都有第 9 位的应答位",
-        "7 位地址 + 读写位组成第一个字节",
-        "起始/停止信号只在 SCL 高电平时有效"
-      ]
-    },
-    {
-      page: 19, phase: "i2c", title: "4.3 [I2C] I2C 模块的使用方法", duration: 1545,
-      summary: "F103 硬件 I2C 外设与事件机制。",
-      notes: `\n## 本节定位
-这一节把 SPI 和 W25Q64 连成完整工程：封装读 ID、读状态、写使能、擦除、页写、读数据，并测试数据保存。掌握后可扩展到日志存储和文件系统。
-
-## 驱动接口设计
-建议把底层操作分三层：
-
-1. \`w25qxx_init()\`：检查 ID，确认通信正常。
-2. 命令层：\`read_status()\`、\`write_enable()\`、\`wait_busy()\`。
-3. 应用层：\`sector_erase()\`、\`page_program()\`、\`read_data()\`。
-
-统一等待函数：
-
-~~~c
-void w25_wait_busy(void)
-{
-    uint8_t cmd = 0x05, status = 0;
-    do
-    {
-        CS_LOW();
-        HAL_SPI_Transmit(&hspi1, &cmd, 1, 100);
-        HAL_SPI_Receive(&hspi1, &status, 1, 100);
-        CS_HIGH();
-    } while (status & 0x01);
-}
-~~~
-
-不要在阻塞循环里忘记加超时，否则芯片异常时程序可能卡死。
-
-## 读 ID 与自检
-
-~~~c
-uint8_t w25_read_id3(uint8_t id[3])
-{
-    uint8_t cmd = 0x9F;
-    CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &cmd, 1, 100);
-    HAL_StatusTypeDef st = HAL_SPI_Receive(&hspi1, id, 3, 100);
-    CS_HIGH();
-    return st == HAL_OK;
-}
-~~~
-
-初始化时验证 \`id[0]==0xEF\`，如果不匹配就返回错误，避免后续盲目擦写。
-
-## 扇区擦除
-
-~~~c
-void w25_sector_erase(uint32_t addr)
-{
-    uint8_t cmd = 0x20;
-    w25_write_enable();
-    CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &cmd, 1, 100);
-    uint8_t a[3] = {addr >> 16, addr >> 8, addr};
-    HAL_SPI_Transmit(&hspi1, a, 3, 100);
-    CS_HIGH();
-    w25_wait_busy();
-}
-~~~
-
-4KB 扇区地址通常是页对齐地址，例如 \`0x000000\`、\`0x001000\`。
-
-## 页编程
-
-~~~c
-void w25_page_program(uint32_t addr, uint8_t *buf, uint16_t len)
-{
-    /* 调用前保证 len <= 256 且不跨页 */
-    uint8_t cmd = 0x02;
-    w25_write_enable();
-    CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &cmd, 1, 100);
-    uint8_t a[3] = {addr >> 16, addr >> 8, addr};
-    HAL_SPI_Transmit(&hspi1, a, 3, 100);
-    HAL_SPI_Transmit(&hspi1, buf, len, 100);
-    CS_HIGH();
-    w25_wait_busy();
-}
-~~~
-
-## 读数据
-
-~~~c
-void w25_read(uint32_t addr, uint8_t *buf, uint16_t len)
-{
-    uint8_t cmd = 0x03;
-    CS_LOW();
-    HAL_SPI_Transmit(&hspi1, &cmd, 1, 100);
-    uint8_t a[3] = {addr >> 16, addr >> 8, addr};
-    HAL_SPI_Transmit(&hspi1, a, 3, 100);
-    HAL_SPI_Receive(&hspi1, buf, len, 100);
-    CS_HIGH();
-}
-~~~
-
-## 写任意长度数据
-应用层不应要求调用者关心 256 字节和页边界。封装方法：
-
-1. 若当前写入会跨页，先把本页剩余空间写完。
-2. 更新地址和缓冲区指针，进入下一页。
-3. 每页调用一次 \`page_program()\`。
-
-若目标区域已有数据，必须先擦除；若要做小对象存储，可设计 slot 结构，每次追加新数据并校验。
-
-## 测试流程
-1. 读 ID，确认 \`EF 40 17\`。
-2. 擦除一个扇区。
-3. 读整个扇区，确认全为 \`0xFF\`。
-4. 写入已知数组。
-5. 读回比较。
-6. 断电重启再读，验证掉电保存。
-7. 多次覆盖测试，确认程序没有跳过擦除。
-
-## 可靠性设计
-1. 重要数据加 CRC 或校验和。
-2. 写入版本号/magic，判断配置完整性。
-3. 不要频繁擦写同一扇区，可用轮换地址。
-4. 擦写过程中断电会损坏数据，必要时设计双区备份。
-5. 大段写入加进度状态，避免看门狗喂狗不及时。
-
-## 本节要掌握
-驱动稳定的标志不是“一次能写进去”，而是初始化自检、擦除验证、写入比较、超时保护、异常返回都完整。这个习惯比单节知识点更重要。
-
-\n      `,
-      points: [
-        "F103 硬件 I2C 常见兼容性问题，实际项目常用软件模拟 I2C（见 4.6）",
-        "I2C1 挂 APB1 总线",
-        "事件标志 EV5/EV6/EV7 是读状态寄存器的封装"
-      ]
-    },
-    {
-      page: 20, phase: "i2c", title: "4.4 [I2C] 写数据", duration: 1853,
-      summary: "主机向从机写寄存器的完整时序与代码。",
-      notes: `\n## 本节定位
-这一节是 Flash 芯片（W25Q64）的基础认识与 SPI 接线。先建立容量、地址和擦写规则的概念，后面读写驱动才不会混乱。
-
-## 容量与单位
-W25Q64 的 64 指容量：
-
-~~~text
-64 Mbit = 8 MByte
-地址范围：0x000000 ~ 0x7FFFFF
-24 位地址
-~~~
-
-内部组织：
-
-1. 页 Page：256 字节，编程写入的最小连续单位。
-2. 扇区 Sector：4KB = 4096 字节，常用最小擦除单位。
-3. 块 Block：32KB 或 64KB，可整块擦除。
-
-Flash 写入只能把 1 变成 0；擦除把位恢复成 1。所以“修改数据”通常 = 擦除 + 写入。
-
-## 引脚
-常见 SOP8：
-
-1. \`/CS\`：片选，低电平选中。
-2. \`DO\`：MISO，主机读。
-3. \`/WP\`：写保护，通常接 VCC 或按模块默认。
-4. \`GND\`。
-5. \`DI\`：MOSI，主机写。
-6. \`CLK\`：SPI 时钟。
-7. \`/HOLD\`：暂停通信，通常接 VCC。
-8. \`VCC\`：2.7~3.6V，一般 3.3V。
-
-与 STM32 SPI1 连接：
-
-~~~text
-PA5 SCK  -> CLK
-PA6 MISO -> DO
-PA7 MOSI -> DI
-任意 GPIO -> /CS
-3.3V -> VCC/WP/HOLD
-GND -> GND
-~~~
-
-CS 必须由 GPIO 直接控制，不能用普通固定电平。
-
-## SPI 模式
-W25Q64 支持 Mode 0 和 Mode 3：
-
-1. Mode 0：CPOL=0，CPHA=0。
-2. Mode 3：CPOL=1，CPHA=1。
-3. MSB first。
-4. 初调建议 1MHz 以下，稳定后再提速。
-
-## 基本命令
-1. \`0x9F\` 读 JEDEC ID，返回 \`EF 40 17\`。
-2. \`0x05\` 读状态寄存器，BIT0 为 BUSY。
-3. \`0x06\` 写使能，每次页编程/擦除前都要执行。
-4. \`0x02\` Page Program，最多一页 256 字节且不能跨页。
-5. \`0x03\` Read Data，24 位地址后连续读。
-6. \`0x20\` Sector Erase 4KB。
-7. \`0xD8\` Block Erase 64KB。
-
-命令后地址按 24 位发送：高字节、中字节、低字节。
-
-## 读 ID 的最小流程
-
-~~~text
-CS=0
-发送 0x9F
-读 3 字节
-CS=1
-~~~
-
-正确返回 \`EF 40 17\`：EF 是 Winbond，40 17 表示容量类型。读出 \`FF\` 常见于 MISO 悬空/CS 一直高；读出 \`00\` 常见于 MOSI/命令错误。
-
-## 电源和信号
-1. VCC 引脚加 100nF 去耦电容。
-2. 不建议 5V 直连，除非模块自带稳压/电平适配。
-3. 杜邦线长时降低 SPI 速率。
-4. 多设备共用 SPI 时，每设备独立 CS，未选中设备 CS 保持高。
-
-## 排错思路
-1. 用逻辑分析仪看 CS 是否包住完整命令。
-2. 看 SCK 是否在 CS 低期间出现。
-3. 手动发送 0x9F，检查 MISO 是否有波形。
-4. 检查 DO/DI 是否接反。
-5. 若 WP 接低导致写保护，先恢复读 ID，再处理写问题。
-
-## 本节要掌握
-W25Q64 的三个层次：容量地址组织、SPI 通信参数、Flash 擦写规则。先读 ID 验证物理层，再做擦除/写入验证逻辑层。
-
-\n      `,
-      points: [
-        "写 = 地址(写方向) + 寄存器地址 + 数据",
-        "每一步都要等对应事件标志",
-        "BUSY 标志检查避免总线冲突"
-      ]
-    },
-    {
-      page: 21, phase: "i2c", title: "4.5 [I2C] 读数据", duration: 2165,
-      summary: "指定寄存器读：先写地址再重启读，含 ACK/NACK 处理。",
-      notes: `\n## 本节定位
-这一节讲解 DMA。DMA 可以让数据在外设和存储器之间直接搬运，不占用 CPU 反复读写，常用于 ADC 连续采样、串口大流量收发、SPI 传输和内存拷贝。
-
-## 为什么需要 DMA
-没有 DMA 时：
-
-~~~c
-for (uint16_t i = 0; i < 1024; i++)
-{
-    HAL_ADC_PollForConversion(&hadc1, 10);
-    adc_buf[i] = HAL_ADC_GetValue(&hadc1);
-}
-~~~
-
-CPU 要不断等待和搬运。开启 DMA 后，ADC 每完成一次转换自动请求 DMA，把结果写入数组，CPU 可以处理其他任务。
-
-## STM32F1 DMA 结构
-F103 有 DMA1 和 DMA2（部分容量），DMA1 有 7 个通道，DMA2 有 5 个通道。每个通道对应固定外设请求映射，例如 ADC1、USART1_TX、USART1_RX、SPI1_TX/RX 有对应通道。配置时选择正确通道，不能像 F4 那样完全自由映射。
-
-## 关键参数
-1. 方向：外设到内存、内存到外设、内存到内存。
-2. 外设地址：例如 \`&ADC1->DR\`。
-3. 内存地址：目标数组地址。
-4. 数据数量：传输次数。
-5. 外设增量：外设寄存器地址一般不递增。
-6. 内存增量：写数组时递增。
-7. 数据宽度：Byte、Half Word、Word。
-8. 模式：Normal 一次传输，Circular 循环覆盖。
-9. 优先级：Low/Medium/High/Very High。
-
-## HAL ADC DMA 示例
-启动：
-
-~~~c
-uint16_t adc_raw[4];
-HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_raw, 4);
-~~~
-
-完成后回调：
-
-~~~c
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
-{
-    if (hadc->Instance == ADC1)
-    {
-        /* adc_raw 已更新 */
-    }
-}
-~~~
-
-若使用 Circular 模式，DMA 会持续刷新数组；Normal 模式传输完成后需要重新启动。
-
-## 串口 DMA 发送
-
-~~~c
-uint8_t tx_buf[] = "DMA UART Test\\r\\n";
-HAL_UART_Transmit_DMA(&huart1, tx_buf, sizeof(tx_buf) - 1);
-~~~
-
-发送完成回调：
-
-~~~c
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if (huart->Instance == USART1)
-    {
-        tx_busy = 0;
-    }
-}
-~~~
-
-发送前应判断 \`tx_busy\`，否则新数据会打断未完成的传输。
-
-## 半传输与全传输
-DMA 可产生半完成 HT、全完成 TC、错误 TE 中断。Circular + 半完成/全完成非常适合流水处理：
-
-1. 前半缓冲正在写时，处理后半缓冲。
-2. 后半缓冲正在写时，处理前半缓冲。
-
-ADC 或音频采样常用这种双缓冲思想。
-
-## 缓冲区注意事项
-1. DMA 外设和内存宽度要匹配，ADC 12 位结果通常读 Half Word。
-2. 内存地址必须持续有效，不能把局部数组交给还在运行的 DMA。
-3. 多字节共享数据要考虑 CPU 与 DMA 并发修改。
-4. Cache 一致性问题主要在 Cortex-M7；F103 没有数据 Cache，但仍要注意 volatile 和时序。
-5. DMA 传输中不要随意修改地址和数量，应停止后再改。
-
-## 常见问题
-1. 只收到一次：Normal 模式没有重启。
-2. 数据错位：宽度或增量配置错误。
-3. 数组内容不更新：DMA 通道错误或没有启动。
-4. 程序跑飞：目标缓冲区太小或生命周期结束。
-5. 回调不进：DMA 或外设中断未使能。
-
-## 本节要掌握
-DMA 的思维是“让硬件自动搬运，CPU 管调度”。先把一次传输跑通，再考虑 Circular、双缓冲和错误处理。
-
-\n      `,
-      points: [
-        "读前要先写寄存器地址，再用重复起始切读",
-        "最后一个字节必须 NACK",
-        "读完记得重新使能 ACK"
-      ]
-    },
-    {
-      page: 22, phase: "i2c", title: "4.6 [I2C] 软 I2C", duration: 2721,
-      summary: "用普通 GPIO 软件模拟 I2C 时序，稳定可靠。",
-      notes: `\n## 本节定位
-这一节专门讲软件 I2C。相比硬件 I2C，GPIO 模拟时序更容易理解和排错，尤其适合 OLED、MPU6050、AT24C02 这类低速器件。
-
-## GPIO 配置
-SCL/SDA 可用普通 GPIO。安全做法：
-
-1. SCL 配置为推挽输出，因为主机始终控制时钟。
-2. SDA 在发送时推挽输出，接收/检查 ACK 时切换为上拉输入或开漏释放。
-
-很多简化驱动使用“开漏 + 外部上拉”，此时两端都只主动拉低，释放时读回电平，实现更简单。
-
-## 基础宏
-
-~~~c
-#define SCL_HIGH()  GPIO_SetBits(GPIOB, GPIO_Pin_6)
-#define SCL_LOW()   GPIO_ResetBits(GPIOB, GPIO_Pin_6)
-#define SDA_HIGH()  GPIO_SetBits(GPIOB, GPIO_Pin_7)
-#define SDA_LOW()   GPIO_ResetBits(GPIOB, GPIO_Pin_7)
-#define SDA_READ()  GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_7)
-~~~
-
-如果 SDA 需要切换方向，封装：
-
-~~~c
-void sda_out(void)
-{
-    GPIO_InitTypeDef g = {GPIO_Pin_7, GPIO_Speed_50MHz, GPIO_Mode_Out_PP};
-    GPIO_Init(GPIOB, &g);
-}
-
-void sda_in(void)
-{
-    GPIO_InitTypeDef g = {GPIO_Pin_7, GPIO_Speed_50MHz, GPIO_Mode_IPU};
-    GPIO_Init(GPIOB, &g);
-}
-~~~
-
-## 起始、停止和 ACK
-起始：
-
-~~~text
-SDA 释放 -> SCL 释放 -> SDA 拉低 -> SCL 拉低
-~~~
-
-停止：
-
-~~~text
-SDA 拉低 -> SCL 释放 -> SDA 释放
-~~~
-
-ACK 读取：
-
-~~~c
-uint8_t iic_wait_ack(void)
-{
-    uint8_t timeout = 0;
-    sda_in();
-    SCL_HIGH();
-    while (SDA_READ())
-    {
-        if (++timeout > 200)
-        {
-            iic_stop();
-            return 1;      /* NACK 或总线异常 */
-        }
-    }
-    SCL_LOW();
-    return 0;
-}
-~~~
-
-必须有超时，否则设备没接时程序会死等。
-
-## 写一字节
-
-~~~c
-void iic_send_byte(uint8_t data)
-{
-    for (uint8_t i = 0; i < 8; i++)
-    {
-        if (data & 0x80) SDA_HIGH();
-        else SDA_LOW();
-        data <<= 1;
-        SCL_HIGH();
-        delay_us(2);
-        SCL_LOW();
-        delay_us(2);
-    }
-}
-~~~
-
-I2C 高位先发。时钟低电平期间改变 SDA，高电平期间 SDA 必须稳定。
-
-## 读一字节
-
-~~~c
-uint8_t iic_read_byte(uint8_t ack)
-{
-    uint8_t data = 0;
-    sda_in();
-    for (uint8_t i = 0; i < 8; i++)
-    {
-        SCL_HIGH();
-        delay_us(2);
-        data <<= 1;
-        if (SDA_READ()) data |= 1;
-        SCL_LOW();
-        delay_us(2);
-    }
-    /* 主机发送 ACK=0 或 NACK=1 */
-    if (ack) sda_send_bit(1);
-    else sda_send_bit(0);
-    return data;
-}
-~~~
-
-最后一个字节应回 NACK，然后产生停止。
-
-## 延时与速率
-标准模式 100kHz 周期 10us，快速模式 400kHz 周期 2.5us。\`delay_us(2)\` 的实际时间要考虑函数开销。不确定时先用较慢速率保证稳定，再逐步缩短。
-
-## 排错
-1. SCL/SDA 顺序接反。
-2. 上拉电阻过大或没有。
-3. 地址没有左移/重复左移。
-4. ACK 等待没有超时。
-5. 释放 SDA 时仍是推挽低电平，导致读不到高。
-
-## 本节要掌握
-软件 I2C 就是把协议画成状态变化。保持“低电平改数据、高电平采数据”的规则，加上超时和释放总线，就能稳定适配多数低速 I2C 器件。
-
-\n      `,
-      points: [
-        "软 I2C 只需两个 GPIO，任何引脚都行",
-        "时序靠 Delay_us 控制节奏",
-        "实测稳定性通常优于 F103 硬件 I2C"
-      ]
-    },
-    {
-      page: 23, phase: "i2c", title: "4.7 [I2C] 封装常用功能", duration: 1050,
-      summary: "整理 iic.c 驱动层：读写一字节/多字节接口。",
-      notes: `\n## 本节定位
-这一节讲解串口的工程化用法：把发送封装成可靠接口，处理不定长接收，避免阻塞和丢包。它是前面 UART 基础和 DMA 的综合应用。
-
-## 阻塞、中断、DMA 的取舍
-1. 阻塞 \`HAL_UART_Transmit()\`：简单可靠，短日志可用；长数据会卡主循环。
-2. 中断 \`HAL_UART_Transmit_IT()\`：占用少，但每字节一次中断，高波特率时开销大。
-3. DMA \`HAL_UART_Transmit_DMA()\`：适合长数据，注意判断上一包是否完成。
-4. 接收推荐：单字节中断或 DMA 空闲中断 + 环形缓冲。
-
-## 发送封装
-
-~~~c
-volatile uint8_t uart_tx_busy = 0;
-
-int uart_send(const uint8_t *data, uint16_t len)
-{
-    if (uart_tx_busy) return -1;
-    uart_tx_busy = 1;
-    if (HAL_UART_Transmit_DMA(&huart1, (uint8_t *)data, len) != HAL_OK)
-    {
-        uart_tx_busy = 0;
-        return -2;
-    }
-    return 0;
-}
-~~~
-
-完成回调释放忙标志：
-
-~~~c
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-    if (huart->Instance == USART1)
-    {
-        uart_tx_busy = 0;
-    }
-}
-~~~
-
-短调试信息用阻塞发送也可以，但要给合理超时，不要无限等待。
-
-## DMA 空闲中断接收
-思路：
-
-1. 启动 \`HAL_UART_Receive_DMA()\` 到较大缓冲区。
-2. 通信对方发送一帧后线路进入空闲。
-3. UART 检测到 IDLE，产生中断。
-4. 在 IDLE 中断中计算这一帧长度：总接收数量减去 DMA 剩余数量。
-5. 处理数据后重启接收。
-
-HAL/寄存器侧需要开启 IDLE 中断。关键公式：
-
-~~~text
-received_len = total_size - DMA remaining_count
-~~~
-
-普通库可通过 \`__HAL_DMA_GET_COUNTER()\` 获取剩余计数。
-
-## 环形缓冲协议解析
-如果不用 IDLE 帧方式，也可让单字节中断持续进环形缓冲，主循环解析。文本行协议示例：
-
-~~~c
-static char line[64];
-static uint8_t pos = 0;
-
-void protocol_feed(uint8_t ch)
-{
-    if (ch == '\\r') return;
-    if (ch == '\\n')
-    {
-        line[pos] = 0;
-        handle_command(line);
-        pos = 0;
-        return;
-    }
-    if (pos < sizeof(line) - 1)
-    {
-        line[pos++] = (char)ch;
-    }
-}
-~~~
-
-二进制协议则应找帧头、读长度、做校验，状态机要能处理半包和错误恢复。
-
-## 命令设计示例
-
-~~~c
-void handle_command(const char *cmd)
-{
-    if (strcmp(cmd, "LED ON") == 0)
-    {
-        HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-        uart_send_string("OK\\r\\n");
-    }
-    else if (strcmp(cmd, "LED OFF") == 0)
-    {
-        HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-        uart_send_string("OK\\r\\n");
-    }
-    else
-    {
-        uart_send_string("ERR\\r\\n");
-    }
-}
-~~~
-
-复杂命令可用前缀+参数：\`SET THRESH 1024\`。解析时先拆字符串，再转换数值，并判断范围。
-
-## 调试实践
-1. 打印接收长度和 HEX 数据，确认是否收到正确字节。
-2. 每次修改协议都保留一版测试命令。
-3. 长时间运行测试环形缓冲是否溢出。
-4. 中断回调中不要解析复杂协议，只入队。
-5. 记录错误：帧头丢失、校验失败、溢出次数，便于现场排查。
-
-## 本节要掌握
-串口应用层的目标是“接收不丢、发送不卡、协议可恢复”。封装好接口后，其他模块只需要调用 \`send/receive\`，不要直接碰 HAL 句柄。
-
-\n      `,
-      points: [
-        "上层只调 WriteReg/ReadReg，不关心时序",
-        "换 OLED/传感器只换器件层，总线层复用"
-      ]
-    },
-    {
-      page: 24, phase: "i2c", title: "4.8 [I2C] OLED 显示器", duration: 3846,
-      summary: "SSD1306 驱动：初始化、显存、显示字符与数字。",
-      notes: `\n## 本节定位
-这一节进入 MP3/WAV 音频或语音模块的常见处理方式。重点是理解采样率、位宽、声道和播放路径，让单片机能控制音频数据流或模块播放。
-
-## 音频数字化的基本概念
-1. 采样率：每秒采样次数，常见 8k、16k、22.05k、44.1k、48kHz。
-2. 位宽：每采样点的位数，常见 8bit、16bit。
-3. 声道：单声道/立体声。
-4. 码率估算：\`采样率 * 位宽 * 声道\`。
-
-例如 16kHz、16bit、单声道 = 32KB/s。115200 串口约 11.5KB/s，无法直接流式播放 16bit 音频，需要压缩或换 SPI/SD 卡。
-
-## WAV 文件结构
-WAV 主体是 RIFF 容器：
-
-1. RIFF 头。
-2. fmt 块：AudioFormat、Channels、SampleRate、BitsPerSample。
-3. data 块：PCM 数据。
-
-播放前必须解析 fmt，不要假设所有 WAV 都是 16bit 单声道。8bit PCM 通常无符号，16bit PCM 通常有符号小端。
-
-## DAC 播放思路
-F103 DAC 12bit 可播放低采样率音效：
-
-1. 解析 WAV 得到采样率。
-2. 定时器触发频率等于采样率。
-3. 每次触发送一个样本到 DAC。
-4. 8bit 样本左移到 12bit，例如 \`sample << 4\`。
-5. 16bit 样本右移 4 位。
-
-DMA 方式更适合连续播放：
-
-~~~text
-Flash/SD卡音频块 -> RAM缓冲 -> DMA -> DAC
-播完当前块再读下一块
-~~~
-
-## MP3 压缩音频
-MP3 需要解码库。单片机播放 MP3 一般有两种：
-
-1. 软件 libmad/helix 解码，再送 DAC，对 CPU/RAM 要求高。
-2. 专用 MP3 解码芯片，如 VS1053，STM32 通过 SPI 发送 MP3 数据，芯片输出音频。
-
-VS1053 常见流程：
-
-1. SPI 初始化芯片。
-2. 设置音量、时钟。
-3. 检查 DREQ 引脚，芯片准备好时发送数据。
-4. 从 SD 卡/Flash 读取 MP3 文件流式发送。
-
-## 语音播报模块
-课程常见 JQ8900、SYN6288 等模块：
-
-1. UART 发送播放命令。
-2. 模块内部解码并输出功放。
-3. MCU 只需控制音量、曲目、播放/暂停。
-
-例如简单串口协议常包含帧头、命令长度、命令字、参数、校验。使用前先看模块手册，不要凭波特率猜。
-
-## 控制接口设计
-
-~~~c
-void audio_play_track(uint8_t track)
-{
-    uint8_t cmd[] = {0x7E, 0x04, 0x41, track, 0xEF};
-    /* 具体帧格式按模块手册调整 */
-    uart_send(cmd, sizeof(cmd));
-}
-~~~
-
-实用功能：
-
-1. 音量设置。
-2. 播放/暂停/停止。
-3. 循环模式。
-4. 播放完成引脚或状态查询。
-
-## 硬件注意
-1. 功放电流较大，不能从 STM32 3.3V 小电流引脚取电。
-2. 扬声器阻抗按模块要求，常见 4/8 欧姆。
-3. 音频地、数字地要合理连接，避免“嘟嘟”噪声。
-4. 电磁干扰大的项目要加滤波和屏蔽。
-5. 音量从低到高测试，保护耳朵和扬声器。
-
-## 调试
-1. 先播放固定已知音频。
-2. 用示波器看 DAC 波形是否像预期正弦/语音包络。
-3. 串口模块打印 ACK/状态码。
-4. 采样率不匹配会表现为音调过快或过慢。
-5. 位宽/声道处理错误会表现成噪声、翻倍语速或单声道异常。
-
-## 本节要掌握
-音频系统要先确定“数据在哪、解码谁做、如何输出”。MCU 方案核心是定时采样率与数据供给速度匹配；模块方案核心是协议和电源。
-
-\n      `,
-      points: [
-        "SSD1306 I2C 地址通常 0x78",
-        "显存 8 页 × 128 列，每字节 = 一列 8 像素",
-        "显示字符靠字模数组：ASCII 码索引取模"
-      ]
-    },
-    {
-      page: 25, phase: "spi", title: "5.1 [SPI] 电路结构和通信协议", duration: 853,
-      summary: "四线制 SPI：SCK/MOSI/MISO/CS 与模式 0~3。",
-      notes: `\n## 本节定位
-这一节讲解实时时钟 RTC。RTC 在主电源关闭后仍可由纽扣电池/备份电池维持时间，适合记录时间戳、闹钟和定时事件。
-
-## RTC 结构
-RTC 属于备份域，包含：
-
-1. 日历计数器：保存年月日时分秒。
-2. 闹钟寄存器：匹配时间产生中断。
-3. 备份寄存器：掉电后由 VBAT 供电保持，可存少量标志。
-4. 备份域电源：VBAT 或主电源。
-
-常用时钟源：
-
-1. LSE 32.768kHz：精度高，需外部晶振，推荐。
-2. LSI 40kHz：内部 RC，便宜但误差较大。
-3. HSE 分频：可用但不如 LSE 稳定。
-
-32.768kHz 因为 \`32768 = 2^15\`，经 15 级二分频正好得到 1Hz。
-
-## 初始化要点
-1. 使能 PWR 和 Backup 时钟。
-2. 允许访问备份域。
-3. 选择时钟源并等待就绪。
-4. 配置预分频器：LSE 时常见异步分频 127，同步分频 255，得到 1Hz。
-5. 初始化时间。
-
-判断是否需要重新初始化，可读备份寄存器中的 magic：
-
-~~~c
-if (HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x5050)
-{
-    /* 设置默认时间 */
-    HAL_RTC_SetTime(&hrtc, &time, RTC_FORMAT_BIN);
-    HAL_RTC_SetDate(&hrtc, &date, RTC_FORMAT_BIN);
-    HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR1, 0x5050);
-}
-~~~
-
-这样复位后不覆盖已运行的时间。
-
-## 读取时间
-
-~~~c
-RTC_TimeTypeDef time;
-RTC_DateTypeDef date;
-
-HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BIN);
-HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BIN);
-~~~
-
-注意：很多 STM32 HAL 要求先读 Time 后读 Date，否则日期锁存不会更新。顺序错了会出现日期不进位的现象。
-
-## 闹钟中断
-设置闹钟时间并使能中断后，匹配时进入回调：
-
-~~~c
-void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
-{
-    alarm_flag = 1;
-}
-~~~
-
-主循环处理：
-
-~~~c
-if (alarm_flag)
-{
-    alarm_flag = 0;
-    /* 蜂鸣、显示、记录日志 */
-}
-~~~
-
-周期闹钟或秒中断可按课程工程配置 EXTI 线和中断标志，注意 RTC 相关中断通常走 EXTI 的上升沿。
-
-## 时间换算
-仅用于内部计算时可转换为秒数：
-
-~~~c
-uint32_t to_seconds(uint16_t y, uint8_t m, uint8_t d,
-                    uint8_t hh, uint8_t mm, uint8_t ss)
-{
-    /* 简化示例：只比较当天时间 */
-    return hh * 3600UL + mm * 60UL + ss;
-}
-~~~
-
-跨日期计算建议使用现成库或 Unix 时间算法，避免手写闰年规则出错。
-
-## 时钟精度
-1. LSI 误差可达百分之几，长时间走时会明显偏差。
-2. LSE 晶振负载电容不匹配也会走慢/走快。
-3. 可用 PC 定期校时，或记录误差后软件补偿。
-4. 温度变化会影响晶振精度。
-
-## 常见问题
-1. 复位后时间清零：备份域电池无效或每次都重新初始化。
-2. 时间不走：时钟源未启动、预分频配置错。
-3. 日期不更新：未按 Time -> Date 顺序读取。
-4. 闹钟不触发：中断/EXTI/NVIC 没开，或闹钟掩码配置错误。
-
-## 本节要掌握
-RTC 不是普通定时器，它属于备份域，配置有魔法和状态保持问题。用备份寄存器区分首次上电与复位，是很多项目的必要技巧。
-
-\n      `,
-      points: [
-        "SPI 全双工，速度远高于 I2C",
-        "CS 拉低选中，拉高释放",
-        "四种模式由 CPOL（空闲电平）与 CPHA（采样边沿）组合"
-      ]
-    },
-    {
-      page: 26, phase: "spi", title: "5.2 [番外] 按钮驱动程序编写", duration: 1295,
-      summary: "独立按键驱动：扫描、消抖、长短按框架。",
-      notes: `\n## 本节定位
-这一节讲解低功耗。STM32 的低功耗不是单个函数，而是电源模式、时钟、外设状态、唤醒源共同决定的系统设计。
-
-## 常见模式
-F103 常用模式：
-
-1. Sleep：CPU 停止，外设继续运行，任意中断唤醒。唤醒后继续执行。
-2. Stop：1.8V 内核时钟停止，寄存器和 SRAM 保持，唤醒后从停机处继续，但系统时钟需要重新配置。
-3. Standby：内核电源关闭，SRAM 和寄存器内容丢失，唤醒后类似复位，只有备份域和待机电路保持。
-
-功耗从上到下降低，但恢复复杂度增加。
-
-## 进入 Sleep
-
-~~~c
-HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);
-~~~
-
-唤醒源可以是 SysTick、外部中断、UART 中断等。适合周期任务不忙时短暂休眠。
-
-## 进入 Stop
-
-~~~c
-HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
-~~~
-
-唤醒后 \`SystemCoreClock\` 可能仍是进入前的值，实际 HSI 已被选中，需要重新配置系统时钟：
-
-~~~c
-SystemClock_Config();
-SystemCoreClockUpdate();
-~~~
-
-否则 UART 波特率、延时时间都可能错误。
-
-## 进入 Standby
-
-~~~c
-HAL_PWR_EnterSTANDBYMode();
-~~~
-
-唤醒源通常是 WKUP 引脚上升沿、RTC 闹钟、IWDG 复位等。由于 RAM 内容丢失，程序要设计成唤醒后重新初始化必要状态。
-
-## 降低功耗的措施
-1. 未用 GPIO 配置为模拟输入或合理固定电平，避免悬空。
-2. 关闭不用外设时钟。
-3. 降低主频：功耗与频率正相关。
-4. 减少 LED、上拉电阻等静态电流。
-5. 让传感器、OLED、无线模块进入休眠或断电。
-6. 用 RTC 或低功耗定时器定时唤醒，任务集中执行。
-7. 使用中断驱动而不是轮询，让 CPU 有机会睡眠。
-
-## 唤醒源配置
-外部中断唤醒示例：
-
-~~~c
-HAL_NVIC_SetPriority(EXTI0_IRQn, 1, 0);
-HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-/* GPIO 已配置为 EXTI 下降沿/上升沿 */
-~~~
-
-WKUP 引脚：
-
-~~~c
-HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
-__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
-~~~
-
-RTC 闹钟唤醒要配置 RTC Alarm、EXTI Line 和 NVIC，并确认备份域时钟正常。
-
-## 测量方法
-1. 用万用表串联测量整机电流，注意量程切换。
-2. 示波器 + 小阻值采样电阻观察动态电流。
-3. 专用功耗分析仪器能看到睡眠/唤醒瞬态。
-4. 分离模块：先测 MCU 最小系统，再逐个接入外设。
-
-## 常见问题
-1. Stop 后串口乱码：唤醒后时钟没重配。
-2. 电流远高于数据手册：外设或 GPIO 仍在耗电。
-3. Standby 唤醒像复位：这是正常行为，不是 Bug。
-4. 唤醒不了：触发极性、中断标志、唤醒源没配置。
-5. 调试器导致电流异常：断开 SWD 后实测。
-
-## 本节要掌握
-低功耗设计先做功耗预算，再选模式。不要一开始就追求 Standby，很多项目用 Sleep/Stop 加定时唤醒已经足够。
-
-\n      `,
-      points: [
-        "边沿检测代替电平检测，避免长按重复触发",
-        "状态量 last/now 对比是扫描驱动核心"
-      ]
-    },
-    {
-      page: 27, phase: "spi", title: "5.3 [番外] 按钮代码的封装", duration: 1809,
-      summary: "把按键模块整理成 bsp_key 驱动。",
-      notes: `\n## 本节定位
-这一节讲解独立看门狗 IWDG。它的任务是：程序跑飞、死循环、阻塞卡死时强制复位系统，提高设备自恢复能力。
-
-## 工作原理
-IWDG 使用内部 LSI 40kHz 驱动，独立于主时钟。程序必须周期性“喂狗”，复位递减计数器；如果没有按时喂狗，计数器减到 0 产生 MCU 复位。
-
-关键寄存器/参数：
-
-1. 预分频器：4~256。
-2. 重装载值：12 位，0~4095。
-3. 超时时间公式：\`T = (4 * prescaler * reload) / 40kHz\`。
-
-例如预分频 64、重装载 625：
-
-~~~text
-T = 4 * 64 * 625 / 40000 = 4s
-~~~
-
-## HAL 配置示例
-
-~~~c
-hiwdg.Instance = IWDG;
-hiwdg.Init.Prescaler = IWDG_PRESCALER_64;
-hiwdg.Init.Reload = 625;
-HAL_IWDG_Init(&hiwdg);
-~~~
-
-喂狗：
-
-~~~c
-HAL_IWDG_Refresh(&hiwdg);
-~~~
-
-IWDG 一旦启动不能关闭，只能复位后重新计算。
-
-## 设计原则
-看门狗不是为了替代错误处理，而是最后保护。喂狗位置要代表“系统关键任务确实正常运行”。
-
-1. 不在定时器中断里无条件喂狗：主程序死循环时它仍会喂。
-2. 不在最开始和最末尾之间放太短周期：任务稍微波动就复位。
-3. 不设置过长超时：故障恢复变慢。
-4. 多任务系统可让每个关键模块报告健康标志，主循环检查后统一喂狗。
-
-健康标志示例：
-
-~~~c
-volatile uint8_t sensor_ok = 0;
-volatile uint8_t comm_ok = 0;
-
-void main_loop_feed_dog(void)
-{
-    if (sensor_ok && comm_ok)
-    {
-        HAL_IWDG_Refresh(&hiwdg);
-    }
-}
-~~~
-
-实际还要处理标志清除、超时判断，不能让某次异常永久阻止喂狗。
-
-## 复位原因诊断
-IWDG 复位后系统重启，但可通过 RCC 时钟控制/状态寄存器或 HAL 的复位标志判断原因：
-
-~~~c
-if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST))
-{
-    __HAL_RCC_CLEAR_RESET_FLAGS();
-    /* 记录“看门狗复位” */
-}
-~~~
-
-在 EEPROM、备份寄存器或外部存储中记录复位次数和最后状态，有助于定位现场问题。
-
-## 常见问题
-1. 正常运行也被复位：超时太短或长任务没有设计。
-2. 卡死不复位：喂狗放在错误的中断里。
-3. 调试器断点导致复位：可在调试配置中冻结 IWDG，或调试时临时禁用。
-4. 复位后不知道原因：没有检查复位标志。
-5. 上电初始化太慢被复位：把初始化时间计入超时预算。
-
-## 本节要掌握
-看门狗超时时间要覆盖最坏正常路径，但不能掩盖长时间阻塞。它需要和日志、复位原因、健康状态一起设计。
-
-\n      `,
-      points: [
-        "驱动三件套：初始化、获取事件、清除事件",
-        "主循环里 switch(key) 分发业务"
-      ]
-    },
-    {
-      page: 28, phase: "spi", title: "5.4 [SPI] IO 引脚初始化", duration: 1266,
-      summary: "SPI1 的 PA4-PA7 引脚配置。",
-      notes: `\n## 本节定位
-这一节讲解窗口看门狗 WWDG。与 IWDG 不同，它不仅要求“不能太晚喂狗”，还要求“不能太早喂狗”，用于检测程序执行节奏异常。
-
-## 与 IWDG 对比
-1. IWDG：独立 LSI，约 40kHz，只有最大超时，晚喂复位。
-2. WWDG：挂在 PCLK1，超时有窗口上限和下限，过早或过晚喂狗都复位。
-3. IWDG 一旦开启不可停止；WWDG 可通过配置，但通常仍按保护机制设计。
-4. IWDG 适合普通防跑飞；WWDG 适合监测主循环周期。
-
-## 计数规则
-WWDG 计数器递减，T6 位是有效标志位。写 WWDG_CR 时计数器值必须大于 0x40，允许范围通常是 \`0x41~0x7F\`。
-
-当计数器从 \`0x40\` 减到 \`0x3F\` 时产生复位。在计数器值达到窗口寄存器 WWDG_CFR 中设定值之前喂狗，也会复位。
-
-有效喂狗窗口：
-
-~~~text
-计数器递减到窗口值之后、到 0x40 之前喂狗
-~~~
-
-## 时间计算
-公式：
-
-~~~text
-T_wwdg = T_pclk1 * 4096 * prescaler * (counter - 0x3F)
-~~~
-
-例如 PCLK1=36MHz，分频 8：
-
-~~~text
-每个计数时间 = 4096 * 8 / 36MHz ≈ 910us
-~~~
-
-若计数从 0x7F 开始，到 0x3F 共 64 步，总超时约 58ms。窗口值决定最早喂狗时间。
-
-## HAL 示例
-
-~~~c
-hwwdg.Instance = WWDG;
-hwwdg.Init.Prescaler = WWDG_PRESCALER_8;
-hwwdg.Init.Window = 0x50;
-hwwdg.Init.Counter = 0x7F;
-hwwdg.Init.EWIMode = WWDG_EWI_ENABLE;
-HAL_WWDG_Init(&hwwdg);
-~~~
-
-喂狗：
-
-~~~c
-HAL_WWDG_Refresh(&hwwdg);
-~~~
-
-提前唤醒中断回调：
-
-~~~c
-void HAL_WWDG_EarlyWakeupCallback(WWDG_HandleTypeDef *hwwdg)
-{
-    /* 可记录异常、保存状态；然后根据策略喂狗或让它复位 */
-}
-~~~
-
-EWI 在计数器接近 0x40 时触发，可用于临终处理，但不能依赖它长期续命。
-
-## 主循环监测
-设计固定周期主循环：
-
-~~~c
-while (1)
-{
-    task_sensor();
-    task_display();
-    task_comm();
-
-    if (all_tasks_ok())
-    {
-        HAL_WWDG_Refresh(&hwwdg);
-    }
-
-    /* 等待下一个 10ms 周期 */
-    wait_until_next_tick();
-}
-~~~
-
-如果某任务偶发超时，应在任务内部记录错误并恢复，而不是靠看门狗每天复位一次。
-
-## 与任务周期匹配
-1. 测量主循环最坏耗时，包括显示刷新、串口发送、Flash 操作。
-2. 窗口下限应大于主循环最大周期。
-3. 窗口上限和计数器决定最晚喂狗时间。
-4. 若有偶发长操作，考虑分段执行或加大窗口，但不要完全失去监测意义。
-
-## 常见问题
-1. 一上电就复位：喂狗太早，计数器还高于窗口值。
-2. 运行一会儿复位：太晚喂狗，或主循环被阻塞。
-3. 一直不喂也不立即复位：以为时间范围比实际长。
-4. EWI 中断里无限喂狗：失去了检测异常的意义。
-
-## 本节要掌握
-WWDG 的价值在于节奏监测。它适合有明确周期任务的系统；如果程序周期本来不可预测，硬套 WWDG 反而带来误复位。
-
-\n      `,
-      points: [
-        "SCK/MOSI 复用推挽，MISO 输入",
-        "硬件 NSS 少用，通常软件控制 CS"
-      ]
-    },
-    {
-      page: 29, phase: "spi", title: "5.5 [SPI] SPI 模块的初始化", duration: 2537,
-      summary: "SPI_Init 结构体：方向、模式、速率、CPOL/CPHA。",
-      notes: `\n## 本节定位
-这一节是 SPI 外设初始化课。重点理解主模式、四根线、CPOL/CPHA 和分频，使 STM32 能按从机手册正确通信。
-
-## SPI1 引脚
-F103 SPI1 常用：
-
-1. PA5：SCK。
-2. PA6：MISO。
-3. PA7：MOSI。
-4. NSS：通常软件控制，用任意 GPIO 作片选。
-
-SCK/MOSI 由主机输出，配置复用推挽；MISO 由从机输入主机，配置浮空或上拉输入；CS 用普通推挽输出，默认拉高不选中。
-
-## 主机参数
-标准库配置：
-
-1. \`SPI_Direction_2Lines_FullDuplex\`：MOSI/MISO 同时收发。
-2. \`SPI_Mode_Master\`：STM32 产生时钟。
-3. \`SPI_DataSize_8b\`：多数 Flash/传感器按字节。
-4. \`SPI_CPOL\`/\`SPI_CPHA\`：由从机手册决定。
-5. \`SPI_NSS_Soft\`：不用硬件 NSS，由 GPIO 控制片选。
-6. \`SPI_FirstBit_MSB\`：多数器件高位先传。
-
-W25Q64 支持 Mode 0 和 Mode 3，可用 \`CPOL=Low, CPHA=1Edge\` 或 \`CPOL=High, CPHA=2Edge\`。
-
-## 时钟分频
-SPI1 在 APB2，72MHz。分频 8 得到 9MHz：
-
-~~~text
-SCK = APB Clock / BaudRatePrescaler
-~~~
-
-可用 2/4/8/16/32/64/128/256。调试从机时先用低速（例如 1MHz 以下），确认协议正确后再提高。
-
-## 片选时序
-SPI 没有地址机制，靠 CS 选中。正确做法：
-
-~~~text
-CS 拉低 -> 发送命令/地址/数据 -> CS 拉高
-~~~
-
-一条完整命令必须包在同一个 CS 低电平中。CS 高低之间插入太多额外字节会导致从机解释错误。
-
-## 收发函数
-SPI 是全双工交换：
-
-~~~c
-uint8_t spi_rw_byte(uint8_t tx)
-{
-    while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET);
-    SPI_I2S_SendData(SPI1, tx);
-    while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET);
-    return SPI_I2S_ReceiveData(SPI1);
-}
-~~~
-
-发送的同时也接收。读数据时发送 \`0xFF\` 或 \`0x00\` 产生时钟，返回值才是从机数据。
-
-## 初始化检查
-1. APB2/APB1 外设时钟使能了吗？
-2. GPIO 复用模式对吗？
-3. CPOL/CPHA 和从机手册一致吗？
-4. 数据大小和位序一致吗？
-5. 片选默认高电平吗？
-6. 分频是否超出从机最大频率？
-
-## 常见现象
-1. 读 ID 全 0xFF：MISO 未连接、CS 一直高、从机未上电。
-2. 读 ID 全 0x00：CS 一直低、MOSI 命令错、模式错。
-3. 数据位镜像：MSB/LSB 设置反了。
-4. 偶尔丢位：速率太高或信号质量差。
-5. 多字节错位：CS 中途抬起，命令被打断。
-
-## 本节要掌握
-SPI 初始化四要素：引脚复用、时钟分频、模式 CPOL/CPHA、片选时序。先和从机数据手册逐项对齐，再谈上层读写。
-
-\n      `,
-      points: [
-        "SPI1 挂 APB2（72MHz），SPI2 挂 APB1（36MHz）",
-        "分频系数决定 SCK 频率",
-        "W25Q64 支持 SPI 模式 0 与模式 3"
-      ]
-    },
-    {
-      page: 30, phase: "spi", title: "5.6 [SPI] 数据收发", duration: 1330,
-      summary: "全双工交换一字节：写 DR 等待 RXNE。",
-      notes: `\n## 本节定位
-这一节讲解片内 Flash 读写。STM32 Flash 除了保存程序，也可在运行时存储参数，但要遵守擦除粒度、半字写入、解锁流程和中断影响。
-
-## Flash 组织
-以 F103 中容量为例：
-
-1. 页大小 1KB。
-2. 擦除单位是页，写入单位是半字 16 位。
-3. 写入只能把 1 变为 0，不能把 0 变成 1，所以更新参数要先擦除。
-4. 不能写正在执行程序的区域，否则会破坏固件。
-
-用户参数通常放在最后一页或固定地址，并和链接脚本/工程大小配合。
-
-## 解锁与锁定
-HAL 流程：
-
-~~~c
-HAL_FLASH_Unlock();
-/* 擦除或写入 */
-HAL_FLASH_Lock();
-~~~
-
-擦除：
-
-~~~c
-FLASH_EraseInitTypeDef erase;
-uint32_t page_error = 0;
-
-erase.TypeErase = FLASH_TYPEERASE_PAGES;
-erase.PageAddress = 0x0801FC00;  /* 按实际容量选择最后一页 */
-erase.NbPages = 1;
-
-HAL_FLASH_Unlock();
-if (HAL_FLASHEx_Erase(&erase, &page_error) != HAL_OK)
-{
-    /* 错误处理 */
-}
-HAL_FLASH_Lock();
-~~~
-
-写入半字：
-
-~~~c
-HAL_FLASH_Unlock();
-HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, addr, value);
-HAL_FLASH_Lock();
-~~~
-
-F1 主 Flash 要求半字对齐。
-
-## 保存结构体
-不能直接把含指针的结构体写进 Flash。设计固定布局：
-
-~~~c
-typedef struct {
-    uint16_t magic;
-    uint16_t threshold;
-    uint32_t interval_ms;
-    uint16_t checksum;
-} Settings;
-~~~
-
-序列化时按半字写入；读取时用 \`memcpy()\` 或映射地址读取，并校验 magic/checksum。
-
-Flash 地址可直接读取：
-
-~~~c
-const Settings *p = (const Settings *)SETTINGS_ADDR;
-if (p->magic == 0xA55A && check_ok(p)) { /* 使用配置 */ }
-~~~
-
-## 多版本配置
-直接擦写同一页，写入过程中断电会损坏配置。可靠做法：
-
-1. 准备 A/B 两页。
-2. 新配置写到空闲页，写入后校验。
-3. 写版本号，读配置时选择版本号大且校验通过的页。
-4. 两页都无效时使用默认值。
-
-这个方案比固定单页更抗断电。
-
-## 中断和执行影响
-1. F1 Flash 擦除期间 CPU 通常不能访问 Flash，中断向量在 Flash 时会影响实时性。
-2. 长擦除前应停止关键外设任务，并考虑看门狗时间。
-3. 擦除一页可能几毫秒到几十毫秒，不要在高实时路径中执行。
-4. 修改固件本身或向量表区域极其危险，参数区要与代码区隔离。
-
-## 测试步骤
-1. 记录初始页数据。
-2. 擦除后读回确认全 FF。
-3. 写入多组数据并读回比较。
-4. 复位后确认保存。
-5. 断电/重新上电测试。
-6. 连续写入 N 次确认不会因为未擦除而失败。
-
-## 本节要掌握
-Flash 参数存储的核心是地址规划、先擦后写、掉电安全和校验。对小数据，EEPROM 或外部 FRAM 更方便；用片内 Flash 是成本和可靠性之间的折中。
-
-\n      `,
-      points: [
-        "发送与接收同时发生，\"读\"也要发哑元字节",
-        "等 TXE 再写 DR，等 RXNE 再读"
-      ]
-    },
-    {
-      page: 31, phase: "spi", title: "5.7 [SPI] W25Q64 实验（上）", duration: 2512,
-      summary: "W25Q64 Flash 芯片：指令集、写使能与页编程。",
-      notes: `\n## 本节定位
-这一节进入定时器。定时器是 STM32 最重要的外设之一，可做周期中断、PWM、输入捕获、编码器接口和电机控制。先理解定时单元和预分频，后面的 PWM 与捕获都会自然展开。
-
-## 定时器分类
-F103 常见：
-
-1. 高级定时器 TIM1/TIM8：带互补输出、死区、刹车，适合电机和电源。
-2. 通用定时器 TIM2~TIM5：16 位计数器， PWM、捕获、编码器。
-3. 基本定时器 TIM6/TIM7： mainly 用于 DAC 触发和简单周期中断，无输出通道。
-
-## 计数原理
-定时器核心是计数器 CNT：
-
-1. 时钟先经过预分频器 PSC。
-2. 计数器每过一个定时周期加 1 或减 1。
-3. 计数到自动重装载值 ARR 时产生更新事件，并按配置回到 0。
-
-更新频率公式：
-
-~~~text
-Update = TimerClock / ((PSC + 1) * (ARR + 1))
-~~~
-
-例如 TIM2 挂在 APB1，定时器时钟 72MHz，要产生 1kHz 更新：
-
-~~~text
-(PSC+1)*(ARR+1) = 72000
-PSC = 71, ARR = 999
-~~~
-
-## CubeMX/HAL 初始化
-
-~~~c
-TIM_HandleTypeDef htim2;
-
-htim2.Instance = TIM2;
-htim2.Init.Prescaler = 71;
-htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-htim2.Init.Period = 999;
-htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
-HAL_TIM_Base_Init(&htim2);
-~~~
-
-启动和中断：
-
-~~~c
-HAL_TIM_Base_Start_IT(&htim2);
-~~~
-
-回调：
-
-~~~c
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == TIM2)
-    {
-        /* 每 1ms 执行一次 */
-    }
-}
-~~~
-
-注意 SysTick 也使用 \`HAL_TIM_PeriodElapsedCallback()\` 的工程里，CubeMX 通常把 HAL 时基改成某个 TIM，回调里要按实例区分。
-
-## 计数模式
-1. 向上计数：从 0 到 ARR，再回 0。
-2. 向下计数：从 ARR 到 0，再回 ARR。
-3. 中央对齐：先增后减，PWM 波形中心对齐，电机/电源常用。
-
-## 定时中断设计
-1. 1ms 主时基：软件定时器、按键扫描、状态机节拍。
-2. 10ms 任务：按键消抖、显示刷新。
-3. 100us~1ms：控制环、步进电机脉冲。
-4. 高于几十微秒的中断要非常谨慎，避免压垮 CPU。
-
-软件定时器示例：
-
-~~~c
-volatile uint32_t tick_1ms = 0;
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == TIM2)
-    {
-        tick_1ms++;
-    }
-}
-
-/* 主循环判断 */
-uint32_t last = 0;
-if (tick_1ms - last >= 10)
-{
-    last = tick_1ms;
-    task_10ms();
-}
-~~~
-
-\`tick_1ms\` 需要按字长访问；32 位 MCU 上 32 位读写是原子的，但多字节状态仍要保护。
-
-## 常见问题
-1. 定时周期不对：总线分频导致定时器时钟不是 72MHz。
-2. 不进中断：NVIC 未使能、没有调用 Start_IT。
-3. 回调冲突：多个定时器共用回调，没判断 Instance。
-4. 中断太重：回调中做串口阻塞发送或显示刷新。
-5. ARR 修改不生效：未开启预装载或没有产生更新事件。
-
-## 本节要掌握
-定时器的通用公式是 \`时钟 / ((PSC+1)*(ARR+1))\`。把这个公式和实际总线时钟结合，就能准确设计任意周期。
-
-\n      `,
-      points: [
-        "写前必须发 0x06 写使能",
-        "页编程不能跨页边界",
-        "擦除后全为 0xFF，写入只能把 1 改 0"
-      ]
-    },
-    {
-      page: 32, phase: "spi", title: "5.8 [SPI] W25Q64 实验（下）", duration: 959,
-      summary: "扇区擦除、连续读写与验证实验。",
-      notes: `\n## 本节定位
-这一节把定时器输出比较用于 PWM。PWM 可控制 LED 亮度、蜂鸣器音调、直流电机速度、舵机角度，是控制类项目的核心输出方式。
-
-## PWM 原理
-PWM 是周期固定、占空比可变的方波：
-
-1. 计数器从 0 计到 ARR。
-2. 比较寄存器 CCR 与计数器比较。
-3. CNT < CCR 时输出一个电平，CNT >= CCR 时输出另一个电平。
-4. 占空比 = CCR / (ARR + 1)。
-
-频率公式：
-
-~~~text
-PWM Frequency = TimerClock / ((PSC + 1) * (ARR + 1))
-~~~
-
-例如 72MHz、PSC=71、ARR=99：
-
-~~~text
-F = 72MHz / (72*100) = 10kHz
-~~~
-
-## 通道与 GPIO
-每个通用定时器有多个通道，如 CH1/CH2/CH3/CH4。输出 PWM 时 GPIO 要配置为复用推挽输出，并映射到对应 AF。CubeMX 选择 \`TIMx_CHy\` 后会自动生成。
-
-HAL 配置核心：
-
-~~~c
-TIM_OC_InitTypeDef sConfig = {0};
-
-sConfig.OCMode = TIM_OCMODE_PWM1;
-sConfig.Pulse = 50;
-sConfig.OCPolarity = TIM_OCPOLARITY_HIGH;
-sConfig.OCFastMode = TIM_OCFAST_DISABLE;
-HAL_TIM_PWM_ConfigChannel(&htim3, &sConfig, TIM_CHANNEL_1);
-~~~
-
-启动：
-
-~~~c
-HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-~~~
-
-修改占空比：
-
-~~~c
-__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, value);
-~~~
-
-## PWM 模式
-1. PWM1：CNT < CCR 输出有效电平。
-2. PWM2：CNT < CCR 输出无效电平，相当于反相。
-
-\`OCPolarity\` 也可以在硬件层翻转有效极性。理解有效电平对驱动电路很重要。
-
-## LED 呼吸灯
-低频 PWM 会让人眼看到闪烁；500Hz 以上通常稳定。10kHz 常用于电机，可减少噪声。
-
-~~~c
-for (uint16_t duty = 0; duty <= 100; duty++)
-{
-    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, duty);
-    HAL_Delay(5);
-}
-for (int16_t duty = 100; duty >= 0; duty--)
-{
-    __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, duty);
-    HAL_Delay(5);
-}
-~~~
-
-若 ARR=99，则 CCR 范围 0~100 对应 0~100%。注意 CCR 不能超过 ARR+1 的有效范围。
-
-## 舵机控制
-标准舵机需要约 50Hz PWM，脉冲宽度 0.5~2.5ms：
-
-1. 周期 20ms。
-2. 72MHz 下可选 PSC=71，ARR=19999。
-3. 1ms 对应 CCR=1000，2ms 对应 CCR=2000。
-
-~~~c
-/* 90 度附近，具体按舵机标定 */
-__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 1500);
-~~~
-
-舵机电源不要从 STM32 3.3V 取，应使用 5V 或独立电源并共地。
-
-## 直流电机
-PWM 通常接驱动芯片输入，如 TB6612、L298N、DRV8833：
-
-1. IN1/IN2 决定方向，PWM 决定速度。
-2. 频率过低会抖动/啸叫，过高开关损耗增加。
-3. 电机启动电流大，电源和地线要独立规划。
-4. 可配合输入捕获或编码器测速形成闭环。
-
-## 蜂鸣器
-无源蜂鸣器需要 PWM 频率变化发声：
-
-~~~text
-频率高 -> 音调高
-频率低 -> 音调低
-占空比 50% 音量通常较平衡
-~~~
-
-有源蜂鸣器内部自带振荡，只需 GPIO 电平控制，不需要 PWM 调音调。
-
-## 常见问题
-1. 没有输出：GPIO 复用错、通道未 Start、定时器时钟未开。
-2. 频率不对：APB 分频与定时器倍频关系没算清。
-3. 占空比线性但亮度非线性：人眼/LED 响应非线性，可做伽马校正。
-4. 电机失控：驱动逻辑、共地、PWM 极性错误。
-5. 多通道相位不同：中央对齐与对齐模式理解不清。
-
-## 本节要掌握
-PWM 只有两个核心数字：频率和占空比。设计前先确定负载需要什么频率，再决定 PSC/ARR，最后用 CCR 控制能量。
-
-\n      `,
-      points: [
-        "地址 24 位：3 字节依次发送",
-        "写入后要轮询状态寄存器 BUSY 位",
-        "跨页写要软件分页处理"
-      ]
-    },
-    {
-      page: 33, phase: "int", title: "6.1 [中断] 中断的概念", duration: 919,
-      summary: "轮询 vs 中断：事件驱动的意义与中断流程。",
-      notes: `\n## 本节定位
-这一节继续定时器的输入捕获功能。输入捕获可以测量脉冲宽度、周期、频率和占空比，是读取超声波模块、红外信号、外部频率信号的常用方法。
-
-## 输入捕获原理
-当通道检测到指定边沿时，定时器把当前 CNT 值复制到捕获寄存器 CCR：
-
-1. 记录上升沿时间 T1。
-2. 切换捕获极性，记录下降沿时间 T2。
-3. 脉宽 = \`(T2 - T1) * 计数周期\`，考虑计数器溢出时要加上溢出次数。
-
-计数周期：
-
-~~~text
-Tcnt = (PSC + 1) / TimerClock
-~~~
-
-例如 72MHz、PSC=71：
-
-~~~text
-Tcnt = 72 / 72MHz = 1us
-~~~
-
-每个计数对应 1us，测量结果非常直观。
-
-## HC-SR04 超声波
-典型时序：
-
-1. Trig 引脚输出至少 10us 高电平。
-2. 模块发出 8 个 40kHz 脉冲。
-3. Echo 引脚输出高电平，宽度正比于往返时间。
-4. 距离 = 高电平时间 * 340m/s / 2。
-
-换算：
-
-~~~text
-距离 cm = Echo_us * 0.0343 / 2 ≈ Echo_us / 58
-~~~
-
-## 单通道两次捕获
-先用上升沿捕获，捕获成功后改成下降沿：
-
-~~~c
-volatile uint32_t cap_rise = 0, cap_fall = 0;
-volatile uint8_t cap_state = 0;
-
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == TIM3 && htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)
-    {
-        if (cap_state == 0)
-        {
-            cap_rise = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-            cap_state = 1;
-            /* 切换为下降沿捕获 */
-        }
-        else
-        {
-            cap_fall = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-            cap_state = 0;
-            /* 计算 echo_us */
-            /* 恢复上升沿捕获 */
-        }
-    }
-}
-~~~
-
-切换极性可操作 \`TIM_INPUTCHANNELPOLARITY_RISING/FALLING\` 对应 HAL 宏或寄存器 CCER。若 ARR 较小，还必须处理溢出。
-
-## 两个通道同一定时器
-更稳定的做法是同一个输入通过内部映射进入两个通道：
-
-1. CH1 上升沿。
-2. CH2 下降沿。
-3. 两个 CCR 同时来自同一计数器，不需要切换极性。
-
-CubeMX 中选择 Combined Channels 或配置输入捕获映射。测周期时也可用从模式 Reset：TI1FP1 上升沿复位计数器，下一次上升沿前读到的 CCR 就是周期。
-
-## 中断处理与溢出
-16 位计数器在 1us 分辨率下约 65.5ms 溢出。测量较长 Echo 时必须处理：
-
-~~~c
-volatile uint16_t overflow_count = 0;
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    overflow_count++;
-}
-~~~
-
-计算：
-
-~~~c
-uint32_t delta = (uint32_t)overflow_count * 65536UL + cap_fall - cap_rise;
-~~~
-
-工程中也可把 PSC 加大，牺牲分辨率换取量程。
-
-## 常用参数
-HC-SR04 测量建议：
-
-1. Trig 高电平 10~20us。
-2. 两次测量间隔大于 60ms，避免回波干扰。
-3. 超时判断，例如 Echo 超过 38ms 认为无目标。
-4. 多次测量取中位数，过滤偶发异常。
-
-## 调试方法
-1. 用逻辑分析仪看 Trig 和 Echo 实际波形。
-2. 打印原始计数和换算距离。
-3. 面向墙面、近距离、远距离分段测试。
-4. 检查回波角度和吸音材料影响。
-5. 若 Echo 永远高/低，先确认模块供电和 Trig 时序。
-
-## 本节要掌握
-输入捕获的本质是硬件自动记录边沿时间。软件要做三件事：选分辨率、处理溢出、按状态机切换极性。
-
-\n      `,
-      points: [
-        "NVIC 是 Cortex-M3 的嵌套向量中断控制器",
-        "ISR 要短小快速，别在中断里延时",
-        "中断标志通常要在 ISR 里手动清除"
-      ]
-    },
-    {
-      page: 34, phase: "int", title: "6.2 [中断] 中断优先级", duration: 1226,
-      summary: "抢占优先级与响应优先级、优先级分组。",
-      notes: `\n## 本节定位
-这一节把输入捕获推进到从模式。从模式让硬件自动复位计数器或启动/停止计数，减少中断数量，适合测量频率和周期。
-
-## 从模式的作用
-输入捕获信号可触发从模式控制器：
-
-1. Reset：触发事件复位计数器。
-2. Enable：启动计数。
-3. Disable：停止计数。
-4. External Clock Mode 1：外部信号作为时钟。
-5. Gated Mode：信号有效期间计数。
-
-测周期最常用 Reset：每个上升沿自动把 CNT 清零，下一次上升沿时 CCR 中的值就是两次上升沿之间的计数。
-
-## TI1FP1/TI2FP2
-输入通道经过滤波和极性选择后成为内部触发信号：
-
-1. TI1FP1：来自 CH1。
-2. TI2FP2：来自 CH2。
-
-配置流程：
-
-1. 配置 CH1 输入捕获，直连或映射到 TI1。
-2. 从模式选择 \`TIM_SLAVEMODE_RESET\`。
-3. 触发源选择 \`TIM_TS_TI1FP1\`。
-4. 启动定时器。
-
-读周期：
-
-~~~c
-uint32_t period_count = HAL_TIM_ReadCapturedValue(&htim2, TIM_CHANNEL_1);
-~~~
-
-换算频率：
-
-~~~text
-Frequency = TimerCounterClock / period_count
-~~~
-
-若 PSC=0、72MHz 计数，period=7200 时频率为 10kHz。
-
-## 一次测量的时序
-第一次复位后 CNT 从 0 开始；下一个上升沿到来时捕获当前 CNT 并再次复位。注意：
-
-1. 刚启动的第一个数据可能不完整，应丢弃。
-2. 低频信号周期长，要确认 ARR 足够大，否则会溢出。
-3. 高频信号周期短，要保证中断或读取速度跟得上，必要时用外部时钟计数方式。
-
-## 滤波器
-输入滤波器 ICFilter 用于抗毛刺：
-
-1. 数字越大采样时间越长，抗抖动更好。
-2. 但会延迟有效边沿，对高频信号不友好。
-3. 常用值需按信号源和噪声实测选择。
-
-## 占空比测量
-结合主从模式：
-
-1. CH1 上升沿 Reset。
-2. CH1/CH2 分别捕获上升沿和下降沿。
-3. \`period = CH1_CCR\`。
-4. \`high_time = CH2_CCR\`。
-5. 占空比 = \`high_time / period\`。
-
-具体通道映射按定时器手册，CubeMX 能生成基本配置。
-
-## 外部计数
-如果只想统计脉冲个数，可把外部信号当定时器时钟：
-
-~~~text
-External Clock Mode 1 + TI1FP1
-~~~
-
-一段时间内读取 CNT 增量，除以时间就是平均频率。这对非规律信号或累计事件很有用。
-
-## 常见问题
-1. 周期读数不变：从模式没配置，CNT 仍在自由计数。
-2. 结果是两倍/一半：边沿极性或预分频错。
-3. 低频测不到：ARR 太小，计数器溢出。
-4. 高频不稳定：中断太慢，应减少处理或改硬件计数。
-5. 毛刺多：加滤波器，检查信号地。
-
-## 本节要掌握
-从模式把“中断里做时间差”变成“硬件自动清零”，测量更准也更省 CPU。记住触发源和从模式选择要成对配置。
-
-\n      `,
-      points: [
-        "数字越小优先级越高",
-        "只有抢占优先级能形成中断嵌套",
-        "整个工程分组方式要统一，初始化时设置一次"
-      ]
-    },
-    {
-      page: 35, phase: "int", title: "6.3 [中断] 串口中断编程实验", duration: 2281,
-      summary: "RXNEIE 使能 + NVIC 配置 + USART1_IRQHandler 实战。",
-      notes: `\n## 本节定位
-这一节把串口接收改为中断方式。目标是掌握中断源、NVIC 和服务函数三步，避免主循环死等数据。
-
-## 中断事件
-USART 常用中断标志：
-
-1. RXNE：接收数据寄存器非空，收到一字节。
-2. IDLE：总线空闲，常用于判断不定长帧结束。
-3. TC：发送完成。
-4. TXE：发送寄存器空，可连续发送。
-5. PE/FE/NE：校验、帧、噪声错误。
-
-普通逐字节接收用 RXNE；协议帧可用 RXNE 加缓冲，或 RXNE+IDLE 判帧。
-
-## 配置三步
-
-~~~c
-/* 1. 打开接收中断 */
-USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-
-/* 2. 配置 NVIC */
-NVIC_InitTypeDef nvic;
-nvic.NVIC_IRQChannel = USART1_IRQn;
-nvic.NVIC_IRQChannelPreemptionPriority = 1;
-nvic.NVIC_IRQChannelSubPriority = 1;
-nvic.NVIC_IRQChannelCmd = ENABLE;
-NVIC_Init(&nvic);
-
-/* 3. 向量表中同名服务函数 */
-void USART1_IRQHandler(void)
-{
-}
-~~~
-
-中断服务函数名必须精确匹配启动文件向量表。
-
-## 服务函数写法
-
-~~~c
-volatile uint8_t rx_byte;
-volatile uint8_t rx_flag;
-
-void USART1_IRQHandler(void)
-{
-    if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
-    {
-        rx_byte = USART_ReceiveData(USART1);  /* 读 DR 同时清 RXNE */
-        rx_flag = 1;
-    }
-
-    if (USART_GetITStatus(USART1, USART_IT_ORE) != RESET)
-    {
-        /* 溢出错误按手册清除，避免反复进中断 */
-        USART_ReceiveData(USART1);
-    }
-}
-~~~
-
-处理要点：
-
-1. 只保存数据和置标志，不要打印长字符串。
-2. 标志变量加 \`volatile\`。
-3. 错误标志要处理，否则可能卡在中断里。
-
-## 环形缓冲版本
-
-~~~c
-#define UART_RX_SIZE 128
-volatile uint8_t rxbuf[UART_RX_SIZE];
-volatile uint16_t rx_head = 0, rx_tail = 0;
-
-void USART1_IRQHandler(void)
-{
-    if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
-    {
-        uint8_t d = USART_ReceiveData(USART1);
-        uint16_t next = (rx_head + 1) % UART_RX_SIZE;
-        if (next != rx_tail)
-        {
-            rxbuf[rx_head] = d;
-            rx_head = next;
-        }
-    }
-}
-~~~
-
-主循环取出：
-
-~~~c
-while (rx_tail != rx_head)
-{
-    uint8_t d = rxbuf[rx_tail];
-    rx_tail = (rx_tail + 1) % UART_RX_SIZE;
-    protocol_feed(d);
-}
-~~~
-
-## 发送中同时接收
-阻塞发送期间 RXNE 中断仍能进，只要 UART 中断优先级允许。但发送太长会占用总线/缓冲。改进：
-
-1. 短消息直接发，长消息分段或 DMA。
-2. 缓冲区足够大，主循环及时消费。
-3. 发送状态和接收状态分开管理。
-
-## 常见问题
-1. 只收到一次：读了数据但标志处理不对，或缓冲逻辑坏。
-2. 完全不进中断：USART_ITConfig 或 NVIC 没开。
-3. 进错函数：函数名与向量表不一致。
-4. 卡死：在 ISR 里等待某个需要低优先级中断的函数。
-5. 丢字节：ISR 太长，缓冲区溢出。
-
-## 本节要掌握
-串口中断的三层是硬件标志、NVIC 开关、用户处理。正确做法是“ISR 存数据，主循环处理协议”，这样系统实时性和可维护性都好。
-
-\n      `,
-      points: [
-        "中断源使能 + NVIC 使能 + 编写 IRQHandler，缺一不可",
-        "服务函数名必须与启动文件一致：USART1_IRQHandler",
-        "在 ISR 里收数据常配合环形缓冲区"
-      ]
-    },
-    {
-      page: 36, phase: "int", title: "7.1 [EXTI] 工作原理", duration: 1030,
-      summary: "外部中断线：GPIO 事件如何触发 EXTI 与 NVIC。",
-      notes: `\n## 本节定位
-这一节讲解定时器编码器模式。编码器把旋转角度/速度变成两路相位差 90 度的方波，STM32 定时器能硬件自动判向和计数。
-
-## 正交编码器原理
-编码器输出 A、B 两相：
-
-1. 正转时 A 相超前 B 相。
-2. 反转时 B 相超前 A 相。
-3. 每个脉冲周期有 4 个边沿，称为 4 倍频。
-
-有些编码器还有 Z/Index 相，每转一圈输出一个脉冲，用于绝对位置校准。
-
-## 定时器配置
-通用定时器 CH1/CH2 可配置 Encoder Mode：
-
-1. \`TIM_ENCODERMODE_TI1\`：只统计 TI1 边沿。
-2. \`TIM_ENCODERMODE_TI2\`：只统计 TI2 边沿。
-3. \`TIM_ENCODERMODE_TI12\`：统计两相边沿，4 倍频，常用。
-
-HAL：
-
-~~~c
-TIM_Encoder_InitTypeDef enc = {0};
-
-enc.EncoderMode = TIM_ENCODERMODE_TI12;
-enc.IC1Polarity = TIM_ICPOLARITY_RISING;
-enc.IC1Selection = TIM_ICSELECTION_DIRECTTI;
-enc.IC1Prescaler = TIM_ICPSC_DIV1;
-enc.IC1Filter = 0x0F;
-enc.IC2Polarity = TIM_ICPOLARITY_RISING;
-enc.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-enc.IC2Prescaler = TIM_ICPSC_DIV1;
-enc.IC2Filter = 0x0F;
-HAL_TIM_Encoder_Init(&htim3, &enc);
-~~~
-
-启动：
-
-~~~c
-HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
-~~~
-
-读取：
-
-~~~c
-int16_t count = (int16_t)__HAL_TIM_GET_COUNTER(&htim3);
-~~~
-
-反转时计数器会从 0 下溢到 0xFFFF，因此必须按 \`int16_t\` 解释才能得到负数。
-
-## 方向与速度
-速度最简单的方法是固定周期读取差值：
-
-~~~c
-static int16_t last = 0;
-int16_t now = (int16_t)__HAL_TIM_GET_COUNTER(&htim3);
-int16_t delta = now - last;   /* 有符号溢出也能正确表示 */
-last = now;
-~~~
-
-若每 10ms 读取一次：
-
-~~~text
-speed_counts_per_s = delta * 100
-~~~
-
-再除以 PPR*4 得到转/秒，乘 60 得到转/分。
-
-## 溢出处理
-如果定时器 ARR 设为 0xFFFF，位置累计可用更新中断：
-
-~~~c
-volatile int32_t position = 0;
-volatile int16_t last_raw = 0;
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    int16_t raw = (int16_t)__HAL_TIM_GET_COUNTER(&htim3);
-    position += raw - last_raw;
-    last_raw = raw;
-}
-~~~
-
-也可每次主循环读取并累计差值，只要读取周期足够短就不丢步。
-
-## 接线与消抖
-1. A/B 接 CH1/CH2，不要交叉。
-2. 共地必须可靠。
-3. 编码器开漏输出时需要上拉。
-4. 机械编码器抖动时增大 IC1Filter/IC2Filter。
-5. 长线传输加屏蔽或施密特整形。
-
-## 常见问题
-1. 只加不减或方向反了：A/B 接反或极性设置相反。
-2. 计数是 4 倍：这是 4 倍频，正常。
-3. 数值跳变：滤波不足、共地不良。
-4. 反转显示 65535：把无符号值转成 \`int16_t\`。
-5. 速度为 0：定时器没有 Start 或通道选择错。
-
-## 本节要掌握
-编码器模式把判向和计数交给硬件，CPU 只需周期性读取差值。位置、速度、方向三者的计算都以有符号差值为基础。
-
-\n      `,
-      points: [
-        "EXTI0~4 各有独立中断向量，5~9 共用 EXTI9_5，10~15 共用 EXTI15_10",
-        "按键接 GND + 上拉输入 → 按下是下降沿 → 下降沿触发"
-      ]
-    },
-    {
-      page: 37, phase: "int", title: "7.2 [EXTI] 按钮实验", duration: 1655,
-      summary: "用外部中断替代轮询检测按键。",
-      notes: `\n## 本节定位
-这一节做外部中断按键实验。重点是 AFIO 映射、EXTI 触发选择、清中断标志和实际消抖设计。
-
-## 硬件配置
-假设按键接 PA0 并在按下时接 GND：
-
-1. PA0 配置上拉输入。
-2. 平时 PA0 为高，按下变低。
-3. EXTI 选择下降沿触发。
-
-若按键按下时接 3.3V，则配置下拉输入 + 上升沿触发。
-
-## 映射关系
-EXTI 线按引脚号分组：
-
-1. PA0/PB0/PC0... 只能有一个映射到 EXTI0。
-2. PA1/PB1/PC1... 映射到 EXTI1。
-3. EXTI5~9 共用 \`EXTI9_5_IRQHandler()\`。
-4. EXTI10~15 共用 \`EXTI15_10_IRQHandler()\`。
-
-标准库映射函数：
-
-~~~c
-RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource0);
-~~~
-
-## EXTI 配置
-
-~~~c
-EXTI_InitTypeDef exti;
-exti.EXTI_Line    = EXTI_Line0;
-exti.EXTI_Mode    = EXTI_Mode_Interrupt;
-exti.EXTI_Trigger = EXTI_Trigger_Falling;
-exti.EXTI_LineCmd = ENABLE;
-EXTI_Init(&exti);
-~~~
-
-NVIC：
-
-~~~c
-NVIC_InitTypeDef nvic;
-nvic.NVIC_IRQChannel = EXTI0_IRQn;
-nvic.NVIC_IRQChannelPreemptionPriority = 1;
-nvic.NVIC_IRQChannelSubPriority = 0;
-nvic.NVIC_IRQChannelCmd = ENABLE;
-NVIC_Init(&nvic);
-~~~
-
-## 服务函数
-
-~~~c
-volatile uint8_t key_event = 0;
-volatile uint32_t last_key_tick = 0;
-
-void EXTI0_IRQHandler(void)
-{
-    if (EXTI_GetITStatus(EXTI_Line0) != RESET)
-    {
-        EXTI_ClearITPendingBit(EXTI_Line0);
-
-        uint32_t now = millis();     /* 应用自己的毫秒时基 */
-        if (now - last_key_tick > 20)
-        {
-            key_event = 1;
-        }
-        last_key_tick = now;
-    }
-}
-~~~
-
-不要直接在 ISR 里 \`Delay_ms(20)\` 再判断，这会阻塞其他中断和主程序。
-
-## 可靠的消抖确认
-更稳的设计：
-
-1. ISR 只把“疑似按下”交给定时器。
-2. 10ms 定时器再次读取 PA0。
-3. 仍为低才确认按键事件。
-
-~~~c
-/* 10ms 定时扫描 */
-if (pending_key && GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == Bit_RESET)
-{
-    confirmed_key = 1;
-}
-pending_key = 0;
-~~~
-
-## 释放检测
-如果需要区分长按、短按，还要检测释放：
-
-1. 配置上升沿中断，或轮询确认释放。
-2. 记录按下时间 \`press_start\`。
-3. 释放时：\`duration < 800ms\` 短按，否则长按。
-4. 长按可在按住期间周期触发连发事件。
-
-## 主循环处理
-
-~~~c
-if (key_event)
-{
-    key_event = 0;
-    /* 切换模式、显示页面等业务 */
-}
-~~~
-
-\`key_event\` 必须是 \`volatile uint8_t\`，否则优化后主循环可能读不到 ISR 的修改。
-
-## 常见坑
-1. 忘开 AFIO 时钟，引脚没有映射到 EXTI。
-2. 上下拉和触发沿不匹配。
-3. 忘记清 pending bit，中断不断重入。
-4. ISR 中使用 HAL_Delay/长打印。
-5. 两个同号引脚都要中断，映射冲突。
-
-## 本节要掌握
-外部中断按键的安全结构是“EXTI 抓边沿，定时器/主循环确认电平”。清标志、短 ISR、volatile 标志，这三件事决定了稳定性。
-
-\n      `,
-      points: [
-        "别忘了使能 AFIO 时钟（EXTI 映射需要）",
-        "ISR 里必须清中断标志，否则反复进中断",
-        "机械按键中断消抖：简单法 ISR 内 Delay_ms(10) 再确认"
-      ]
-    },
-    {
-      page: 38, phase: "clk", title: "8.1 [时钟] 时钟树", duration: 1726,
-      summary: "HSE/HSI → PLL 倍频 → SYSCLK → 各总线分频。",
-      notes: `\n## 本节定位
-这一节开始 ADC。ADC 把连续电压变成数字量，用于电位器、光敏、温度、电池电压、麦克风包络等。F103 的 ADC 是 12 位逐次逼近型。
-
-## 基本参数
-1. 分辨率 12 位：0~4095。
-2. 参考电压通常为 VDDA 3.3V。
-3. 输入电压范围 \`0~VREF+\`，不要超过 VDDA。
-4. 多个通道，规则组和注入组。
-5. 单次转换或连续转换。
-
-换算：
-
-~~~text
-Voltage = raw / 4095.0 * VREF
-~~~
-
-## 引脚与采样
-ADC 输入引脚一般配置为模拟输入，关闭上下拉。信号源阻抗过大时，采样电容充电不足会导致偏低或跳动，可：
-
-1. 增加采样时间。
-2. 前级加运放跟随器。
-3. 减少长线和干扰。
-
-## 单通道轮询单次
-
-~~~c
-HAL_ADC_Start(&hadc1);
-if (HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK)
-{
-    uint16_t raw = HAL_ADC_GetValue(&hadc1);
-}
-HAL_ADC_Stop(&hadc1);
-~~~
-
-简单可靠，但 CPU 阻塞等待，适合低频采样。
-
-## 连续转换
-CubeMX 中把 ADC 设为 Continuous Conversion Enabled：
-
-~~~c
-HAL_ADC_Start(&hadc1);
-while (1)
-{
-    if (HAL_ADC_PollForConversion(&hadc1, 10) == HAL_OK)
-    {
-        uint16_t raw = HAL_ADC_GetValue(&hadc1);
-        /* 使用数据 */
-    }
-}
-~~~
-
-连续模式适合固定采样率不高的应用，但仍由软件轮询。
-
-## 多通道扫描
-规则序列可配置多个通道，例如 CH0、CH1、CH4：
-
-1. Scan Conversion Mode Enabled。
-2. 每次触发后按序列依次转换。
-3. 单次模式下扫描一轮结束；连续模式下不断重复。
-
-轮询读取时必须按序列顺序取值，或使用 DMA。多通道推荐直接配合 DMA：
-
-~~~c
-uint16_t adc_buf[3];
-HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_buf, 3);
-~~~
-
-这样 \`adc_buf[0]\`、\`adc_buf[1]\`、\`adc_buf[2]\` 对应配置序列中的通道。
-
-## 采样时间
-每个通道可设置 1.5~239.5 个 ADC 时钟周期：
-
-1. 短采样时间：转换快，但高阻抗信号误差大。
-2. 长采样时间：更稳定，总转换时间变长。
-
-总时间估算：
-
-~~~text
-Tconv = 采样时间 + 12.5 ADC cycles
-~~~
-
-ADC 时钟受 ADCPRE 分频限制，F103 最高约 14MHz。
-
-## VDDA 与噪声
-1. VDDA 必须稳定，纹波直接体现在结果上。
-2. 数字电机、继电器动作会引入尖峰。
-3. 加 RC 滤波、星形接地、靠近引脚去耦电容。
-4. 软件可取多次平均值或中位数。
-
-## 过采样
-若需要更高等效分辨率，可多次采样求平均：
-
-~~~c
-uint32_t sum = 0;
-for (uint8_t i = 0; i < 16; i++)
-{
-    sum += read_adc();
-}
-uint16_t avg = sum / 16;
-~~~
-
-平均 4 次理论上可增加 1 位，但前提是存在小幅噪声且信号不快速变化。
-
-## 常见问题
-1. 读数固定 4095：输入悬空、通道接 VDD、参考问题。
-2. 读数 0：接到 GND 或通道配置错。
-3. 跳动严重：高阻抗、采样时间不足、干扰。
-4. 多通道错位：DMA/序列顺序不匹配。
-5. 转换慢：采样时间太长或 ADC 时钟配置低。
-
-## 本节要掌握
-ADC 三要素：参考电压、通道/序列、采样时间。先看原始码值，再看电压，最后做滤波和标定。
-
-\n      `,
-      points: [
-        "72MHz = 8MHz 外部晶振 × 9 倍频",
-        "APB1 最高 36MHz、APB2 最高 72MHz",
-        "ADC 时钟不超过 14MHz，需单独分频"
-      ]
-    },
-    {
-      page: 39, phase: "clk", title: "8.2 [时钟] 时钟树编程", duration: 2354,
-      summary: "SystemInit 与 RCC 配置，验证 72MHz 主频。",
-      notes: `\n## 本节定位
-这一节讲解 ADC 的 DMA 方式。多通道或高速采样时，DMA 能自动把转换结果搬进数组，是实际工程中最常用的组合。
-
-## 配置目标
-假设 3 个通道：
-
-1. PA0：电位器。
-2. PA1：光敏 AO。
-3. PA4：热敏 AO。
-
-CubeMX：
-
-1. ADC1 勾选 IN0、IN1、IN4。
-2. Rank 顺序按需要排列。
-3. Scan Conversion Mode Enabled。
-4. Continuous Conversion Enabled。
-5. DMA Continuous Requests Enabled。
-6. ADC1 DMA 添加，Mode Circular，Data Width Half Word。
-
-## 代码
-
-~~~c
-volatile uint16_t adc_buf[3];
-
-HAL_ADC_Start_DMA(&hadc1, (uint32_t *)adc_buf, 3);
-~~~
-
-使用：
-
-~~~c
-float v0 = adc_buf[0] * 3.3f / 4095.0f;
-float v1 = adc_buf[1] * 3.3f / 4095.0f;
-float v2 = adc_buf[2] * 3.3f / 4095.0f;
-~~~
-
-如果使用 Normal 模式，传输完成后要重启；Circular 模式自动覆盖旧数据。
-
-## 数据刷新时机
-DMA Circular 模式下数组持续更新，可能读到“一半新一半旧”的数据。解决方法：
-
-1. 单轮数据小、采样率低时影响可接受。
-2. 使用半完成/完成中断，分别处理前后半缓冲。
-3. 让 ADC 定时器触发，DMA 传输完成后统一处理一轮。
-4. 应用层对每通道做低通滤波，减少混合影响。
-
-低通滤波：
-
-~~~c
-static uint16_t filt[3];
-for (uint8_t i = 0; i < 3; i++)
-{
-    filt[i] = (filt[i] * 3 + adc_buf[i]) / 4;
-}
-~~~
-
-## 转换完成回调
-
-~~~c
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
-{
-    if (hadc->Instance == ADC1)
-    {
-        adc_frame_ready = 1;
-    }
-}
-~~~
-
-主循环：
-
-~~~c
-if (adc_frame_ready)
-{
-    adc_frame_ready = 0;
-    /* 读取 adc_buf 并更新 OLED */
-}
-~~~
-
-回调只置标志，不刷屏、不发送长串口数据。
-
-## 定时器触发 ADC
-连续转换的采样率受 ADC 转换时间影响，不精确。精确采样率应使用定时器触发：
-
-1. 配置 TIMx Update Event 作为 ADC External Trigger。
-2. 定时器按 1kHz、10kHz 等触发。
-3. ADC 每触发转换一轮。
-4. DMA 存储结果。
-
-这样采样间隔由定时器决定，适合FFT、数字滤波和控制环。
-
-## 校准
-F103 上电建议执行 ADC 校准：
-
-~~~c
-HAL_ADCEx_Calibration_Start(&hadc1);
-~~~
-
-校准能减小内部误差，尤其在温度变化和长时间运行后更有意义。不同 HAL 版本函数名可能略有差异。
-
-## 工程结构建议
-1. 封装 \`adc_get_voltage(channel)\`，内部换算 VREF。
-2. VREF 实际值可校准，不直接写死 3.3。
-3. 每个传感器保留 raw、filtered、physical value 三层。
-4. 采样率与业务需求匹配，不要盲目高速采集。
-5. 异常值检测：超出合理范围时标记错误。
-
-## 常见问题
-1. 缓冲区全 0：DMA 没启动或宽度错误。
-2. 通道互换：Rank 顺序理解反了。
-3. DMA 只传一次：DMA Continuous Requests 没开。
-4. 中断不停进入：Circular 模式下回调里做了耗时操作。
-5. 电压偏差：VREF 与实际 3.3V 不一致，需要标定。
-
-## 本节要掌握
-ADC+DMA 的关键是序列和缓冲区一一对应，采样时序交给定时器，处理交给主循环。这样系统才能既快又稳。
-
-\n      `,
-      points: [
-        "SystemInit 在 main 之前由启动文件调用",
-        "改主频要同步改 FLASH 等待周期",
-        "外设时钟分频决定库函数里写 72M 还是 36M 计算"
-      ]
-    },
-    {
-      page: 40, phase: "tim", title: "9.1 [定时器] 时基单元", duration: 1702,
-      summary: "PSC 预分频、CNT 计数器、ARR 自动重装载。",
-      notes: `\n## 本节定位
-这一节讲解 DAC。DAC 把数字量变成模拟电压，和 ADC 相反，可输出直流偏置、音频波形、控制电压。F103 部分型号带两路 12 位 DAC。
-
-## 基本原理
-DAC 输出：
-
-~~~text
-Vout = value / 4095.0 * VREF
-~~~
-
-其中 value 范围 0~4095，VREF 通常为 VDDA 3.3V。最小步进约 0.8mV。
-
-DAC 引脚通常为 PA4（DAC1/OUT1）、PA5（DAC2/OUT2），配置为模拟模式。
-
-## 轮询输出
-
-~~~c
-HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
-HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 2048);
-~~~
-
-\`2048\` 约输出 1.65V。若要保持输出，写入一次即可；要变化则周期性更新。
-
-## 正弦波输出
-生成一个周期查找表：
-
-~~~c
-uint16_t sine_table[128];
-
-void build_sine(void)
-{
-    for (uint16_t i = 0; i < 128; i++)
-    {
-        sine_table[i] = (uint16_t)(2047.5f + 2047.5f * sinf(2.0f * 3.14159f * i / 128.0f));
-    }
-}
-~~~
-
-定时器中断更新：
-
-~~~c
-volatile uint16_t sine_index = 0;
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == TIM6)
-    {
-        HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1,
-                         DAC_ALIGN_12B_R, sine_table[sine_index]);
-        sine_index = (sine_index + 1) % 128;
-    }
-}
-~~~
-
-输出频率：
-
-~~~text
-Fout = Fsample / TableSize
-~~~
-
-例如表长 128、中断频率 12.8kHz，则输出 100Hz。
-
-## DMA 输出波形
-中断方式在高频时 CPU 开销大，更好的方式是 DMA：
-
-1. DAC 触发源选择 TIM6/TRGO。
-2. DMA Circular。
-3. 地址为 \`sine_table\`，目标 DAC DHR12R1 寄存器。
-4. 定时器触发一次，DMA 自动送下一个值。
-
-这样 CPU 只需修改表内容或启动/停止波形，不参与每个点的搬运。
-
-## 输出驱动能力
-DAC 输出阻抗较高，直接驱动低阻抗负载会压降：
-
-1. 高阻抗输入可以直接接。
-2. 驱动耳机、扬声器需加运放和功率级。
-3. 需要低纹波时加 RC 低通。
-4. 不要输出负压；需要交流可加直流偏置和隔直电容。
-
-## 音频基础
-单频音只是正弦；语音和音乐采样率高、数据多：
-
-1. 采样率常见 8k/16k/44.1k。
-2. 12 位 DAC 可播放简单音效。
-3. WAV 数据需解析头部，去除元数据。
-4. 大音频放外部 Flash 或 SD 卡，流式送 DAC。
-
-## 与 ADC 对比
-1. ADC 是采样外部电压，DAC 是生成电压。
-2. 两者都有 12 位分辨率和参考电压问题。
-3. ADC 关心采样时间和输入阻抗，DAC 关心建立时间和输出负载。
-4. 闭环系统常把 DAC 输出接到 ADC 输入自测。
-
-## 常见问题
-1. 无输出：引脚不是模拟模式、Channel 未 Start。
-2. 幅度不对：VREF 不是 3.3V 或值范围错。
-3. 波形毛刺：DMA 未循环、触发配置错、表格式不匹配。
-4. 频率错：把表长当成触发频率，或定时器时钟算错。
-5. 输出抖动：供电噪声、地线不良。
-
-## 本节要掌握
-DAC 的两个核心是数值范围和更新时序。想稳定波形，先固定采样率，再考虑中断、DMA 和滤波。
-
-\n      `,
-      points: [
-        "F103 通用定时器 TIM2~4 挂 APB1，时钟 72MHz（倍频后）",
-        "PSC 与 ARR 都是\"写 N 实际 N+1\"",
-        "更新事件（UIF 标志）= 计数溢出时刻"
-      ]
-    },
-    {
-      page: 41, phase: "tim", title: "9.2 [定时器] 自制延迟函数", duration: 1443,
-      summary: "用定时器中断或轮询 UIF 实现 ms 延时。",
-      notes: `\n## 本节定位
-这一节用定时器做微秒/毫秒延时。空循环延时依赖编译器优化和主频，不可移植；定时器延时的基础是精确计数。
-
-## 定时计数配置
-让 TIM2 以 1MHz 计数，也就是 1 count = 1us：
-
-~~~text
-PSC = 72 - 1
-计数频率 = 72MHz / 72 = 1MHz
-~~~
-
-ARR 设置为 65535，最大一次可测约 65.535ms。
-
-## 阻塞微秒延时
-
-~~~c
-void delay_us_init(void)
-{
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-    TIM_TimeBaseInitTypeDef tim;
-    tim.TIM_Prescaler = 71;
-    tim.TIM_Period = 65535;
-    tim.TIM_ClockDivision = TIM_CKD_DIV1;
-    tim.TIM_CounterMode = TIM_CounterMode_Up;
-    TIM_TimeBaseInit(TIM2, &tim);
-    TIM_Cmd(TIM2, ENABLE);
-}
-
-void delay_us(uint32_t us)
-{
-    TIM_SetCounter(TIM2, 0);
-    while (TIM_GetCounter(TIM2) < us);
-}
-~~~
-
-注意 \`us\` 不能超过 ARR+1，否则永远不会退出。更安全：
-
-~~~c
-if (us > 65535) us = 65535;
-~~~
-
-或分段延时。
-
-## 非阻塞软件定时
-长时间延时不要阻塞 CPU，应记录起始计数：
-
-~~~c
-uint32_t start = TIM_GetCounter(TIM2);
-if ((TIM_GetCounter(TIM2) - start) >= 1000) { /* 1ms 到期 */ }
-~~~
-
-若需要跨溢出，用更新中断维护 32 位毫秒计数更简单：
-
-~~~c
-volatile uint32_t g_ms = 0;
-
-void TIM2_IRQHandler(void)
-{
-    if (TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
-    {
-        TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-        g_ms++;
-    }
-}
-~~~
-
-主循环：
-
-~~~c
-static uint32_t last = 0;
-if (g_ms - last >= 10)
-{
-    last = g_ms;
-    task_10ms();
-}
-~~~
-
-## 精度来源
-1. 定时器时钟是否真的是 72MHz。
-2. PSC 是否按 \`时钟/(PSC+1)\` 计算。
-3. 函数调用和读寄存器有开销，短延时略偏长。
-4. 中断会插入额外时间，不能把阻塞 delay 用于精密时序。
-5. 空循环延时受优化影响，应加 barrier 或直接用定时器。
-
-## 适用场景
-适合阻塞 delay：
-
-1. I2C/SPI 位间隔的几微秒。
-2. 传感器复位前短等待。
-3. 简单初始化流程。
-
-不适合：
-
-1. 主循环中的秒级等待。
-2. 需要同时响应按键/串口。
-3. 高频 PWM 或协议时序。
-4. 长时间等待应改状态机/定时中断。
-
-## 与 HAL_Delay 区别
-\`HAL_Delay()\` 毫秒级，依赖 SysTick 时基。微秒级需要自建 TIM 延时或 DWT CYCCNT（Cortex-M3 可用）。
-
-DWT 示例概念：
-
-~~~text
-CoreDebug->DEMCR |= TRCENA;
-DWT->CYCCNT = 0;
-DWT->CTRL |= 1;
-~~~
-
-然后按 \`SystemCoreClock / 1000000\` 个周期对应 1us。
-
-## 常见问题
-1. delay 时间差一倍：APB1 定时器时钟乘 2 忘了。
-2. 卡死：请求延时大于 ARR。
-3. 短延时不准：函数开销占比较大。
-4. 主循环卡住：长时间用了阻塞 delay。
-5. 调试断点导致时间异常：断点会暂停 CPU。
-
-## 本节要掌握
-定时器延时的核心是“固定计数值对应固定时间”。微秒阻塞延时只适合短时序，系统级等待应该用时间戳和状态机。
-
-\n      `,
-      points: [
-        "1MHz 计数频率 = 每 1us 计数加 1",
-        "Delay_ms = Delay_us × 1000",
-        "轮询 CNT 简单可靠，不依赖中断"
-      ]
-    },
-    {
-      page: 42, phase: "tim", title: "9.3 [定时器] 输出比较", duration: 1277,
-      summary: "CCR 比较寄存器与 PWM 波形产生原理。",
-      notes: `\n## 本节定位
-这一节讲解通用定时器作为 PWM 输入或测量外部 PWM 的应用，也可理解为输入捕获的综合案例。目标是把占空比、频率测量和定时器主从模式连起来。
-
-## 输入 PWM 的参数
-一个 PWM 信号通常有两个未知量：
-
-~~~text
-周期 T
-高电平时间 Th
-占空比 D = Th / T
-频率 F = 1 / T
-~~~
-
-输入捕获要做的事就是同时测出 T 和 Th。
-
-## 方案一：单通道软件切换
-用 CH1 捕获：
-
-1. 第一次上升沿记录 T1。
-2. 下降沿记录 T2，得到 Th = T2 - T1。
-3. 下一次上升沿记录 T3，得到 T = T3 - T1。
-
-状态机：
-
-~~~c
-switch (state)
-{
-case WAIT_RISE:
-    t_rise = CCR1;
-    state = WAIT_FALL;
-    /* 切换下降沿 */
-    break;
-case WAIT_FALL:
-    t_fall = CCR1;
-    state = WAIT_NEXT_RISE;
-    /* 切换上升沿 */
-    break;
-case WAIT_NEXT_RISE:
-    period = CCR1 - t_rise;
-    high = t_fall - t_rise;
-    state = WAIT_RISE;
-    break;
-}
-~~~
-
-需要处理计数器溢出，且连续测量过程中切换极性可能错过边沿。
-
-## 方案二：硬件主从模式
-更推荐的方式：
-
-1. CH1 捕获上升沿。
-2. 从模式 Reset，让每个上升沿自动清零 CNT。
-3. CH1 CCR 记录周期。
-4. CH2 捕获下降沿，其 CCR 记录高电平时间。
-
-配置概念：
-
-~~~text
-IC1: Rising, Direct TI1
-IC2: Rising? -> 通过内部映射到 TI1 的反相/下降沿
-Slave Mode: Reset
-Trigger: TI1FP1
-~~~
-
-不同定时器内部连接细节不同，CubeMX 的 Combined Channels 或生成代码可以参考。核心公式：
-
-~~~text
-period_count = CCR1
-high_count   = CCR2
-duty = high_count / period_count
-freq = TimerClock / period_count
-~~~
-
-## 滤波与预分频
-输入 PWM 可能带毛刺：
-
-1. 设置 ICFilter 过滤短脉冲。
-2. PSC 决定分辨率。72MHz、PSC=71 时 1 count = 1us，适合舵机信号。
-3. 测 kHz 级 PWM 时 ARR 应足够大；测低频时必须处理溢出。
-
-舵机 PWM 周期约 20ms：
-
-~~~text
-20ms / 1us = 20000 counts
-ARR 设 65535 即可
-~~~
-
-## 中断与缓冲
-捕获回调里不要立即打印，否则会拖慢下一周期：
-
-~~~c
-volatile uint32_t pwm_period = 0;
-volatile uint32_t pwm_high = 0;
-volatile uint8_t pwm_ready = 0;
-
-void parse_capture(void)
-{
-    if (pwm_ready)
-    {
-        pwm_ready = 0;
-        float duty = pwm_high * 100.0f / pwm_period;
-        /* 主循环显示或控制 */
-    }
-}
-~~~
-
-异常防护：
-
-~~~c
-if (pwm_period == 0 || pwm_high > pwm_period) return;
-~~~
-
-## 应用：读取遥控接收机
-航模接收机输出多路 1000~2000us 脉冲：
-
-1. 每一路用一个定时器通道或输入捕获引脚。
-2. 周期约 20ms 或帧同步结构按接收机型号。
-3. 将脉宽映射到油门、转向通道。
-4. 失控保护：超过 100ms 没收到更新时输出安全值。
-
-## 应用：测量直流电机占空比反馈
-有些驱动板输出转速/占空比信号。可先测频率，再测占空比，结合电机参数估计转速。若信号抖动大，用滑动平均。
-
-## 排错步骤
-1. 先用逻辑分析仪确认输入波形是否存在。
-2. 检查 PSC/ARR，确认分辨率和量程。
-3. 打印 CCR1/CCR2 原始值，不要先打印浮点结果。
-4. 检查从模式触发源是否正确。
-5. 单通道切换方案要确认每个状态都会恢复极性。
-
-## 本节要掌握
-测量 PWM 的关键不是函数名，而是时序模型：哪些边沿表示周期，哪些边沿表示高电平，硬件是否自动复位计数器。模型清楚后，换芯片也只是查表。
-
-\n      `,
-      points: [
-        "PWM 频率由 ARR+PSC 决定，占空比由 CCR 决定",
-        "PWM 模式 1：CNT<CCR 有效；模式 2 相反",
-        "调 CCR 即平滑调节亮度/速度"
-      ]
-    },
-    {
-      page: 43, phase: "tim", title: "9.4 [定时器] 呼吸灯实验", duration: 2150,
-      summary: "PWM 实战：LED 亮度渐变。",
-      notes: `\n## 本节定位
-这一节综合 ADC 与 DMA 的工程实践：把多路传感器值稳定地采集、滤波、显示，并为后续控制算法提供数据源。
-
-## 系统结构
-
-~~~text
-传感器 -> RC滤波 -> ADC引脚 -> ADC规则序列 -> DMA缓冲 -> 滤波 -> 物理量 -> OLED/串口/控制
-~~~
-
-每一层只做一件事，问题出现时容易定位。
-
-## 采集设计
-1. 采样率：温度 10~100Hz 足够；光敏/电位器 100Hz~1kHz；音频需要几十 kHz。
-2. 触发：低速率用连续转换；需要精确周期用定时器触发。
-3. 缓冲区：按通道数乘每帧点数规划。
-4. 模式：持续刷新用 Circular；批处理用 Normal 并重启。
-
-示例：每帧 3 通道、每通道 8 个点：
-
-~~~c
-#define CH_NUM 3
-#define SAMPLES_PER_CH 8
-volatile uint16_t adc_raw[CH_NUM * SAMPLES_PER_CH];
-~~~
-
-DMA 传输完成后按通道求平均：
-
-~~~c
-uint16_t channel_average(uint8_t ch)
-{
-    uint32_t sum = 0;
-    for (uint8_t i = 0; i < SAMPLES_PER_CH; i++)
-    {
-        sum += adc_raw[i * CH_NUM + ch];
-    }
-    return sum / SAMPLES_PER_CH;
-}
-~~~
-
-注意数据排布由 ADC 扫描顺序决定：常见是一轮 3 个通道连续写入，所以上述索引要按实际顺序调整。
-
-## 滤波方法
-1. 均值滤波：简单，但脉冲干扰影响大。
-2. 中位数滤波：去掉毛刺，适合偶发尖峰。
-3. 一阶低通：\`y = y + k * (x - y)\`，k 越小越平滑但响应越慢。
-4. 卡尔曼/自适应滤波：效果更好，成本高，项目规模大时再引入。
-
-中位数+均值组合：
-
-~~~c
-uint16_t remove_spikes(uint16_t *buf, uint8_t n)
-{
-    /* 简化思路：排序后去掉最大最小，再平均 */
-}
-~~~
-
-## 电压与物理量
-电压：
-
-~~~c
-float to_voltage(uint16_t raw)
-{
-    return raw * 3.3f / 4095.0f;
-}
-~~~
-
-分压传感器：
-
-~~~text
-Rsensor = Rfixed * raw / (4095 - raw)
-~~~
-
-公式取决于电阻接在上方还是下方。不要背方向，用两个已知环境点实测标定更可靠。
-
-电池电压：
-
-1. 电池电压高于 3.3V 时用电阻分压。
-2. 输入端可加小电容稳定。
-3. 考虑功耗时，可在不采集时用 MOS 或高阻策略降低分压耗电。
-4. 标定两点：已知 4.0V、8.4V，拟合线性系数。
-
-## 界面刷新
-OLED 显示避免每次全清：
-
-~~~c
-OLED_ShowString(0, 0, "Volt:     ", 16);
-OLED_ShowFloat(40, 0, v, 2, 16);
-~~~
-
-若库没有浮点函数，先转成整数和小数：
-
-~~~c
-int part = (int)v;
-int frac = (int)((v - part) * 100);
-OLED_ShowNum(40, 0, part, 2, 16);
-OLED_ShowString(56, 0, ".", 16);
-OLED_ShowNum(64, 0, frac, 2, 16);
-~~~
-
-## 数据导出
-串口打印格式要便于分析：
-
-~~~text
-time_ms,ch0,ch1,ch2
-0,2048,1024,3000
-10,2050,1030,2998
-~~~
-
-上位机或 Excel 可直接绘制曲线。调试控制环时，这比看 OLED 更有效。
-
-## 常见错误
-1. DMA 缓冲区用局部数组，函数退出后失效。
-2. ADC 序列通道数和 DMA 长度不一致。
-3. 滤波强度过大，响应延迟明显。
-4. 把未标定 raw 直接当工程单位。
-5. 所有处理都放 DMA 中断，系统变卡。
-
-## 本节要掌握
-采集系统要区分“原始值、滤波值、物理值”。显示层只消费处理后的数据，不要让 OLED 和串口影响采样时序。
-
-\n      `,
-      points: [
-        "PWM 引脚要配复用推挽输出",
-        "TIM_SetCompare1 动态改 CCR",
-        "频率 > 100Hz 肉眼才感觉不到闪烁"
-      ]
-    },
-    {
-      page: 44, phase: "tim", title: "9.5 [定时器] 输入捕获", duration: 1006,
-      summary: "捕获边沿时刻，测脉宽与频率。",
-      notes: `\n## 本节定位
-这一节继续扩展 ADC+DMA 的应用：多通道数据帧、定时触发、异常检测和简单上位机协议，为传感器系统或控制器做准备。
-
-## 定时器触发 ADC
-连续转换适合慢速；精确采样率建议：
-
-1. TIMx 配置更新频率，例如 1kHz。
-2. ADC External Trigger 选择 TIMx TRGO/Update。
-3. ADC 关闭 Continuous，打开 External Trigger。
-4. DMA 接收每轮转换结果。
-
-若规则序列有 3 通道，TIM 触发一次可转换一轮，DMA 缓冲区按帧更新。
-
-## DMA 半段处理
-更大的缓冲区可分段处理：
-
-~~~text
-buf: [前半 ... 后半]
-DMA 写前半时，CPU 处理后半
-DMA 写后半时，CPU 处理前半
-~~~
-
-HAL 回调：
-
-~~~c
-void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *hadc)
-{
-    process_block(0);
-}
-
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
-{
-    process_block(1);
-}
-~~~
-
-\`process_block()\` 中做统计、滤波或判断，不要调用阻塞 IO。
-
-## 帧结构
-定义一帧：
-
-~~~c
-typedef struct {
-    uint32_t timestamp;
-    uint16_t ch[3];
-    uint8_t status;
-} AdcFrame;
-~~~
-
-主循环从 DMA 缓冲拷贝到帧，再处理：
-
-~~~c
-AdcFrame frame;
-frame.timestamp = HAL_GetTick();
-for (uint8_t i = 0; i < 3; i++)
-{
-    frame.ch[i] = adc_buf[i];
-}
-frame.status = validate_frame(&frame);
-~~~
-
-校验：
-
-1. 值是否在允许范围。
-2. 增量是否超过阈值。
-3. 连续异常次数。
-4. 通道是否断线（例如恒 0 或恒 4095）。
-
-## 上位机协议
-文本协议可读性好：
-
-~~~text
-DATA,1234,2048,1023,3000\\r\\n
-ERR,SENSOR0_STUCK\\r\\n
-OK\\r\\n
-~~~
-
-二进制协议更高效：
-
-~~~text
-0xAA 0x55 len seq ch0_h ch0_l ch1_h ch1_l ch2_h ch2_l crc
-~~~
-
-CRC 可先用简单和校验：
-
-~~~c
-uint8_t checksum = 0;
-for (uint8_t i = 0; i < n; i++)
-{
-    checksum += buf[i];
-}
-~~~
-
-需要更强校验时使用 CRC16。
-
-## 频率分析入门
-如果采集交流信号，可以计算简单统计特征：
-
-1. 峰峰值：\`max - min\`。
-2. RMS：对平方和平均后开方。
-3. 零交叉次数：估算频率。
-
-这些足够做声控灯、振动检测等应用。复杂 FFT 需要更多 RAM 和库支持。
-
-## 资源占用
-1. 缓冲区大小 = 通道数 * 每帧点数 * 2 字节。
-2. 1kHz * 3 通道 * 16 位 = 6KB/s，串口 115200bps 能传约 11KB/s，勉强可用；更高速率应压缩或二进制。
-3. DMA 与 CPU 并发读同一缓冲区时，先复制再处理。
-4. OLED 刷新按 100ms 节流，不要每个采样点都刷。
-
-## 稳定性测试
-1. 长时间运行 30 分钟以上，观察是否漂移。
-2. 插拔传感器线，确认异常不会让程序卡死。
-3. 电机启动/继电器动作时看干扰。
-4. 用固定电压源输入，检查重复性。
-5. 记录复位次数和错误计数。
-
-## 本节要掌握
-工程化 ADC 不只是读数，而是帧同步、校验、异常状态和导出协议。把系统分成采集、处理、通信三层，后续改算法不会推翻底层。
-
-\n      `,
-      points: [
-        "CNT 溢出要计入（软件处理更新中断）",
-        "捕获引脚配浮空/上拉输入"
-      ]
-    },
-    {
-      page: 45, phase: "tim", title: "9.6 [定时器] 超声波测距实验", duration: 2976,
-      summary: "HC-SR04 + 输入捕获：Trig 触发、Echo 测脉宽。",
-      notes: `\n## 本节定位
-这一节进入 PWM 输出与输入的综合控制场景。通过 PWM 控制亮度或电机，同时用输入捕获测量外部信号，可以理解定时器资源如何分配。
-
-## 资源规划
-定时器配置前先列表：
-
-~~~text
-TIM2: 1ms 系统节拍
-TIM3: 10kHz PWM 输出
-TIM4: 1MHz 计数，输入捕获
-TIM5: 编码器接口
-TIM6: DAC 触发
-~~~
-
-每个定时器时钟源可能不同：TIM1/TIM8 在 APB2，TIM2~TIM7 在 APB1。当 APB 分频不为 1 时，定时器时钟通常乘 2。
-
-## PWM 调光/调速
-基础输出：
-
-~~~c
-HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, duty);
-~~~
-
-亮度渐变：
-
-~~~c
-static uint8_t dir = 0;
-static uint16_t duty = 0;
-
-if (++duty > 999) { duty = 0; }
-__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, duty);
-~~~
-
-用 1ms 节拍更新，2 秒左右完成一个渐变周期，比在主循环里 HAL_Delay 更适合多任务。
-
-## 输入信号测量
-输入捕获 1us 分辨率：
-
-~~~text
-PSC=71, ARR=65535
-每个 count = 1us
-period_us = CCR1
-high_us = CCR2
-~~~
-
-用主从 Reset 测周期，ISR 只保存 CCR：
-
-~~~c
-void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_2)
-    {
-        pwm_high = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
-        pwm_period = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-        pwm_ready = 1;
-    }
-}
-~~~
-
-主循环：
-
-~~~c
-if (pwm_ready)
-{
-    pwm_ready = 0;
-    uint32_t duty_x100 = pwm_high * 10000UL / pwm_period; /* 0.01% */
-}
-~~~
-
-## 控制回路示例
-把外部旋钮 ADC 值映射到 PWM：
-
-~~~c
-uint16_t adc = channel_average(0);
-uint16_t duty = (uint32_t)adc * 1000 / 4095;
-__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, duty);
-~~~
-
-如果要线性手感，可以做映射曲线：
-
-~~~c
-uint16_t curve(uint16_t x)
-{
-    /* 简单平方映射 */
-    return (uint32_t)x * x / 4095;
-}
-~~~
-
-电机应用要加死区、最低启动占空比和方向控制：
-
-1. 低于最低值时输出 0，避免堵转嗡鸣。
-2. 方向切换前先把 PWM 降到 0。
-3. 驱动芯片 IN1/IN2 时序要严格遵守。
-
-## 中断负载评估
-假设：
-
-1. TIM2 1ms：10% CPU。
-2. 输入捕获每 20ms 一次：可忽略。
-3. ADC 1kHz DMA：无每点中断。
-4. OLED 每 100ms 刷新：主循环处理。
-
-总负载可控。若 PWM 频率过高，不要试图在中断里逐周期改 CCR，应让硬件工作。
-
-## 多路 PWM
-同一 TIM 的多个通道频率相同、占空比可分别设置：
-
-~~~c
-__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, r);
-__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_2, g);
-__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, b);
-~~~
-
-RGB 调色可用这种结构。不同频率/极性则需要不同定时器。
-
-## 调试
-1. 用示波器确认频率、占空比、边沿。
-2. 改变 CCR 时观察是否有毛刺；需要无毛刺可同步预装载。
-3. 测量输入时先确认地线和幅度。
-4. 电机系统先低压测试，再逐步升高电源。
-5. 记录每个定时器的用途，避免以后重复分配。
-
-## 本节要掌握
-定时器不只是单独外设，而是系统资源。PWM、捕获、编码器、时基分配清楚后，项目复杂度提升时仍然稳定。
-
-\n      `,
-      points: [
-        "Echo 脉宽用输入捕获测量（us 级）",
-        "声速 340m/s ≈ 0.034cm/us，除以 2 是往返",
-        "测距精度受温湿度影响，教学场景足够"
-      ]
-    },
-    {
-      page: 46, phase: "tim", title: "9.7 [定时器] 从模式控制器", duration: 1291,
-      summary: "Reset/Trigger 等从模式让硬件自动复位计数器。",
-      notes: `\n## 本节定位
-这一节转向项目架构。功能越多，程序越不能是一大段 \`while(1)\`。目标是用时间片轮询建立清晰的主循环框架。
-
-## 为什么需要架构
-低级写法：
-
-~~~c
-while (1)
-{
-    read_sensor();
-    HAL_Delay(100);
-    oled_show();
-    handle_key();
-}
-~~~
-
-问题：
-
-1. \`HAL_Delay\` 阻塞所有任务。
-2. OLED 慢导致按键响应慢。
-3. 串口解析不确定。
-4. 后续加任务会互相影响。
-
-## 时间片设计
-用一个 1ms 时基产生多个周期：
-
-~~~c
-uint32_t now = HAL_GetTick();
-
-if (now - t_key >= 10) { t_key = now; task_key_10ms(); }
-if (now - t_sensor >= 50) { t_sensor = now; task_sensor_50ms(); }
-if (now - t_ui >= 100) { t_ui = now; task_ui_100ms(); }
-if (now - t_comm >= 1) { t_comm = now; task_comm(); }
-~~~
-
-\`task_comm()\` 可以每次只处理一小段缓冲，避免长时间占用。
-
-## 状态机
-每个设备封装状态：
-
-~~~c
-typedef enum {
-    UI_PAGE_MAIN,
-    UI_PAGE_SETTING,
-    UI_PAGE_GRAPH
-} UiPage;
-
-static UiPage page = UI_PAGE_MAIN;
-
-void ui_handle_key(uint8_t key)
-{
-    switch (page)
-    {
-    case UI_PAGE_MAIN:
-        if (key == KEY_NEXT) page = UI_PAGE_SETTING;
-        break;
-    case UI_PAGE_SETTING:
-        if (key == KEY_BACK) page = UI_PAGE_MAIN;
-        break;
-    default:
-        break;
-    }
-}
-~~~
-
-界面绘制按 page 分发：
-
-~~~c
-void ui_render(void)
-{
-    switch (page)
-    {
-    case UI_PAGE_MAIN: render_main(); break;
-    case UI_PAGE_SETTING: render_setting(); break;
-    case UI_PAGE_GRAPH: render_graph(); break;
-    }
-}
-~~~
-
-## 模块分层
-推荐目录：
-
-~~~text
-Core/
-  main.c              主循环
-  bsp_gpio.c          LED/按键
-  bsp_uart.c          串口收发
-  bsp_oled.c          显示
-  bsp_sensor.c        传感器
-  app_control.c       控制逻辑
-  app_setting.c       配置
-~~~
-
-规则：
-
-1. \`app_*\` 不直接操作寄存器。
-2. \`bsp_*\` 提供函数，如 \`sensor_get_temperature()\`。
-3. 全局标志尽量封装在模块内部。
-4. 每个模块定义初始化函数和周期函数。
-
-## 事件与数据流
-不要让每个模块直接改别人内部变量。用接口：
-
-~~~c
-/* 传感器模块 */
-bool sensor_get_light(uint16_t *out);
-
-/* 显示模块 */
-void ui_update_sensor(uint16_t light, uint16_t temp);
-
-/* 控制模块 */
-void control_update(uint16_t light, uint16_t temp);
-~~~
-
-事件可用简单标志或队列：
-
-~~~c
-typedef enum {
-    EV_NONE,
-    EV_KEY_OK,
-    EV_KEY_NEXT,
-    EV_ALARM
-} EventType;
-~~~
-
-## 看门狗配合
-每个关键任务报告健康：
-
-~~~c
-static uint8_t health = 0;
-
-void task_sensor_50ms(void)
-{
-    if (read_ok()) health |= 0x01;
-}
-
-void watchdog_task(void)
-{
-    uint8_t need = 0x01 | 0x02 | 0x04;
-    if ((health & need) == need)
-    {
-        HAL_IWDG_Refresh(&hiwdg);
-        health = 0;
-    }
-}
-~~~
-
-这不是唯一方案，但能避免某个死任务仍被喂狗。
-
-## 调试手段
-1. 每个任务记录最大耗时。
-2. 串口输出状态页：当前 page、错误码、任务周期。
-3. 用 GPIO 翻转 + 示波器测执行时间。
-4. 新功能先加到独立模块，不要直接塞主循环。
-
-## 本节要掌握
-裸机架构的核心是周期任务、状态机、模块边界。做到“每个函数知道自己在哪个周期、属于哪一层”，代码就能持续扩展。
-
-\n      `,
-      points: [
-        "从模式由 TIM_SelectInputTrigger + TIM_SelectSlaveMode 配置",
-        "硬件自动化 = 更少 CPU 占用与更准的测量"
-      ]
-    },
-    {
-      page: 47, phase: "tim", title: "9.8 [定时器] PWM 参数测量原理", duration: 1649,
-      summary: "测量外部 PWM 的频率与占空比的方案设计。",
-      notes: `\n## 本节定位
-这一节讲解综合项目的落地流程。以一个典型小项目为例：按键切换模式，ADC 采集传感器，OLED 显示，PWM 输出控制，串口上报数据。
-
-## 需求拆解
-1. 模式 0：关闭输出。
-2. 模式 1：手动模式，按键加减 PWM。
-3. 模式 2：自动模式，根据 ADC 值调整 PWM。
-4. OLED 显示模式、传感器值、输出占空比。
-5. 串口每 500ms 上报一行状态。
-6. 长按保存参数到 EEPROM/Flash。
-
-## 任务表
-
-~~~text
-1ms   系统节拍、软件定时器
-10ms  按键扫描与消抖
-50ms  ADC 滤波与控制计算
-100ms OLED 刷新
-500ms 串口状态上报
-事件  串口命令、报警
-~~~
-
-## 模块接口
-传感器：
-
-~~~c
-bool sensor_read(uint16_t *raw, uint16_t *filtered);
-~~~
-
-控制：
-
-~~~c
-void control_set_mode(uint8_t mode);
-void control_task_50ms(void);
-~~~
-
-显示：
-
-~~~c
-void ui_show_status(uint8_t mode, uint16_t sensor, uint16_t duty);
-~~~
-
-串口：
-
-~~~c
-void uart_report(uint8_t mode, uint16_t sensor, uint16_t duty);
-~~~
-
-主循环只负责调用：
-
-~~~c
-while (1)
-{
-    key_task_10ms();
-    control_task_50ms();
-    ui_task_100ms();
-    report_task_500ms();
-    uart_protocol_task();
-}
-~~~
-
-## 控制逻辑
-手动模式：
-
-~~~c
-if (key_up_short) duty += 50;
-if (key_down_short) duty -= 50;
-duty = clamp(duty, 0, MAX_DUTY);
-~~~
-
-自动模式：
-
-~~~c
-int32_t error = (int32_t)target - filtered_value;
-/* 简单比例控制 */
-duty = base + Kp * error;
-duty = clamp(duty, MIN_DUTY, MAX_DUTY);
-~~~
-
-更稳定的做法：
-
-1. 先做两点标定，得到 raw 到实际物理量。
-2. 设定上下限和滞后，避免输出频繁抖动。
-3. 若用 PID，先 P，再加 I，D 通常最后加。
-4. 记录误差曲线，便于调参。
-
-## 参数保存
-用 EEPROM/Flash 保存：
-
-~~~c
-typedef struct {
-    uint16_t magic;
-    uint8_t mode;
-    uint16_t duty;
-    uint16_t target;
-    uint8_t checksum;
-} Param;
-~~~
-
-保存时机：
-
-1. 参数修改后延迟 2s，等待用户停止调整。
-2. 长按确认键立即保存。
-3. 避免每个短按都写 Flash。
-
-上电读取：
-
-~~~c
-if (!param_load(&param))
-{
-    param_default(&param);
-    param_save(&param);
-}
-~~~
-
-## OLED 界面
-主页面：
-
-~~~text
-Mode: AUTO
-Sen : 1234
-Duty: 75%
-OK=Next UP/DOWN
-~~~
-
-设置页面：
-
-~~~text
-Target: 2000
-Kp    : 0.8
-Save  : Long OK
-~~~
-
-页面状态机负责切换；数值编辑用“选中项”概念，UP/DOWN 改当前项。
-
-## 串口协议
-调试期文本即可：
-
-~~~text
-ST,AUTO,1234,750,OK
-~~~
-
-命令：
-
-~~~text
-MODE 0
-DUTY 500
-TARGET 2000
-SAVE
-~~~
-
-解析函数返回错误码，未知命令回复 \`ERR,UNKNOWN\`。
-
-## 测试清单
-1. 每种模式切换是否正常。
-2. 传感器断线是否进入安全状态。
-3. PWM 极限值是否被 clamp。
-4. 掉电保存是否恢复。
-5. 长时间运行看内存/行为是否异常。
-6. 串口乱发数据是否导致系统崩溃。
-7. 看门狗超时是否合理。
-
-## 本节要掌握
-项目阶段的关键是拆分需求和任务周期，再定义模块接口。先让最小闭环跑起来，再逐步加保存、自动控制和协议。
-
-\n      `,
-      points: [
-        "溢出补偿是测低频信号的关键",
-        "占空比 = (CCR2-CCR1)/周期"
-      ]
-    },
-    {
-      page: 48, phase: "tim", title: "9.9 [定时器] PWM 参数测量实验", duration: 2865,
-      summary: "完整实验：捕获另一块板输出的 PWM 并解析。",
-      notes: `\n## 本节定位
-这一节讲解 STM32 启动流程和中断向量。理解芯片复位后做了什么，才能解释程序不跑、变量丢失、中断进错函数等问题。
-
-## 复位后的顺序
-典型流程：
-
-1. 电源和时钟稳定。
-2. Cortex-M 内核从向量表第 0 项取初始 MSP。
-3. 从第 1 项取 Reset_Handler 地址。
-4. 执行 Reset_Handler。
-5. 拷贝 \`.data\` 初始化段，清零 \`.bss\`。
-6. 调用 SystemInit()（不同工程位置可能不同）。
-7. 跳转到 main()。
-
-向量表前几项类似：
-
-~~~text
-0: Initial Stack Pointer
-1: Reset_Handler
-2: NMI_Handler
-3: HardFault_Handler
-...
-16+: 外设中断
-~~~
-
-## startup 文件
-Keil/GCC 工程都有 \`startup_stm32xxxx.s\`：
-
-1. 定义向量表。
-2. 提供 Reset_Handler。
-3. 弱定义各中断处理函数，例如：
-
-~~~asm
-; 示意
-WEAK EXTI0_IRQHandler
-B EXTI0_IRQHandler
-~~~
-
-如果用户代码定义了同名 C 函数，链接时覆盖弱定义。写错函数名就会落回默认死循环。
-
-## 链接脚本/分散加载
-链接器决定：
-
-1. Flash 起始地址 \`0x08000000\`。
-2. RAM 起始地址 \`0x20000000\`。
-3. \`.text\`、\`.rodata\` 放 Flash。
-4. \`.data\` 运行在 RAM，但初值保存在 Flash。
-5. \`.bss\` 在 RAM 中清零。
-
-\`.data\` 初始化就是启动代码把 Flash 中的初值拷贝到 RAM。
-
-## 中断函数命名
-必须与向量表完全一致，例如：
-
-~~~c
-void EXTI0_IRQHandler(void)
-{
-    HAL_GPIO_EXTI_IRQHandler(KEY_Pin);
-}
-~~~
-
-HAL 提供：
-
-~~~c
-void HAL_GPIO_EXTI_IRQHandler(uint16_t GPIO_Pin)
-{
-    if (__HAL_GPIO_EXTI_GET_IT(GPIO_Pin))
-    {
-        __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
-        HAL_GPIO_EXTI_Callback(GPIO_Pin);
-    }
-}
-~~~
-
-用户应写 \`HAL_GPIO_EXTI_Callback()\`，不要直接和底层 IRQ 函数混用。
-
-## HardFault
-常见原因：
-
-1. 空指针/野指针。
-2. 数组越界，栈被写坏。
-3. 未初始化时钟就访问外设。
-4. 中断优先级/栈配置错误。
-5. 函数指针错误。
-
-排查：
-
-1. 在 HardFault_Handler 设置断点。
-2. 查看 LR、PC、栈内容。
-3. 检查最近调用函数和局部数组大小。
-4. 增大栈，加栈溢出检测。
-5. 把可疑指针判空。
-
-## 栈和堆
-Keil/GCC 都有 Stack/Heap 大小配置：
-
-1. \`printf\`、\`malloc\` 可能需要堆。
-2. 深层函数调用和局部大数组需要栈。
-3. 中断嵌套会额外压栈。
-4. 若变量值莫名变化，优先怀疑越界或栈太小。
-
-检查静态内存：
-
-~~~text
-Program Size: Code+RO-data+RW-data+ZI-data
-~~~
-
-RW+ZI 不能超过 RAM。
-
-## Boot 引脚与启动模式
-F103 BOOT0/BOOT1：
-
-1. 主 Flash 启动：正常运行。
-2. 系统存储器启动：内置 bootloader，可串口/USB 下载。
-3. 内置 SRAM 启动：调试特殊用途。
-
-如果 BOOT0 被拉高，芯片可能不运行用户程序。
-
-## 常见问题
-1. 程序不跑：BOOT 配置、晶振、时钟配置错误。
-2. 中断不进：函数名拼写错误、NVIC 未开。
-3. 全局变量初值异常：\`.data\` 拷贝或链接地址错。
-4. 硬fault：指针/栈/数组问题。
-5. 下载后不运行：地址映射、保护、复位方式。
-
-## 本节要掌握
-启动流程把“C 代码之前”的世界补齐。写中断时核对向量表，调试 fault 时先看栈和指针，很多黑盒问题会变成可检查的步骤。
-
-\n      `,
-      points: [
-        "硬件自动复位法测占空比最优雅",
-        "结果可经串口 printf 输出到 PC 验证"
-      ]
-    },
-    {
-      page: 49, phase: "adc", title: "10.1 [ADC] 逐次逼近型 ADC", duration: 1744,
-      summary: "SAR 原理：二分比较逐步逼近输入电压。",
-      notes: `\n## 本节定位
-这一节讲解时钟树。STM32 的每个外设速度都由时钟决定，波特率、定时周期、PWM 频率、ADC 时间都会受影响。
-
-## 时钟源
-F103 常见时钟源：
-
-1. HSI：内部 8MHz RC，启动快，精度一般。
-2. HSE：外部高速晶振，常见 8MHz，配合 PLL 得到 72MHz。
-3. LSI：内部约 40kHz，用于 IWDG/RTC。
-4. LSE：外部 32.768kHz，用于 RTC。
-
-PLL 配置要点：
-
-~~~text
-SYSCLK = HSE / PLLXTPRE * PLLMUL
-8MHz * 9 = 72MHz
-~~~
-
-## 总线分频
-典型 F103 主频 72MHz：
-
-1. AHB = 72MHz。
-2. APB1 最大 36MHz，分频 2。
-3. APB2 最大 72MHz，分频 1。
-4. 定时器时钟规则：当 APB 分频不为 1 时，挂在该总线的定时器时钟通常乘 2。
-
-所以 APB1 36MHz 时，TIM2~TIM7 定时器时钟是 72MHz。
-
-## 外设影响
-1. USART：波特率由外设时钟和 BRR 决定，时钟错则乱码。
-2. TIM：更新频率、PWM 频率全由定时器时钟决定。
-3. ADC：ADC 时钟由 PCLK2 分频，F103 最高约 14MHz。
-4. SPI：SCK 从 PCLK 分频，主从速率必须匹配。
-5. I2C：速率与 ClockSource/CCR 相关。
-
-## CubeMX 时钟配置
-顺序：
-
-1. 选择 HSE Crystal。
-2. PLL Source 选 HSE。
-3. PLLMul 设置 x9。
-4. System Clock Mux 选 PLLCLK。
-5. AHB Prescaler /1。
-6. APB1 Prescaler /2。
-7. APB2 Prescaler /1。
-8. ADC Prescaler /6：72/6=12MHz，合法。
-
-配置完成后看每个外设旁显示的频率，不要凭感觉。
-
-## 外设时钟使能
-寄存器层面必须先开时钟：
-
-~~~c
-__HAL_RCC_GPIOA_CLK_ENABLE();
-__HAL_RCC_USART1_CLK_ENABLE();
-__HAL_RCC_TIM3_CLK_ENABLE();
-~~~
-
-HAL 句柄初始化通常会处理外设时钟，但 GPIO 往往需要显式使能。忘记开时钟时读写寄存器可能完全无效。
-
-## 低频与精度
-1. 主频越低功耗越低。
-2. HSI 精度受温度影响，高波特率或精确计时建议 HSE。
-3. RTC 用 LSE 更准。
-4. IWDG 用 LSI，超时是近似值。
-5. 时钟异常时 RCC CSS 可切回 HSI（按型号支持情况）。
-
-## 调试方法
-1. MCO 引脚输出时钟，用示波器测量。
-2. 用已知定时器周期反推系统时钟。
-3. 串口固定字符串测试，乱码大概率是波特率时钟问题。
-4. CubeMX 时钟树中检查红色超频警告。
-5. 修改 HSE 值要同步工程宏，如 \`HSE_VALUE\`。
-
-## 常见问题
-1. 程序下载后不跑：时钟源/晶振参数与硬件不符。
-2. 波特率偏差大：APB 时钟理解错误。
-3. PWM 频率差一倍：定时器时钟乘 2 规则漏掉。
-4. ADC 超频或转换失败：ADC 分频未配置。
-5. 低速外设没输出：总线时钟未使能。
-
-## 本节要掌握
-时钟树是 STM32 的“交通系统”。每次算频率前先问三句：这个外设挂在哪条总线？分频是多少？定时器是否乘 2？
-
-\n      `,
-      points: [
-        "12 位 ADC：LSB = 3.3V/4096 ≈ 0.8mV",
-        "ADC 时钟不超过 14MHz",
-        "输入电压范围 0 ~ VDDA"
-      ]
-    },
-    {
-      page: 50, phase: "adc", title: "10.2 [ADC] ADC 模块的结构框图", duration: 1545,
-      summary: "注入组/规则组、触发源与数据寄存器。",
-      notes: `\n## 本节定位
-这一节把前面知识整合成完整工程模板，目标是以后新项目可以直接复制模板，快速进入业务开发。
-
-## 工程模板目录
-
-~~~text
-Core/
-  main.c
-  bsp/
-    bsp_led.c
-    bsp_key.c
-    bsp_uart.c
-    bsp_oled.c
-    bsp_adc.c
-    bsp_pwm.c
-  app/
-    app_task.c
-    app_ui.c
-    app_setting.c
-  driver/
-    oled.c
-    oledfont.h
-    mpu6050.c
-    w25qxx.c
-~~~
-
-Keil 分组也可以按 \`Core/BSP/App/Driver\` 建，不要全部堆在 Source Group 1。
-
-## main.c 骨架
-
-~~~c
-int main(void)
-{
-    HAL_Init();
-    SystemClock_Config();
-    MX_GPIO_Init();
-    MX_USART1_UART_Init();
-    MX_ADC1_Init();
-    MX_TIM3_Init();
-    MX_I2C1_Init();
-
-    bsp_key_init();
-    bsp_oled_init();
-    bsp_adc_start_dma();
-    uart_start_receive();
-    param_load_or_default();
-
-    while (1)
-    {
-        task_key_10ms();
-        task_sensor_50ms();
-        task_ui_100ms();
-        task_uart();
-    }
-}
-~~~
-
-每个 \`task_xxx()\` 内部自行判断 HAL_GetTick 周期，主循环保持简洁。
-
-## 公共时基
-如果 SysTick 被 HAL 占用，可另用一个 TIM 作为应用节拍：
-
-~~~c
-volatile uint32_t app_ms = 0;
-
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == TIM2)
-    {
-        app_ms++;
-    }
-}
-~~~
-
-统一函数：
-
-~~~c
-bool task_due(uint32_t *last, uint32_t period)
-{
-    if (app_ms - *last >= period)
-    {
-        *last = app_ms;
-        return true;
-    }
-    return false;
-}
-~~~
-
-使用：
-
-~~~c
-static uint32_t t_sensor = 0;
-if (task_due(&t_sensor, 50))
-{
-    sensor_task();
-}
-~~~
-
-## 错误处理
-定义统一错误码：
-
-~~~c
-typedef enum {
-    ERR_NONE = 0,
-    ERR_I2C,
-    ERR_SPI,
-    ERR_ADC,
-    ERR_FLASH,
-    ERR_SENSOR
-} ErrorCode;
-~~~
-
-HAL 返回值不要忽略：
-
-~~~c
-if (HAL_I2C_Mem_Read(...) != HAL_OK)
-{
-    error_record(ERR_I2C);
-}
-~~~
-
-显示和串口都提供状态页：
-
-~~~text
-SYS: RUN
-I2C: 0
-SPI: 0
-ADC: 0
-RST: 3
-~~~
-
-## 日志等级
-
-~~~c
-#define LOG_DEBUG   1
-#define LOG_INFO    2
-#define LOG_WARN    3
-#define LOG_ERROR   4
-
-void log_printf(int level, const char *fmt, ...);
-~~~
-
-正式运行可关闭 DEBUG，只保留 WARN/ERROR。日志要用 \`\\r\\n\` 结尾，方便串口助手显示。
-
-## 版本与配置
-1. \`version.h\` 定义 \`VERSION_MAJOR/MINOR/PATCH\`。
-2. 启动时打印版本和编译时间。
-3. 参数结构加版本号，方便升级。
-4. README 记录引脚表、定时器分配、串口协议。
-
-## 复用经验
-新项目步骤：
-
-1. 复制模板，改芯片型号和引脚。
-2. 保留 BSP 接口，替换底层。
-3. 打开日志，先验证时钟和串口。
-4. 逐个外设跑最小测试。
-5. 加主循环任务和状态机。
-6. 最后加参数保存和看门狗。
-
-## 本节要掌握
-模板的价值是减少低级错误。LED、UART、ADC、I2C、PWM、看门狗都验证过之后，项目失败时更容易判断是新业务的问题还是底层的问题。
-
-\n      `,
-      points: [
-        "规则组连续转换要读 DR 前看 EOC 标志",
-        "注入组适合突发事件的高优先级采样",
-        "扫描+连续模式配合 DMA 才是多通道正解"
-      ]
-    },
-    {
-      page: 51, phase: "adc", title: "10.3 [ADC] 采样时间和转换时间", duration: 1691,
-      summary: "采样保持电路与转换周期计算。",
-      notes: `\n## 本节定位
-这一节讲解调试方法。STM32 调试不只是 printf，还包括断点、观察窗口、逻辑分析仪、错误码和最小化复现。
-
-## 分层定位
-遇到问题先归层：
-
-1. 电源/硬件层：电压、共地、接线和干扰。
-2. 时钟层：HSE、总线分频、外设时钟。
-3. 驱动层：寄存器配置、HAL 返回值、时序。
-4. 协议层：地址、命令、帧格式、校验。
-5. 应用层：状态机、数据范围、显示逻辑。
-
-不要一上来改业务代码，先用最小测试确认底层。
-
-## Keil 调试
-常用功能：
-
-1. Step Into/Over/Out：单步执行。
-2. Breakpoint：条件断点定位偶发问题。
-3. Watch：观察变量变化。
-4. Memory：查看数组、寄存器、结构体。
-5. Peripherals：查看 GPIO、TIM、USART 配置。
-6. Call Stack：fault 时看调用链。
-
-注意事项：
-
-1. 断点会暂停 CPU，实时通信行为可能改变。
-2. 外设可能在调试器下表现不同，尤其是 DMA/低功耗。
-3. 优化等级会影响变量被优化掉，必要时局部加 \`volatile\`。
-4. fault 断点通常设在 HardFault_Handler 首行。
-
-## printf 调试
-适合状态导出：
-
-~~~c
-printf("mode=%d raw=%u duty=%u\\r\\n", mode, raw, duty);
-~~~
-
-规则：
-
-1. 不要在中断里长时间 printf。
-2. 打印十六进制便于协议分析：\`printf("ID=%02X\\r\\n", id);\`
-3. 加时间戳：\`[%lu] sensor=...\`
-4. 使用等级宏控制输出。
-5. 打印顺序本身可能改变时序，不要把偶然现象当必然。
-
-## GPIO 翻转示波法
-性能测量非常直接：
-
-~~~c
-HAL_GPIO_WritePin(DBG_GPIO_Port, DBG_Pin, GPIO_PIN_SET);
-task_heavy();
-HAL_GPIO_WritePin(DBG_GPIO_Port, DBG_Pin, GPIO_PIN_RESET);
-~~~
-
-示波器测量：
-
-1. 单次任务耗时。
-2. 中断频率。
-3. 是否有毛刺。
-4. 多个调试脚可以标定不同任务。
-
-## 逻辑分析仪
-对通信问题极有效：
-
-1. I2C：看 START、地址 ACK、数据 ACK。
-2. SPI：看 CS、时钟极性、MOSI/MISO。
-3. UART：直接解码波特率和数据。
-4. PWM：测量频率、占空比、抖动。
-
-若没有分析仪，也可用第二个 STM32 做简单捕获。
-
-## HAL 返回值
-不要忽略：
-
-~~~c
-HAL_StatusTypeDef st = HAL_I2C_Mem_Read(...);
-if (st != HAL_OK)
-{
-    printf("I2C err=%d\\r\\n", st);
-}
-~~~
-
-常见：
-
-1. HAL_TIMEOUT：设备无响应或时序慢。
-2. HAL_ERROR：参数/寄存器状态问题。
-3. HAL_BUSY：上一传输未完成。
-
-## 偶发问题
-1. 复现条件：温度、供电、外设动作、按键频率。
-2. 记录变量：错误码、计数器、时间戳。
-3. 保存最后状态到备份寄存器或 EEPROM。
-4. 加看门狗复位原因记录。
-5. 简化系统：关闭 OLED、断开电机、逐步恢复。
-
-## 常见错误对照
-1. I2C 全 FF：地址/接线/上拉。
-2. SPI 全 00：CS 或模式。
-3. UART 乱码：波特率/时钟。
-4. PWM 频率差 2 倍：定时器时钟规则。
-5. 变量被改：越界/多任务冲突。
-6. 中断只进一次：标志未清或没有重启。
-
-## 本节要掌握
-调试的核心是缩小范围并保留证据。每个项目都应有状态页、错误计数、日志接口，现场问题才不会变成玄学。
-
-\n      `,
-      points: [
-        "采样时间越长对高阻抗信号源越友好",
-        "转换完成置 EOC 标志",
-        "ADCCLK 由 PCLK2 分频（2/4/6/8）"
-      ]
-    },
-    {
-      page: 52, phase: "adc", title: "10.4 [ADC] 常规单通道转换", duration: 3101,
-      summary: "单通道轮询采样实战：电位器电压读取。",
-      notes: `\n## 本节定位
-这一节做标准库版的 ADC 单通道转换。重点看 ADC 时钟、通道采样时间、校准流程和原始值换算。
-
-## ADC 时钟
-ADC1 挂在 APB2（72MHz），但 F103 ADC 时钟最高约 14MHz：
-
-~~~c
-RCC_ADCCLKConfig(RCC_PCLK2_Div6);   /* 72/6 = 12MHz */
-~~~
-
-可用分频 2/4/6/8。超频会带来精度和稳定性问题。
-
-## 引脚与配置
-PA0 对应 ADC12_IN0，配置为模拟输入：
-
-~~~c
-GPIO_InitTypeDef gpio;
-gpio.GPIO_Pin = GPIO_Pin_0;
-gpio.GPIO_Mode = GPIO_Mode_AIN;
-GPIO_Init(GPIOA, &gpio);
-~~~
-
-\`ADC_InitTypeDef\` 核心项：
-
-1. \`ADC_Mode_Independent\`：独立模式。
-2. \`ADC_ContinuousConvMode = DISABLE\`：软件单次触发。
-3. \`ADC_ExternalTrigConv_None\`：不用外部触发。
-4. \`ADC_DataAlign_Right\`：12 位结果右对齐，值为 0~4095。
-5. \`ADC_NbrOfChannel = 1\`：规则序列长度。
-
-## 校准
-F103 建议每次上电校准：
-
-~~~c
-ADC_ResetCalibration(ADC1);
-while (ADC_GetResetCalibrationStatus(ADC1));
-ADC_StartCalibration(ADC1);
-while (ADC_GetCalibrationStatus(ADC1));
-~~~
-
-校准能减小转换误差，必须在 ADC 使能后执行。
-
-## 单次读取
-
-~~~c
-uint16_t adc_read_ch0(void)
-{
-    ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_239Cycles5);
-    ADC_SoftwareStartConvCmd(ADC1, ENABLE);
-    while (!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC));
-    return ADC_GetConversionValue(ADC1);
-}
-~~~
-
-序列 rank 是 1，采样时间选择 239.5 cycles 时输入阻抗适应性强，单次转换较慢但稳定。
-
-## 转换时间
-
-~~~text
-Tconv = SampleTime + 12.5 ADC cycles
-~~~
-
-239.5+12.5 = 252 cycles；12MHz 下约 21us。若用 1.5 cycles，则 14 cycles，约 1.17us。
-
-## 电压换算
-
-~~~c
-float voltage = adc_raw * 3.3f / 4095.0f;
-~~~
-
-若 VDDA 实际不是 3.3V，可用已知电压标定。分压电路测量电池时要乘分压系数。
-
-## 数据滤波
-单次读容易抖动，常用 8/16 次平均：
-
-~~~c
-uint16_t adc_read_avg_ch0(void)
-{
-    uint32_t sum = 0;
-    for (uint8_t i = 0; i < 16; i++)
-    {
-        sum += adc_read_ch0();
-    }
-    return sum / 16;
-}
-~~~
-
-若有偶发尖峰，先排序去极值再平均。
-
-## 排错
-1. 一直是 4095：输入悬空或接 VDD。
-2. 一直是 0：接 GND、通道错误、VDDA 无电。
-3. 结果偏小：信号源阻抗高、采样时间不足。
-4. 波动大：电源噪声、长线、附近继电器/电机。
-5. EOC 一直等不到：ADC 未使能、时钟未开、触发未启动。
-
-## 本节要掌握
-单通道 ADC 的流程是“ADC 时钟 -> 模拟引脚 -> 规则通道和采样时间 -> 校准 -> 软件触发 -> 读 EOC/DR”。多通道和 DMA 只是把这个流程扩展成序列。
-
-\n      `,
-      points: [
-        "模拟引脚 GPIO_Mode_AIN",
-        "上电后先做一次校准提高精度",
-        "电压 = 读数 × 3.3 / 4095"
-      ]
-    },
-    {
-      page: 53, phase: "adc", title: "10.5 [ADC] 定时器触发", duration: 2776,
-      summary: "TIM TRGO 定周期自动采样，等间隔采集。",
-      notes: `\n## 本节定位
-这一节讲解 RTC 项目化应用。目标不只是读出时间，而是让 RTC 参与日志、定时任务、闹钟和功耗管理。
-
-## 时间结构
-封装统一时间：
-
-~~~c
-typedef struct {
-    uint16_t year;
-    uint8_t month;
-    uint8_t day;
-    uint8_t hour;
-    uint8_t minute;
-    uint8_t second;
-} DateTime;
-
-bool rtc_get(DateTime *dt)
-{
-    RTC_TimeTypeDef t;
-    RTC_DateTypeDef d;
-
-    if (HAL_RTC_GetTime(&hrtc, &t, RTC_FORMAT_BIN) != HAL_OK) return false;
-    if (HAL_RTC_GetDate(&hrtc, &d, RTC_FORMAT_BIN) != HAL_OK) return false;
-
-    dt->year = 2000 + d.Year;
-    dt->month = d.Month;
-    dt->day = d.Date;
-    dt->hour = t.Hours;
-    dt->minute = t.Minutes;
-    dt->second = t.Seconds;
-    return true;
-}
-~~~
-
-先读 Time 后读 Date，避免日期锁存问题。
-
-## 日志时间戳
-事件日志通常保留最近 N 条：
-
-~~~c
-typedef struct {
-    DateTime time;
-    uint8_t type;
-    uint16_t value;
-} LogEntry;
-
-LogEntry logs[32];
-uint8_t log_head = 0;
-~~~
-
-写入：
-
-~~~c
-void log_add(uint8_t type, uint16_t value)
-{
-    DateTime dt;
-    if (rtc_get(&dt))
-    {
-        logs[log_head].time = dt;
-    }
-    logs[log_head].type = type;
-    logs[log_head].value = value;
-    log_head = (log_head + 1) % 32;
-}
-~~~
-
-日志内容示例：
-
-1. 上电/复位原因。
-2. 看门狗复位。
-3. 传感器异常。
-4. 参数修改。
-5. 闹钟触发。
-
-## 定时任务
-RTC 秒中断可做低频任务：
-
-~~~c
-volatile uint8_t rtc_second_flag = 0;
-
-void HAL_RTCEx_SSUEventCallback(RTC_HandleTypeDef *hrtc)
-{
-    rtc_second_flag = 1;
-}
-~~~
-
-不同 HAL 版本回调名可能不同，例如 Alarm 或 Wakeup。核心思想一致：中断只置标志，主循环处理。
-
-每天固定时间执行：
-
-~~~c
-if (rtc_second_flag)
-{
-    rtc_second_flag = 0;
-    DateTime dt;
-    if (rtc_get(&dt))
-    {
-        if (dt.hour == 8 && dt.minute == 0 && dt.second == 0)
-        {
-            /* 执行每天任务 */
-        }
-    }
-}
-~~~
-
-注意要判断分钟+小时，不能只判断秒，否则每分钟第 0 秒都会触发。
-
-## 闹钟
-单次闹钟：
-
-1. 设置 Alarm 时间。
-2. 打开 Alarm 中断和 EXTI/NVIC。
-3. 回调置 \`alarm_flag\`。
-4. 若需要每天重复，回调里重新设置下一次闹钟。
-
-闹钟掩码决定比较哪些字段，例如只比较时分秒、不比较日期。配置错时会出现“永不触发”或“每秒触发”。
-
-## 与低功耗结合
-Stop/Standby 模式下让 RTC 唤醒：
-
-1. RTC 和备份域时钟正常。
-2. 配置 Alarm 或 Wakeup Timer。
-3. 配置对应 EXTI 上升沿。
-4. 进入低功耗模式。
-5. 唤醒后重建必要外设时钟。
-
-典型周期：
-
-~~~text
-唤醒 -> 采集传感器 -> 存数据 -> 打印/发送 -> 睡眠
-~~~
-
-如果每次唤醒 OLED 都初始化，要考虑上电稳定时间，不要立刻写屏。
-
-## 校时方案
-1. 串口命令：\`TIME 2026-09-07 20:30:00\`。
-2. 上位机发送 Unix 时间戳。
-3. 蓝牙/WiFi 模块网络校时。
-4. 手动按键设置年月日时分。
-
-解析示例：
-
-~~~c
-if (strncmp(cmd, "TIME ", 5) == 0)
-{
-    DateTime dt;
-    if (parse_datetime(cmd + 5, &dt))
-    {
-        rtc_set(&dt);
-        uart_send_string("OK\\r\\n");
-    }
-    else
-    {
-        uart_send_string("ERR\\r\\n");
-    }
-}
-~~~
-
-## 长期精度
-1. LSE 晶振日误差几十毫秒到几秒都可能，取决于硬件。
-2. 温度变化影响频率。
-3. 记录“每 24 小时偏差”，用软件补偿秒脉冲。
-4. 对账时以可靠时钟为基准，多次测量。
-
-## 常见问题
-1. 复位时间重置：初始化没有判断备份域标志。
-2. 日期不进位：读取顺序错误。
-3. 闹钟一次后失效：没有重新配置。
-4. 低功耗不唤醒：EXTI/中断/唤醒源漏配。
-5. 时间格式错：BCD 与 BIN 格式混用。
-
-## 本节要掌握
-RTC 项目要回答三件事：首次上电如何初始化、复位后如何保持、长期如何校准。日志和定时任务则让时间变成可用的系统能力。
-
-\n      `,
-      points: [
-        "等间隔采样后数据才能做 FFT 等处理",
-        "采样率 = 定时器溢出频率"
-      ]
-    },
-    {
-      page: 54, phase: "adc", title: "10.6 [ADC] 扫描模式", duration: 2768,
-      summary: "多通道扫描 + DMA 自动搬运，多路采集正解。",
-      notes: `\n## 本节定位
-课程最后一节做整体复盘。重点是知识网络、项目路线和后续进阶方向，把零散外设变成能独立完成产品原型的能力。
-
-## 知识网络
-所有外设都围绕几条主线：
-
-1. 时钟：HSE/PLL、总线分频、外设时钟使能。
-2. GPIO：输出、输入、复用、模拟。
-3. 通信：UART、I2C、SPI，核心是时序和协议。
-4. 时间：SysTick、TIM、RTC，核心是周期和事件。
-5. 模拟：ADC 采集，DAC 输出，核心是参考电压与采样率。
-6. 可靠性：中断、DMA、看门狗、低功耗、错误记录。
-7. 存储：EEPROM、片内 Flash、W25Q64，核心是擦写规则和掉电安全。
-
-## 每类项目的最小闭环
-交互类项目：
-
-~~~text
-按键 -> 状态机 -> OLED -> PWM/LED/蜂鸣器
-~~~
-
-传感器项目：
-
-~~~text
-ADC/I2C传感器 -> 滤波 -> OLED/串口 -> 报警/控制
-~~~
-
-电机项目：
-
-~~~text
-PWM + 方向控制 -> 编码器测速 -> 闭环调节 -> 保护
-~~~
-
-记录项目：
-
-~~~text
-RTC时间 + 传感器 + Flash/EEPROM + 串口导出
-~~~
-
-通信项目：
-
-~~~text
-UART/I2C/SPI协议 -> 环形缓冲 -> 状态机 -> 命令执行
-~~~
-
-## 工程习惯
-1. 先画硬件连接表：引脚、总线、电压、复用。
-2. 再画定时器/外设分配表，避免冲突。
-3. 每个模块有 init 和 task 函数。
-4. HAL 返回值检查，错误码统一。
-5. 主循环时间片轮询，中断只做短事件。
-6. 用 OLED/串口提供状态页。
-7. 每次改动只验证一个变量。
-
-## 排错清单
-上电检查：
-
-1. 电源电压是否稳定。
-2. BOOT 引脚是否主 Flash。
-3. 晶振是否起振。
-4. SWD 是否能识别。
-
-外设检查：
-
-1. GPIO 模式和时钟。
-2. 波特率/频率公式中的总线时钟。
-3. 中断标志与回调函数名。
-4. DMA 缓冲区生命周期。
-5. I2C/SPI 地址、模式、上拉/片选。
-
-系统检查：
-
-1. 栈大小、数组越界。
-2. 看门狗是否误触发。
-3. 低功耗唤醒后时钟是否恢复。
-4. 参数保存是否校验。
-5. 长时间运行是否累积错误。
-
-## 进阶路线
-1. C 语言：结构体、函数指针、环形缓冲、状态机、内存布局。
-2. RTOS：FreeRTOS 任务、队列、信号量，处理多任务更清晰。
-3. 通信协议：CAN、RS485/Modbus、USB CDC、蓝牙。
-4. 控制算法：PID、滤波器、步进梯形加减速。
-5. 图形：TFT 屏、LVGL、简易菜单框架。
-6. 文件系统：FatFs、日志文件、SD 卡。
-7. 低功耗产品：Stop/Standby、功耗测量、电池管理。
-8. Bootloader：固件升级、双区备份、CRC 校验。
-
-## 从课程到项目
-建议做三个难度递增的小项目：
-
-1. 环境监测器：ADC/光敏/温度 + OLED + RTC 日志。
-2. 电机控制器：PWM + 编码器 + 按键设置 + 串口调参。
-3. 小型数据记录仪：多传感器 + W25Q64/FatFs + 上位机协议。
-
-每个项目都写 README：需求、引脚表、任务周期、协议、问题记录。
-
-## 继续学习的方法
-1. 数据手册和参考手册是最权威来源，学会查寄存器描述。
-2. HAL 手册看函数参数和返回值，不要只搜博客。
-3. 把问题写成最小工程，能复现就解决了一大半。
-4. 建立自己的驱动库和模板，复用比重写更快。
-5. 记录每个项目的错误和解决方法，形成个人知识库。
-
-## 最后提醒
-学会 STM32 的标志不是记住了多少函数，而是能把需求拆成硬件资源、任务周期和模块接口。遇到没见过的外设时，仍能按“时钟、GPIO、配置、数据流、中断/DMA、错误处理”的路径快速上手。
-
-\n      `,
-      points: [
-        "多通道必须扫描 + DMA，CPU 零搬运",
-        "DMA 循环模式自动刷新缓冲区",
-        "至此课程完成：GPIO/串口/I2C/SPI/中断/时钟/定时器/ADC 全覆盖"
-      ]
-    },
   ]
 };
