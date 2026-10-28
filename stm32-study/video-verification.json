@@ -1,7 +1,7 @@
 {
   "bvid": "BV11X4y1j7si",
   "checkedAt": "2026-10-28",
-  "reviewMethod": "公开视频原始画面核验；未获得完整字幕，也未逐秒听读25小时视频。",
+  "reviewMethod": "P31：完整音轨自动识别辅助阅读和逐段原画面对照；其余53节：关键画面抽查，正文仍为主题补充，尚未逐段核对。",
   "pages": [
     {
       "page": 1,
@@ -1045,36 +1045,80 @@
       "duration": 2512,
       "videoUrl": "https://www.bilibili.com/video/BV11X4y1j7si/?p=31",
       "status": "video-keyframes-checked",
-      "method": "公开视频关键画面核验",
+      "method": "完整音轨自动识别辅助阅读，并按讲授顺序与原代码画面对照",
       "checkedAt": "2026-10-28",
-      "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+      "scope": "P31已阅读完整音轨的自动识别文本，并对照原画面核对顺序、函数名、参数与结果；自动识别不是作者字幕，未逐秒人工听写，也未取得作者原工程。",
       "anchors": [
         {
           "seconds": 120,
-          "observation": "SPI1 重映射表及 PB3/PB4/PB5、PA15 的 W25QXX 接线。",
+          "observation": "SPI1接线图：PB3/PB4/PB5和PA15片选。",
           "frameSha256": "376046b453cb7b87f0e1fc8cebf7e3bfd20b8e4dcc05e099012c965f6f3bcadd"
         },
         {
-          "seconds": 643,
-          "observation": "本节列出存储结构、存储数据、读取数据。",
-          "frameSha256": "b4390b3afe7b2005b5e28cebed65ba70b51b6efa120272cad27dc852fcfe365f"
+          "seconds": 405,
+          "observation": "Keil已将CPOL/CPHA改为Low/1Edge，PA15初始化后写高。",
+          "frameSha256": "55c8d553178af2f8bff45e3ee03e9dc3a49fc7012ea54703890df813e4f37595"
+        },
+        {
+          "seconds": 480,
+          "observation": "声明原SaveByte、LoadByte及SPI收发函数。",
+          "frameSha256": "156524ac4914a01b23f778b791922675cdf1f0c0d85bdb45b8535227760e64a8"
+        },
+        {
+          "seconds": 600,
+          "observation": "容量图：64Mbit/8MByte、块、扇区、页。",
+          "frameSha256": "84d85efa630bc72d67972631f0a1a991246b3276c8c3b82fe093537dc92a78fd"
+        },
+        {
+          "seconds": 780,
+          "observation": "保存流程：两次写使能、擦除/页编程、两次等待。",
+          "frameSha256": "b46dcedf7e2930a8de3f6c4fc4c586ec63d288d7f0a77c003c70b5b837d185da"
         },
         {
           "seconds": 1080,
-          "observation": "0x06 写使能及擦除、页编程、等待空闲顺序。",
+          "observation": "写使能06的PPT示例；投影片片选印为PA12，口述及IDE用PA15。",
           "frameSha256": "2b0f953b8fddb83eb1b0b63886344b99c43105b6331121421abfc529d3e01798"
         },
         {
+          "seconds": 1440,
+          "observation": "扇区擦除发送20和三个零地址字节，交换长度4。",
+          "frameSha256": "8d9150b464b6909fb1e80ac6bb51e769867bb9b3ca9d0d0e6f1500183dd5a078"
+        },
+        {
           "seconds": 1620,
-          "observation": "0x05 读取状态寄存器并轮询忙状态。",
+          "observation": "读状态05，再用FF交换一字节，检查BUSY位。",
           "frameSha256": "a828422ba8381586e8b1cd382e95ea9adb030c1cf8fdcd0e0e062efb9f4f06d3"
         },
         {
+          "seconds": 1920,
+          "observation": "页编程发送02、三个零地址字节及Byte，长度5。",
+          "frameSha256": "c972fba140fd163393adc3ae6422c0f6137319df81a8671771ff62a113d5bb5a"
+        },
+        {
+          "seconds": 2220,
+          "observation": "后续读取PPT已改为03、三个零地址，FF交换一字节。",
+          "frameSha256": "f40ea67b5c0e468857500b539310f969a319105bff34608c7c6668f421888d3e"
+        },
+        {
           "seconds": 2340,
-          "observation": "App_W25Q64_SaveByte(0x12) 与 LoadByte 单字节存取示例。",
+          "observation": "原函数接口和SaveByte(0x12)、LoadByte调用，固定零地址。",
           "frameSha256": "db533a0bd46d093a689814e1e91284de3f1c2a9a5d50e2a95a6ceeed69a9507c"
+        },
+        {
+          "seconds": 2460,
+          "observation": "Keil调试显示全局a的值为0x12。",
+          "frameSha256": "c1a78e7d2f1c2d984dccd87178f4b5d9e059c1a895293ab5eafeb1830da1f44b"
         }
-      ]
+      ],
+      "sequenceReview": {
+        "status": "asr-text-and-frame-aligned",
+        "audioDuration": 2511.1466875,
+        "asrSegments": 1043,
+        "manualListenComplete": false,
+        "originalProjectObtained": false,
+        "notesSha256": "99a80e434bc5ff2740f1100e41fe6f66a01cefbd366241e5eb8c33ffae2abf16",
+        "reviewedAt": "2026-10-28"
+      }
     },
     {
       "page": 32,

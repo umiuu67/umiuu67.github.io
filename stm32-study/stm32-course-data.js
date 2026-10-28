@@ -1415,49 +1415,95 @@ const COURSE = {
       "phase": "spi",
       "title": "5.7 [SPI] W25Q64 实验（上）",
       "duration": 2512,
-      "summary": "W25Q64 实验上：完成 SPI1 重映射接线，按写使能、擦除、页编程与忙等待实现单字节保存和读取。",
-      "notes": "02:00 的接线页给出 SPI1 重映射，PB3 为 SCK、PB4 为 MISO、PB5 为 MOSI，普通 IO PA15 接模块 CS。04:00 至 08:00 在 Keil 中准备 SPI 初始化和收发函数。10:43 的课程结构明确为存储结构、存储数据和读取数据。18:00 展示写使能 0x06 及“写使能→扇区擦除→等待空闲→写使能→页编程→等待空闲”；27:00 通过 0x05 读状态寄存器等待忙位清除。39:00 用 SaveByte(0x12) 和 LoadByte 演示单字节存取。部分投影片的片选示例写成 PB12，与开头 PA15 接线不同，不能拼接照抄成一份代码。",
+      "summary": "先修正PA15/JTAG、片选初值与SPI模式0，再沿原函数在零地址保存0x12、读回并观察全局变量a。",
+      "notes": "本节开头先纠正前几节的配置：释放PA15的JTAG占用，初始化后让CS保持高，并把本实验改为SPI模式0。随后声明SaveByte/LoadByte，介绍存储层级和六步流程，再依次录入写使能、擦除、等待和页编程；33:57复制补齐第4/6步。读取使用03加三个零地址字节，再发FF交换一个字节，最后调试全局a=0x12。PPT中的PA12与口述、Keil实际使用的PA15单独对照。",
       "points": [
-        "SPI1 重映射到 PB3/PB4/PB5，开头接线图用 PA15 作片选。",
-        "写操作前发送 0x06；通过 0x05 读取状态并等待空闲。",
-        "封装 App_W25Q64_SaveByte 和 LoadByte，用 0x12 演示单字节保存与读回。"
+        "开头三次配置修正：释放JTAG、CS先写高、模式改为Low/1Edge。",
+        "保留App_W25Q64_SaveByte、LoadByte与App_SPI_MasterTransmitReceive原接口。",
+        "逐句解释06、20、05、02、03指令、buffer和1/4/5字节交换。",
+        "按原片先录入页编程，再复制补齐第4/6步，最后调试a=0x12。"
       ],
       "cid": 26054953378,
       "verification": {
         "status": "video-keyframes-checked",
-        "method": "公开视频关键画面核验",
+        "method": "完整音轨自动识别辅助阅读，并按讲授顺序与原代码画面对照",
         "checkedAt": "2026-10-28",
-        "scope": "只核对所列关键画面，不是逐秒观看或逐字转录；提要只保留画面能够支持的内容。",
+        "scope": "P31已阅读完整音轨的自动识别文本，并对照原画面核对顺序、函数名、参数与结果；自动识别不是作者字幕，未逐秒人工听写，也未取得作者原工程。",
         "anchors": [
           {
             "seconds": 120,
-            "observation": "SPI1 重映射表及 PB3/PB4/PB5、PA15 的 W25QXX 接线。",
+            "observation": "SPI1接线图：PB3/PB4/PB5和PA15片选。",
             "frameSha256": "376046b453cb7b87f0e1fc8cebf7e3bfd20b8e4dcc05e099012c965f6f3bcadd"
           },
           {
-            "seconds": 643,
-            "observation": "本节列出存储结构、存储数据、读取数据。",
-            "frameSha256": "b4390b3afe7b2005b5e28cebed65ba70b51b6efa120272cad27dc852fcfe365f"
+            "seconds": 405,
+            "observation": "Keil已将CPOL/CPHA改为Low/1Edge，PA15初始化后写高。",
+            "frameSha256": "55c8d553178af2f8bff45e3ee03e9dc3a49fc7012ea54703890df813e4f37595"
+          },
+          {
+            "seconds": 480,
+            "observation": "声明原SaveByte、LoadByte及SPI收发函数。",
+            "frameSha256": "156524ac4914a01b23f778b791922675cdf1f0c0d85bdb45b8535227760e64a8"
+          },
+          {
+            "seconds": 600,
+            "observation": "容量图：64Mbit/8MByte、块、扇区、页。",
+            "frameSha256": "84d85efa630bc72d67972631f0a1a991246b3276c8c3b82fe093537dc92a78fd"
+          },
+          {
+            "seconds": 780,
+            "observation": "保存流程：两次写使能、擦除/页编程、两次等待。",
+            "frameSha256": "b46dcedf7e2930a8de3f6c4fc4c586ec63d288d7f0a77c003c70b5b837d185da"
           },
           {
             "seconds": 1080,
-            "observation": "0x06 写使能及擦除、页编程、等待空闲顺序。",
+            "observation": "写使能06的PPT示例；投影片片选印为PA12，口述及IDE用PA15。",
             "frameSha256": "2b0f953b8fddb83eb1b0b63886344b99c43105b6331121421abfc529d3e01798"
           },
           {
+            "seconds": 1440,
+            "observation": "扇区擦除发送20和三个零地址字节，交换长度4。",
+            "frameSha256": "8d9150b464b6909fb1e80ac6bb51e769867bb9b3ca9d0d0e6f1500183dd5a078"
+          },
+          {
             "seconds": 1620,
-            "observation": "0x05 读取状态寄存器并轮询忙状态。",
+            "observation": "读状态05，再用FF交换一字节，检查BUSY位。",
             "frameSha256": "a828422ba8381586e8b1cd382e95ea9adb030c1cf8fdcd0e0e062efb9f4f06d3"
           },
           {
+            "seconds": 1920,
+            "observation": "页编程发送02、三个零地址字节及Byte，长度5。",
+            "frameSha256": "c972fba140fd163393adc3ae6422c0f6137319df81a8671771ff62a113d5bb5a"
+          },
+          {
+            "seconds": 2220,
+            "observation": "后续读取PPT已改为03、三个零地址，FF交换一字节。",
+            "frameSha256": "f40ea67b5c0e468857500b539310f969a319105bff34608c7c6668f421888d3e"
+          },
+          {
             "seconds": 2340,
-            "observation": "App_W25Q64_SaveByte(0x12) 与 LoadByte 单字节存取示例。",
+            "observation": "原函数接口和SaveByte(0x12)、LoadByte调用，固定零地址。",
             "frameSha256": "db533a0bd46d093a689814e1e91284de3f1c2a9a5d50e2a95a6ceeed69a9507c"
+          },
+          {
+            "seconds": 2460,
+            "observation": "Keil调试显示全局a的值为0x12。",
+            "frameSha256": "c1a78e7d2f1c2d984dccd87178f4b5d9e059c1a895293ab5eafeb1830da1f44b"
           }
         ]
       },
-      "learningNotes": "## 单字节也要走完整的 Flash 操作流程\n视频上半节先准备 SPI，再把 W25Q64 存储结构、保存和读取串起来，最后用 SaveByte(0x12) 与 LoadByte 演示。本站补充笔记只围绕这个单字节实验，下面的伪接口是教学说明，非视频原源码。\n\n### 先解决接线里的差异\n开头接线图是 SPI1 重映射：PB3=SCK、PB4=MISO、PB5=MOSI、PA15=CS。部分投影片代码却操作 PB12，这不是同一套接线。复现时应先选择一套并统一所有片选调用；按开头 PA15 方案接线，就不能让写使能函数又去操作 PB12。PA15/PB3/PB4 涉及 JTAG，要关闭 JTAG、保留 SWD，并确认 GPIO 模式与重映射。\n\n### 保存不是普通 RAM 赋值\nNOR Flash 擦除后位为 1，编程主要把 1 变成 0；需要恢复 0 到 1 时必须先擦除。擦除按扇区进行，编程按器件允许的页内范围进行，所以保存一个字节也可能影响一整个扇区。应选一片可丢弃的实验区域，不把参数、字库等重要内容放在同扇区。\n\n视频给出“写使能→扇区擦除→等待空闲→写使能→页编程→等待空闲”。0x06 是写使能，0x05 用于读状态，BUSY 为忙时不能直接开始下一次普通擦写。CS 拉高结束一条指令，后续指令要重新选中；擦除和编程也分别需要写使能。\n\n```c\nFlash_WriteEnable();\nif (!Flash_EraseTestSector()) return ERASE_ERROR;\nif (!Flash_WaitReady(timeout)) return BUSY_ERROR;\nFlash_WriteEnable();\nif (!Flash_ProgramOneByte(test_addr, 0x12)) return WRITE_ERROR;\nif (!Flash_WaitReady(timeout)) return BUSY_ERROR;\nuint8_t value = Flash_ReadOneByte(test_addr);\nif (value != 0x12) return VERIFY_ERROR;\n```\n\n这些接口必须用当前 SPI 驱动和具体型号指令实现，不能把伪函数直接下载。读取同样要发送读指令和地址，再通过占位字节产生接收时钟；指令和地址阶段的回读不等于目标数据。\n\n### 动手验收\n1. 断电统一接线，先查器件身份或稳定状态读取，确认 SPI 能通信。\n2. 仅在选定测试区域保存 0x12，等忙结束再读回，比较值而不只看函数执行到了末尾。\n3. 暂时只复位 MCU，再读回；随后完成写入并等待空闲后断电重上电，再读一次。\n4. 若总读 FF，查 CS、地址和 MISO；若旧值不变，查写使能、保护状态和擦除是否成功；若永远忙，加入超时并确认状态字节是否读对。\n\n本站工程提醒：每次按键保存都擦同一扇区会带来磨损和响应时间，后续可设计按变化写入、记录区等优化；这些不是本片已经完成的跨页驱动。\n\n### 练习与答案\n练习一：地址中是 0x00，想直接编程成 0x01，可以吗？答案：需要把某位从 0 变 1，应先按器件规则擦除。\n练习二：保存成功后只复位 MCU 能证明掉电保持吗？答案：能说明重新启动读取路径，但不能完全替代断电重上电验证，应在写完成后另做掉电测试。",
-      "learningNotesOrigin": "本站补充讲解与教学示例；按本节视频主题组织，不作为原片逐字稿或原始源码。"
+      "learningNotes": "## 00:32—01:10 · 本节要做的实验\n\n开头展示面包板上的 W25Q64 模块。本节先通过 SPI 向模块保存一个字节，再把这个字节读出来。上下两节中的本节是“上”，不要把下一节的按键、LED 状态应用提前混进来。\n\n## 01:10—06:46 · 先修正前几节的三处配置\n\n作者先回到上一节的工程纠正配置，然后才开始讲 Flash 的存取。跟做时应先完成这三次修正，再进入后面的读写函数。\n\n### 第一次修正：PA15 被 JTAG 功能占用\n\n[01:25 接线说明](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=85)：SPI1 已从默认引脚重映射到 PB3、PB4、PB5，分别连接 SCK、MISO、MOSI；PA15 作为普通 GPIO 控制 CS。CS 输出高表示未选中，输出低表示选中。\n\n[02:50 引脚表](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=170)：PA15 的复位默认功能是 JTAG 的 JTDI。作者据此回到 `App_SPI1_Init` 的 GPIO 初始化部分，在原先 SPI1 重映射调用旁边增加释放 JTAG 引脚的调用。原片可辨的关键两行是：\n\n```c\nGPIO_PinRemapConfig(GPIO_Remap_SPI1, ENABLE);\nGPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable, ENABLE);\n```\n\n第一行决定 SPI1 信号映射到哪组脚；第二行关闭 JTAG、保留 SWD，使这里用到的引脚不再被完整 JTAG 接口占用。这不是重新接一根线就能解决的问题。\n\n### 第二次修正：初始化结束后先取消片选\n\n[04:18—05:11 初始化时的 CS](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=258)：尚未开始通信时，模块应处于未选中状态。作者找到 PA15 的 GPIO 初始化位置，并在初始化后写高：\n\n```c\nGPIO_Init(GPIOA, &GPIO_InitStruct);\nGPIO_WriteBit(GPIOA, GPIO_Pin_15, Bit_SET);\n```\n\n这里的 `Bit_SET` 表示把片选线置高，不是“开启 Flash”。一次器件命令开始时才拉低 CS，命令结束后再拉高。\n\n### 第三次修正：本实验改用 SPI 模式 0\n\n[05:14 参数回顾](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=314)：原片保留 8 位数据宽度和 MSB First，并回顾先前选过高空闲、第二边沿的模式 3。作者在本实验中将问题归因为所用模块“不支持模式 3”，因此把配置改为模式 0。这是对作者本次实验说法的记录。\n\n[06:33—06:46 实际修改](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=393)：先把 CPOL 从 High 改成 Low，再把 CPHA 从 2Edge 改成 1Edge：\n\n```c\nSPI_InitStruct.SPI_CPOL = SPI_CPOL_Low;\nSPI_InitStruct.SPI_CPHA = SPI_CPHA_1Edge;\n```\n\n06:40 的代码画面还处于修改中间状态，能看到 Low 与 2Edge 同屏；06:45 已是 Low 与 1Edge。跟视频操作时要看修改完成后的组合，不能停在中间帧照抄。同屏其余参数为主机、双线全双工、8 位、MSB、64 分频、软件 NSS。\n\n这段记录的是作者在本实验中采用的配置。原片展示的手册波形本身同时标有 Mode 0/3，因此不要把这次实验的叙述扩展成“所有 W25Q64 型号都不支持模式 3”。\n\n## 06:49—08:44 · 列出本节结构，先声明两个函数\n\n[06:49 本节三部分](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=409)：存储结构、存储数据、读取数据。\n\n[07:10 开始介绍两个接口](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=430)，随后在 `main.c` 顶部写原型，并在文件末尾先建立空函数体：\n\n```c\nvoid App_W25Q64_SaveByte(uint8_t Byte);\nuint8_t App_W25Q64_LoadByte(void);\n```\n\n`Byte` 是要保存的数据。`SaveByte` 返回 `void`；`LoadByte` 不接受参数，返回 `uint8_t`。本节后面填写的就是这两个固定的单字节接口，示例地址为 `0x000000`。\n\n## 08:44—10:34 · 按原图认识容量、块、扇区和页\n\n[08:44 正式讲存储结构](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=524)。作者先把模块类比成掉电仍保存数据的硬盘，再从型号末尾的“64”解释容量单位。图中从总容量逐层展开：\n\n- W25Q64 总容量为 64 Mbit，即图中的 8 MByte。\n- 总容量分为 128 个块，每块 64 kByte。\n- 每块分为 16 个扇区，每个扇区 4 kByte。\n- 每个扇区分为 16 页，每页 256 Byte。\n\n注意型号中的 64 对应 Mbit，而图中换成字节后是 8 MByte；不能把它读成 64 MByte。随后会用到的两个操作单位分别是扇区与页。\n\n## 10:34—15:56 · 为什么是这六步保存流程\n\n[10:34 转入存储数据](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=634)。作者先区分 RAM 写入和本实验里的 Flash 写入：这里先擦除原区域，再进行编程。流程图由两组组成：\n\n1. 写使能 → 扇区擦除 → 等待空闲。\n2. 写使能 → 页编程 → 等待空闲。\n\n[11:47 两个操作单位](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=707)：先解释为何使用扇区擦除——本例每次最少擦一个 4 kByte 扇区，而不是逐字节擦；再解释页编程——一次写入的数据最多是一页，即 256 Byte。作者用写入 1 MB 数据为例，说明不能一次整批送入，而要分成小段送入。原片借此把前面的存储结构图与接下来的操作对应起来，没有在这里另写跨页算法。\n\n[13:55 写使能](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=835)：作者用“一把锁”解释防止意外修改数据的控制。擦除和编程都会修改内容，所以操作前先写使能；操作后又会关闭，下一个修改操作之前需要再次使能。因此图中有两次写使能，不是重复写错了。\n\n[14:43 等待空闲](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=883)：擦除和编程都需要时间。原片用擦除约 50 ms、页编程约 10 ms 说明这种耗时，再引出状态寄存器 1 的 BUSY 位：1 表示操作进行中，变为 0 表示完成。代码要等的是 BUSY 清零，不是简单写死上述延时；这两个数值是原片的讲解示意，不能作为所有型号的保证值或通用超时上限。\n\n[15:56 回到函数体](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=956)：找到先前建好的 `App_W25Q64_SaveByte`，先按图写下六步注释，然后逐步填入 SPI 指令。\n\n## 16:49—22:38 · 第一步：写使能，逐句读原 SPI 调用\n\n[16:49 起](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=1009)，作者先从 W25Q64BV 手册的 Instructions 找到 Write Enable，再把波形放到课件上。该指令是一字节 `0x06`。\n\n波形里的 `/CS` 对应片选，CLK 对应 SCK，DI 对应 MOSI，DO 对应 MISO。此次只需要把 `0x06` 发送出去，接收通路的数据没有要使用的含义。\n\n[19:14—22:38 对照代码](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=1154)。先选中，再调用上一节已有的收发函数，最后取消选中。下面是对照整理的片段：`buffer[0] = 0x06` 取自 PPT，片选按口述和 Keil 使用 PA15；它不是该时刻 Keil 画面的逐行抄录。\n\n```c\nuint8_t buffer[10];\nbuffer[0] = 0x06;\nGPIO_WriteBit(GPIOA, GPIO_Pin_15, Bit_RESET);\nApp_SPI_MasterTransmitReceive(SPI1, buffer, buffer, 1);\nGPIO_WriteBit(GPIOA, GPIO_Pin_15, Bit_SET);\n```\n\n逐项看这个调用：\n\n- `SPI1`：使用哪一个 SPI 外设。\n- 第一个 `buffer`：从这个数组取出待发送的字节；这里就是 `buffer[0]` 中的 `0x06`。\n- 第二个 `buffer`：把收到的数据也放回同一数组。发送区和接收区使用同一个数组，并不代表没有进行接收；只是这一阶段收到的值不再使用。\n- `1`：交换 1 个字节，不是数组长度。数组预留了 10 项，是因为后面还会发送较长的指令帧。\n\n**原片画面差异：**17:00—21:00 的 PPT 印的是 `GPIOA, GPIO_Pin_12`，即 PA12；但 19:22—19:35 口述明确强调 PA15，Keil 录入也使用 PA15。这里按实际接线和 Keil 来跟，不把 PPT 的 PA12 混进去。\n\n[25:00 的 Keil 中间画面](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=1500)从数组声明到首次发送之间尚未显示 `buffer[0] = 0x06`；PPT 有这句。现有后段画面没有再次完整露出这段开头，尚未确认作者何时补入。调试画面的工程路径也与这段录入时不同，不能用最后读回成功反推中间代码已完整；这里明确保留差异。\n\n## 22:38—25:29 · 第二步：把扇区擦除拼成四字节命令\n\n[22:38 起的擦除波形与代码](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=1358)分成指令和地址两部分。指令码是 `0x20`，后面跟 24 位地址，也就是 3 个字节。\n\n本节示例要保存到 `0x000000`，所以三个地址字节都填零。发送数组中的 4 项依次是：\n\n```c\nbuffer[0] = 0x20;\nbuffer[1] = 0x00;\nbuffer[2] = 0x00;\nbuffer[3] = 0x00;\n```\n\n然后沿用相同的片选边界：PA15 拉低 → `App_SPI_MasterTransmitReceive(SPI1, buffer, buffer, 4)` → PA15 拉高。这次 `Size` 是 4，因为指令占 1 字节、地址占 3 字节；接收数据仍放回 `buffer`，本操作不使用它。\n\n此处发送的是“开始擦除”的命令。函数调用返回后，Flash 内部的擦除不一定已经结束，因此下一步仍要查询 BUSY。\n\n## 25:29—30:34 · 第三步：读状态寄存器 1，等 BUSY 清零\n\n[25:29 解释为什么等待](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=1529)，接着从手册找到 Read Status Register-1，指令码是 `0x05`。一次轮询包括两个交换阶段：先发送 `0x05`，再交换一个字节取得状态。\n\n[28:00—30:34 实际讲解和录入](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=1680)的核心是：\n\n```c\nbuffer[0] = 0x05;\nApp_SPI_MasterTransmitReceive(SPI1, buffer, buffer, 1);\nbuffer[0] = 0xff;\nApp_SPI_MasterTransmitReceive(SPI1, buffer, buffer, 1);\n```\n\n这两次调用处在同一个 CS 拉低窗口内，全部结束后才把 PA15 拉高。第一阶段送出读状态指令；第二阶段发送 `0xff` 的同时产生时钟，把返回的状态字节覆盖到 `buffer[0]`。原片说明 `0xff` 使读期间 MOSI 保持高电平。\n\n接下来用位与取出状态字节的最低位：\n\n```c\nif ((buffer[0] & 0x01) == 0) break;\n```\n\n`0x01` 只保留 bit 0，也就是 BUSY。如果结果仍非零，就继续上面的 `while (1)`；等它清零才 `break`。原片这里用的是没有超时参数的忙轮询，退出依据是读回的 BUSY 位。\n\nPPT 部分画面的 `buffer[0] = 0xff` 漏了行末分号，33:00 的 Keil 对应行有分号。应看正在录入和修正的过程，不把某一中间帧当成最终可编译程序。\n\n## 30:34—33:57 · 先讲第 5 步：页编程，发送五个字节\n\n[30:34 转入页编程](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=1834)。这里先讲第 5 步，而第 4 步写使能、第 6 步等待稍后通过复制前文补齐。跟着视频录入时，先沿作者当前讲到的步骤看。\n\n页编程的指令是 `0x02`，后面先跟 24 位地址，再跟待保存的数据。本节只保存一个字节，因此数组按下面的顺序填写：\n\n```c\nbuffer[0] = 0x02;\nbuffer[1] = 0x00;\nbuffer[2] = 0x00;\nbuffer[3] = 0x00;\nbuffer[4] = Byte;\n```\n\n前 4 项是指令和零地址；第 5 项 `Byte` 就是调用 `App_W25Q64_SaveByte` 时传进来的那个参数。`Byte` 与 `buffer[4]` 的关系，是从函数参数到发送缓冲区的赋值。\n\n随后 PA15 拉低，调用 `App_SPI_MasterTransmitReceive(SPI1, buffer, buffer, 5)`，再把 PA15 拉高。`Size=5` 的原因是 1 字节指令＋3 字节地址＋1 字节数据。\n\n[31:36—31:53](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=1896)还会对照手册中最长一页的波形：页最多 256 Byte，但本实验只发送第一个数据字节。应把“波形图允许较长数据”和“当前代码实际只写一字节”区分清楚。\n\n## 33:57—34:25 · 再复制补齐第 4 步与第 6 步\n\n[33:57 作者回到两个重复步骤](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=2037)：把第 1 步写使能代码复制到第 4 步，把第 3 步等待循环复制到第 6 步。到这里，第 4、6 步的代码框架也已补入。\n\n所以在 33:00、34:00 某些正在编辑的画面里，这两处一度只有注释；不能因为停在那个时刻就把它当成最终缺少写使能或等待。结合口述看完复制过程，作者讲解的预期执行顺序为：\n\n```text\n写使能 → 擦除零地址所在扇区 → 等 BUSY=0\n写使能 → 在零地址编程 Byte → 再等 BUSY=0\n```\n\n## 34:25—38:53 · 填写 LoadByte：先发四字节，再收一字节\n\n[34:25 进入读取数据部分](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=2065)。作者回到手册 Read Data 项，指令码为 `0x03`，后面跟 24 位地址。前面把数据保存在零地址，这里也从零地址读。\n\n[36:34 讲程序的两阶段](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=2194)：第一阶段发送指令与地址，第二阶段才接收目标数据。关键数组内容和调用为：\n\n```c\nbuffer[0] = 0x03;\nbuffer[1] = 0x00;\nbuffer[2] = 0x00;\nbuffer[3] = 0x00;\nApp_SPI_MasterTransmitReceive(SPI1, buffer, buffer, 4);\nbuffer[0] = 0xff;\nApp_SPI_MasterTransmitReceive(SPI1, buffer, buffer, 1);\n```\n\n上述两次调用处在同一次 CS 选中内。`4` 是指令和地址的总长度；`1` 是本次要取回的数据长度。第一阶段收到的内容仍覆盖到数组，但它不是最终要返回的数据；第二阶段把 `buffer[0]` 先置为 `0xff`，再边发送边接收，接收完成后的 `buffer[0]` 才是读出的那个字节。\n\n[37:27—38:53 实际填写 `App_W25Q64_LoadByte`](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=2247)：函数内声明 `buffer`，PA15 拉低，完成两个阶段，PA15 拉高，再用下面这句返回读到的数据：\n\n```c\nreturn buffer[0];\n```\n\n**中间画面勘误：**36:00 的 PPT 标题和口述是 `0x03`，代码首项一度显示 `0x02`；37:00 的后续画面已经显示 `0x03`，并出现 `buffer[0] = 0xff`。这里按读取指令及后续画面解释，不能把页编程的 `0x02` 用作读取命令。PPT 的片选仍印为 PA12，实际口述与 Keil 使用 PA15。\n\n## 38:53—41:09 · 用原片的全局变量 a 观察读回值\n\n[38:53 开始测试](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=2333)。作者先调用保存函数写入 `0x12`，再调用读取函数，把返回值交给全局变量 `a`：\n\n```c\nuint8_t a = 0;\n```\n\n`main` 中在 `App_SPI1_Init()` 之后执行：\n\n```c\nApp_W25Q64_SaveByte(0x12);\na = App_W25Q64_LoadByte();\n```\n\n[39:43](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=2383)作者解释选用全局变量是为了在 Keil 调试时方便观察这个值，避免例子里未使用的局部变量影响观察。\n\n[40:28 起](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=2428)编译并进入调试，依次执行保存和读取。[41:00](https://www.bilibili.com/video/BV11X4y1j7si/?p=31&t=2460)画面显示 `a=0x12`，与写入值一致。这就是本节演示的验收结果：本次调试的单字节保存与读取相符。\n\n## 41:09—片尾 · 本节完成到哪里\n\n作者回顾块、扇区、页的层级，以及保存和读取这两个函数，并说明整个实验完成了一半，下节继续。本节的操作终点是读回 `0x12`；后续的应用跟着 P32 继续学。\n\n完整函数应对照作者的工程与视频录入过程使用；本笔记按段摘出真实语句，解释各步的字节、片选和返回值，没有把未取得的原工程包装成已验证的完整源码。",
+      "learningNotesOrigin": "依据本节全音轨的自动识别文本及原画面，按视频顺序解释原接口和代码；不等于逐字人工听写或取得原工程。",
+      "learningNotesKind": "video-sequence",
+      "sequenceReview": {
+        "status": "asr-text-and-frame-aligned",
+        "audioDuration": 2511.1466875,
+        "asrSegments": 1043,
+        "manualListenComplete": false,
+        "originalProjectObtained": false,
+        "notesSha256": "99a80e434bc5ff2740f1100e41fe6f66a01cefbd366241e5eb8c33ffae2abf16",
+        "reviewedAt": "2026-10-28"
+      }
     },
     {
       "page": 32,
@@ -1505,7 +1551,7 @@ const COURSE = {
           }
         ]
       },
-      "learningNotes": "## 把 LED 状态保存到下次上电\n视频下半节明确列出初始化 LED、初始化按钮、按钮切换、保存当前状态、恢复状态五步。本站补充笔记沿这个应用展开，不另换成通用跨页读写项目。\n\n### 保存逻辑状态，比保存寄存器值清楚\nPC13 的板载 LED 在视频电路中写低点亮。应用可以定义 state=0 表示灭、state=1 表示亮，再由 SetLed 函数转换成引脚电平。这样 Flash 存的是“用户想要的灯状态”，以后换成高有效 LED 只改输出映射，不改历史数据含义。\n\n启动时应先初始化 SPI、LED 与按钮，再从 Flash 读回状态，然后设置 PC13，最后进入事件循环。不要每次开机先调用保存默认值，否则上次保存的结果会被覆盖。视频 15:00 的代码正是在主循环前读取并恢复。\n\n### 一次点击对应一次保存\n下面是本站教学片段，非视频原源码。LoadByte、SaveByte 代表本项目单字节接口；本片段假定启动读取成功，实际驱动应把读失败与合法的 0/1 数据分开返回。ButtonClicked 返回消抖后的一次点击事件；SaveByte 必须等内部操作完成才返回成功。\n\n```c\nuint8_t state = LoadByte();\nif (state != 0 && state != 1) state = 0;\nSetLed(state);\nwhile (1) {\n    if (ButtonClicked()) {\n        state ^= 1u;\n        SetLed(state);\n        if (!SaveByte(state)) ShowSaveError();\n    }\n}\n```\n\n首次使用的擦除区域常读出 0xFF，这不是合法的 0/1 状态，应给出默认值或未初始化提示。这里选择默认灭是本站约定，不声称视频已经设计完整的数据有效性格式。可进一步保存版本号与校验，但应作为独立扩展。\n\n若主循环每轮都 SaveByte，既浪费时间也重复擦写；如果原始按键抖动产生多个事件，也会重复切换与保存。因此先把按钮事件做好，再连接存储。只在实际状态变化且确需持久化时写入，是本站补充的工程改进。\n\n### 怎样证明真的恢复\n先清楚记录初始状态，点击变为亮，确认保存已完成，然后彻底断电再上电，应恢复亮；再变为灭重复同样过程。用软件复位可快速调试启动顺序，但最后仍要做断电实验。不要在擦除或编程正忙时拔电后要求结果必然正确，单份数据方案本来就没有完整的掉电事务保障。\n\n若开机总是默认值，查写入是否到同一地址、初始化是否覆盖旧值、读失败是否被误当 0；若每次点击闪动多次，先修按钮事件；若运行状态正确而掉电错误，检查写完成等待与保存函数的返回含义。沿用 P31 时，还要统一 PA15/PB12 的片选差异。\n\n### 练习与答案\n练习一：PC13 输出是 0，Flash 是否必须保存 0 才能恢复亮？答案：不必。可保存逻辑“亮”为 1，由 SetLed 转换成低电平，关键是定义一致。\n练习二：为什么不能先保存默认灭、再读 Flash 恢复？答案：保存已经破坏旧状态；应先读、检查有效性、恢复，仅在后续状态改变时再写。",
+      "learningNotes": "## 把 LED 状态保存到下次上电\n视频下半节明确列出初始化 LED、初始化按钮、按钮切换、保存当前状态、恢复状态五步。本站补充笔记沿这个应用展开，不另换成通用跨页读写项目。\n\n### 保存逻辑状态，比保存寄存器值清楚\nPC13 的板载 LED 在视频电路中写低点亮。应用可以定义 state=0 表示灭、state=1 表示亮，再由 SetLed 函数转换成引脚电平。这样 Flash 存的是“用户想要的灯状态”，以后换成高有效 LED 只改输出映射，不改历史数据含义。\n\n启动时应先初始化 SPI、LED 与按钮，再从 Flash 读回状态，然后设置 PC13，最后进入事件循环。不要每次开机先调用保存默认值，否则上次保存的结果会被覆盖。视频 15:00 的代码正是在主循环前读取并恢复。\n\n### 一次点击对应一次保存\n下面是本站教学片段，非视频原源码。LoadByte、SaveByte 代表本项目单字节接口；本片段假定启动读取成功，实际驱动应把读失败与合法的 0/1 数据分开返回。ButtonClicked 返回消抖后的一次点击事件；SaveByte 必须等内部操作完成才返回成功。\n\n```c\nuint8_t state = LoadByte();\nif (state != 0 && state != 1) state = 0;\nSetLed(state);\nwhile (1) {\n    if (ButtonClicked()) {\n        state ^= 1u;\n        SetLed(state);\n        if (!SaveByte(state)) ShowSaveError();\n    }\n}\n```\n\n首次使用的擦除区域常读出 0xFF，这不是合法的 0/1 状态，应给出默认值或未初始化提示。这里选择默认灭是本站约定，不声称视频已经设计完整的数据有效性格式。可进一步保存版本号与校验，但应作为独立扩展。\n\n若主循环每轮都 SaveByte，既浪费时间也重复擦写；如果原始按键抖动产生多个事件，也会重复切换与保存。因此先把按钮事件做好，再连接存储。只在实际状态变化且确需持久化时写入，是本站补充的工程改进。\n\n### 怎样证明真的恢复\n先清楚记录初始状态，点击变为亮，确认保存已完成，然后彻底断电再上电，应恢复亮；再变为灭重复同样过程。用软件复位可快速调试启动顺序，但最后仍要做断电实验。不要在擦除或编程正忙时拔电后要求结果必然正确，单份数据方案本来就没有完整的掉电事务保障。\n\n若开机总是默认值，查写入是否到同一地址、初始化是否覆盖旧值、读失败是否被误当 0；若每次点击闪动多次，先修按钮事件；若运行状态正确而掉电错误，检查写完成等待与保存函数的返回含义。沿用 P31 时，片选应与实际接线一致；P31 的 PA12/PA15 画面差异已在该节单独说明。\n\n### 练习与答案\n练习一：PC13 输出是 0，Flash 是否必须保存 0 才能恢复亮？答案：不必。可保存逻辑“亮”为 1，由 SetLed 转换成低电平，关键是定义一致。\n练习二：为什么不能先保存默认灭、再读 Flash 恢复？答案：保存已经破坏旧状态；应先读、检查有效性、恢复，仅在后续状态改变时再写。",
       "learningNotesOrigin": "本站补充讲解与教学示例；按本节视频主题组织，不作为原片逐字稿或原始源码。"
     },
     {

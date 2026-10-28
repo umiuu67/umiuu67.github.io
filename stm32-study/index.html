@@ -537,7 +537,7 @@
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
   <footer>铁头山羊 STM32 入门教程 · 学习笔记 · Umiuu</footer>
 
-  <script src="./stm32-course-data.js?v=learning-notes-243d98348b00"></script>
+  <script src="./stm32-course-data.js?v=p31-sync-622cecf07fdf"></script>
   <script>
     const $ = s => document.querySelector(s);
     const KEY_DONE = 'stm32study.done';
@@ -638,8 +638,8 @@
       if (!v || v.status !== 'video-keyframes-checked') return '';
       const anchors = v.anchors.filter(a => Number.isInteger(a.seconds) && a.seconds >= 0 && a.seconds < l.duration);
       return '<details class="video-evidence" aria-label="视频核对与内容提要">' +
-        '<summary>视频核对与内容提要 · ' + anchors.length + ' 个时间点</summary>' +
-        '<p>以下提要依据所列关键画面整理，非逐字稿；下方学习笔记为本站补充讲解。核对日期：' + esc(v.checkedAt) + '。</p>' +
+        '<summary>视频依据与内容提要 · ' + anchors.length + ' 个时间点</summary>' +
+        '<p>' + esc(v.scope || '提要依据所列关键画面整理，尚未按原视频逐段核对正文。') + ' 核对日期：' + esc(v.checkedAt) + '。</p>' +
         md(l.notes || '') +
         '<div class="video-evidence-links">' + anchors.map(a =>
           '<a href="' + biliUrl(l.page, a.seconds) + '" target="_blank" rel="noopener">' +
@@ -709,11 +709,11 @@
         <div class="lesson-grid">
           <div class="lesson-note">
             <div class="note-toolbar">
-              <h2>学习笔记</h2>
+              <h2>${l.learningNotesKind === 'video-sequence' ? '视频同步笔记' : '主题学习笔记'}</h2>
               <span>共 ${progress.total} 节 · 已完成 ${progress.n} 节</span>
             </div>
             ${renderVideoEvidence(l)}
-            <p class="learning-note-intro">围绕本节视频主题补充原理、实验步骤、排错与练习。代码片段为教学示例，使用前须完成文中说明的配置。</p>
+            <p class="learning-note-intro">${l.learningNotesKind === 'video-sequence' ? '按原视频顺序解释原函数、变量与代码。完整音轨经自动识别辅助阅读，术语和参数与原画面对照；画面差异单独注明。' : '本页为本站编写的主题补充笔记，尚未按原视频顺序和原代码逐段核对。'}</p>
             <div class="learning-notes">${md(l.learningNotes || l.notes || '笔记整理中…')}</div>
             <p class="learning-references">查阅原厂资料：<a href="https://www.st.com/resource/en/datasheet/stm32f103c8.pdf" target="_blank" rel="noopener">STM32F103x8/B 数据手册</a><a href="https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf" target="_blank" rel="noopener">RM0008 外设参考手册</a></p>
           </div>
