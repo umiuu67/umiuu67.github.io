@@ -537,7 +537,7 @@
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
   <footer>铁头山羊 STM32 入门教程 · 学习笔记 · Umiuu</footer>
 
-  <script src="./stm32-course-data.js?v=p31-sync-622cecf07fdf"></script>
+  <script src="./stm32-course-data.js?v=video-sequence-eef9c354d927"></script>
   <script>
     const $ = s => document.querySelector(s);
     const KEY_DONE = 'stm32study.done';
@@ -635,7 +635,7 @@
     }
     function renderVideoEvidence(l) {
       const v = l.verification;
-      if (!v || v.status !== 'video-keyframes-checked') return '';
+      if (!v || !['video-keyframes-checked', 'video-sequence-reviewed'].includes(v.status)) return '';
       const anchors = v.anchors.filter(a => Number.isInteger(a.seconds) && a.seconds >= 0 && a.seconds < l.duration);
       return '<details class="video-evidence" aria-label="视频核对与内容提要">' +
         '<summary>视频依据与内容提要 · ' + anchors.length + ' 个时间点</summary>' +
