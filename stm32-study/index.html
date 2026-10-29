@@ -47,6 +47,8 @@
       position: sticky;
       top: 0;
       height: 100vh;
+      height: 100dvh;
+      align-self: start;
       display: flex;
       flex-direction: column;
       background: #1b262b;
@@ -172,7 +174,7 @@
     .progress-line { height: 4px; background: var(--surface-2); }
     .progress-line i { display: block; height: 100%; width: 0; background: var(--green); }
 
-    .content { padding: 24px; min-width: 0; }
+    .content { flex: 1; padding: 24px; min-width: 0; }
     .lesson-panel {
       max-width: 1180px;
       margin: 0 auto;
@@ -439,7 +441,7 @@
       text-align: center;
       color: var(--muted);
       font-size: 12px;
-      padding: 24px 0 34px;
+      padding: 0 24px 18px;
     }
 
     @media (max-width: 1000px) {
@@ -450,6 +452,7 @@
         inset: 0 auto 0 0;
         width: min(84vw, 320px);
         height: 100vh;
+        height: 100dvh;
         padding: 20px 18px 26px;
         transform: translateX(-105%);
         transition: transform .22s ease;
@@ -532,10 +535,10 @@
       <section class="content">
         <article class="lesson-panel" id="main"></article>
       </section>
+      <footer>铁头山羊 STM32 入门教程 · 学习笔记 · Umiuu</footer>
     </main>
   </div>
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-  <footer>铁头山羊 STM32 入门教程 · 学习笔记 · Umiuu</footer>
 
   <script src="./stm32-course-data.js?v=video-sequence-eef9c354d927"></script>
   <script>
